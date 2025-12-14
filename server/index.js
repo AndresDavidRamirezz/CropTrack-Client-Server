@@ -1,58 +1,47 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
+
+import dbConnection from './config/dbConfig.js';
+
+console.log('\n========================================');
+console.log('🚀 CROPTRACK SERVER - INICIANDO');
+console.log('========================================\n');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
 
-
-
-// CORS
+// Middlewares
+console.log('⚙️  Configurando middlewares...');
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
+  origin: 'http://localhost:3000', // URL de tu frontend React
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+console.log('✅ CORS configurado: http://localhost:3000');
 
-// Body parser
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+console.log('✅ Body parser (JSON) configurado');
 
-// Servir archivos estáticos (uploads)
-app.use('/uploads', express.static('uploads'));
+dbConnection(app);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    message: 'CropTrack API is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
-  });
+console.log('\n📋 Registrando rutas...');
+
+// Rutas
+app.get('/', (req, res) => {
+  res.send('API RESTful de CropTrack Funcionando');
 });
+console.log('✅ Ruta raíz registrada en /');
 
-// Rutas (por ahora vacías, las agregaremos después)
-app.get('/api', (req, res) => {
-  res.json({ message: 'Welcome to CropTrack API' });
-});
+// Puerto
+const PORT = 4000;
 
-// Manejo de errores 404
-app.use((req, res) => {
-  res.status(404).json({ message: 'Endpoint not found' });
-});
-
-// Error handler global
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
-
+// Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📡 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
+  console.log('\n========================================');
+  console.log(`✅ SERVIDOR CORRIENDO EN PUERTO ${PORT}`);
+  console.log(`🌐 URL: http://localhost:${PORT}`);
+  console.log('========================================\n');
 });
 
-module.exports = app;
+// Exportar app para pruebas
+export default app;
