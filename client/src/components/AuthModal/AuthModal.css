@@ -1,0 +1,56 @@
+.auth-modal {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.auth-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.role-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.role-button:hover {
+  background: #e8f5e9;
+  border-color: #87D000;
+  transform: translateY(-2px);
+}
+
+.role-button.active {
+  background: #87D000;
+  border-color: #87D000;
+  color: white;
+}
+
+.role-icon {
+  font-size: 32px;
+}
+
+.role-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.role-button.active .role-label {
+  color: white;
+}
