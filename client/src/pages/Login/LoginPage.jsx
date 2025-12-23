@@ -92,7 +92,7 @@ const LoginPage = () => {
   };
 
   const handleRegister = () => {
-    navigate('/registro-admin');
+    navigate('/register');
   };
 
   return (
