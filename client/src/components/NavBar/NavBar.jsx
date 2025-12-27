@@ -70,7 +70,7 @@ const NavBar = () => {
   const handleRegisterClick = () => {
     try {
       console.log('📝 Navegando a página de Registro...');
-      navigate('/register');
+      navigate('/register/register-admin');
     } catch (error) {
       console.error('❌ Error al navegar a registro:', error);
     }

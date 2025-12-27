@@ -1,48 +1,44 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
+
+import dbConnection from './config/dbConfig.js';
+
+import registerRoutes from './routes/registerRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT || 4000;
 
 
-
-// CORS
+//Middlewares
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Body parser
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+dbConnection(app);
 
-// Servir archivos estáticos (uploads)
-app.use('/uploads', express.static('uploads'));
+console.log('✅ Conexión a MySQL configurada');
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    message: 'CropTrack API is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
-  });
-});
-
-// Rutas (por ahora vacías, las agregaremos después)
-app.get('/api', (req, res) => {
+// Ruta de prueba
+app.get('/', (req, res) => {
   res.json({ message: 'Welcome to CropTrack API' });
 });
 
-// Manejo de errores 404
+// Rutas de registro
+app.use('/api/register', registerRoutes);
+console.log('🚀 Rutas de registro registradas en /api/register');
+
+const PORT = process.env.PORT || 4000;
+
+// Error 404
 app.use((req, res) => {
   res.status(404).json({ message: 'Endpoint not found' });
 });
 
 // Error handler global
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('❌ Error:', err.stack);
   res.status(500).json({ 
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
@@ -50,9 +46,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📡 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
 });
 
-module.exports = app;
+export default app;

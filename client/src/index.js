@@ -16,7 +16,7 @@ root.render(
 			<Routes>
 				<Route path="/" element={<h1>Bienvenido a la LandingPage de CropTrack</h1>} />
 				<Route path="/login" element={<LoginPage/>} />
-				<Route path="/register" element={<RegisterPage/>} />
+				<Route path="/register/register-admin" element={<RegisterPage/>} />
 			</Routes>
 		</BrowserRouter>
 	</React.StrictMode>
