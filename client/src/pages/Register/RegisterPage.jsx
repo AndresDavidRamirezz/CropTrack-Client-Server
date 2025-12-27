@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// pages/Register/RegisterPage.js
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RegisterPage.css';
 
@@ -8,24 +9,24 @@ const RegisterPage = () => {
   // 1. ESTADO DEL FORMULARIO
   // ============================================
   const [form, setForm] = useState({
-    nombre_usuario: '',
-    contrasena: '',
-    confirmar_contrasena: '', // Para validar que coincidan
+    usuario: '',              // ✅ Cambio: nombre_usuario -> usuario
+    contrasena: '',           // ✅ Mantener: contrasena
+    confirmar_contrasena: '',
     nombre: '',
     apellido: '',
     email: '',
-    empresa: '',
+    nombre_empresa: '',       // ✅ Cambio: empresa -> nombre_empresa
     telefono: ''
   });
 
   // ============================================
   // 2. ESTADO DE VALIDACIÓN Y MENSAJES
   // ============================================
-  const [errors, setErrors] = useState({}); // Errores de validación por campo
-  const [error, setError] = useState(''); // Error general del servidor
-  const [success, setSuccess] = useState(''); // Mensaje de éxito
-  const [isSubmitting, setIsSubmitting] = useState(false); // Para deshabilitar el botón mientras se envía
-  const [touched, setTouched] = useState({}); // Campos que el usuario ya tocó
+  const [errors, setErrors] = useState({});
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [touched, setTouched] = useState({});
 
   const navigate = useNavigate();
 
@@ -33,7 +34,7 @@ const RegisterPage = () => {
   // 3. REGLAS DE VALIDACIÓN
   // ============================================
   const validationRules = {
-    nombre_usuario: {
+    usuario: {  // ✅ Cambio
       required: true,
       minLength: 3,
       maxLength: 50,
@@ -71,7 +72,7 @@ const RegisterPage = () => {
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       message: 'Debe ser un email válido'
     },
-    empresa: {
+    nombre_empresa: {  // ✅ Cambio
       required: true,
       minLength: 2,
       maxLength: 100,
@@ -92,37 +93,31 @@ const RegisterPage = () => {
     const rules = validationRules[name];
     if (!rules) return null;
 
-    // Campo requerido
     if (rules.required && !value.trim()) {
       return `${name.charAt(0).toUpperCase() + name.slice(1)} es requerido`;
     }
 
-    // Si el campo es opcional y está vacío, no validar más
     if (!rules.required && !value.trim()) {
       return null;
     }
 
-    // Longitud mínima
     if (rules.minLength && value.trim().length < rules.minLength) {
       return rules.message;
     }
 
-    // Longitud máxima
     if (rules.maxLength && value.trim().length > rules.maxLength) {
       return rules.message;
     }
 
-    // Patrón regex
     if (rules.pattern && !rules.pattern.test(value.trim())) {
       return rules.message;
     }
 
-    // Coincidir con otro campo
     if (rules.matchField && value !== form[rules.matchField]) {
       return rules.message;
     }
 
-    return null; // Sin errores
+    return null;
   };
 
   // ============================================
@@ -148,10 +143,8 @@ const RegisterPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Actualizar el valor del campo
     setForm(prev => ({ ...prev, [name]: value }));
 
-    // Validar en tiempo real solo si el campo ya fue tocado
     if (touched[name]) {
       const fieldError = validateField(name, value);
       setErrors(prev => ({
@@ -169,10 +162,8 @@ const RegisterPage = () => {
   const handleBlur = (e) => {
     const { name, value } = e.target;
     
-    // Marcar como tocado
     setTouched(prev => ({ ...prev, [name]: true }));
     
-    // Validar el campo
     const fieldError = validateField(name, value);
     setErrors(prev => ({
       ...prev,
@@ -192,14 +183,12 @@ const RegisterPage = () => {
 
     console.log('🚀 Iniciando envío del formulario...');
 
-    // Marcar todos los campos como tocados
     const allTouched = {};
     Object.keys(form).forEach(key => {
       allTouched[key] = true;
     });
     setTouched(allTouched);
 
-    // Validar todo el formulario
     if (!validateForm()) {
       console.log('❌ Validación fallida. Errores:', errors);
       setError('Por favor, corrige los errores en el formulario');
@@ -208,26 +197,25 @@ const RegisterPage = () => {
 
     setIsSubmitting(true);
 
-    // Preparar datos para enviar
-    // NOTA: Enviamos la contraseña en texto plano (debe ser por HTTPS en producción)
-    // El backend se encargará de hashearla con bcrypt
+    // ✅ Preparar datos con los nombres correctos de la API
     const jsonData = {
-      nombre_usuario: form.nombre_usuario.trim(),
-      password: form.contrasena, // El backend la hasheará
+      usuario: form.usuario.trim(),           // ✅ Cambio
+      contrasena: form.contrasena,            // ✅ Cambio
       nombre: form.nombre.trim(),
       apellido: form.apellido.trim(),
       email: form.email.trim().toLowerCase(),
-      empresa: form.empresa.trim(),
+      nombre_empresa: form.nombre_empresa.trim(),  // ✅ Cambio
       telefono: form.telefono.trim() || null,
       rol: 'administrador'
     };
 
     console.log('📤 Enviando datos al servidor:', {
       ...jsonData,
-      password: '***OCULTA***' // No loguear la contraseña
+      contrasena: '***OCULTA***'
     });
 
     try {
+      // ✅ Ruta correcta: /api/register/register-admin
       const response = await fetch('http://localhost:4000/api/register/register-admin', {
         method: 'POST',
         headers: {
@@ -247,25 +235,23 @@ const RegisterPage = () => {
         
         // Limpiar el formulario
         setForm({
-          nombre_usuario: '',
+          usuario: '',
           contrasena: '',
           confirmar_contrasena: '',
           nombre: '',
           apellido: '',
           email: '',
-          empresa: '',
+          nombre_empresa: '',
           telefono: ''
         });
         setTouched({});
         setErrors({});
         
-        // Redirigir después de 2 segundos
         setTimeout(() => {
           console.log('🔄 Redirigiendo a login...');
           navigate('/login');
         }, 2000);
       } else {
-        // Error del servidor
         console.log('⚠️ Error del servidor:', data);
         setError(data.message || data.error || 'Error al registrar el administrador');
       }
@@ -319,22 +305,22 @@ const RegisterPage = () => {
               
               {/* Usuario */}
               <div className="form-group">
-                <label htmlFor="nombre_usuario">
+                <label htmlFor="usuario">
                   Usuario <span className="required">*</span>
                 </label>
                 <p className="field-hint">3-50 caracteres. Solo letras, números y guion bajo</p>
                 <input 
                   type="text" 
-                  id="nombre_usuario"
-                  name="nombre_usuario" 
-                  value={form.nombre_usuario} 
+                  id="usuario"
+                  name="usuario"  // ✅ Cambio
+                  value={form.usuario} 
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={errors.nombre_usuario && touched.nombre_usuario ? 'input-error' : ''}
+                  className={errors.usuario && touched.usuario ? 'input-error' : ''}
                   disabled={isSubmitting}
                 />
-                {errors.nombre_usuario && touched.nombre_usuario && (
-                  <span className="error-text">{errors.nombre_usuario}</span>
+                {errors.usuario && touched.usuario && (
+                  <span className="error-text">{errors.usuario}</span>
                 )}
               </div>
               
@@ -382,22 +368,22 @@ const RegisterPage = () => {
 
               {/* Empresa */}
               <div className="form-group">
-                <label htmlFor="empresa">
+                <label htmlFor="nombre_empresa">
                   Empresa <span className="required">*</span>
                 </label>
                 <p className="field-hint">2-100 caracteres</p>
                 <input 
                   type="text" 
-                  id="empresa"
-                  name="empresa" 
-                  value={form.empresa} 
+                  id="nombre_empresa"
+                  name="nombre_empresa"  // ✅ Cambio
+                  value={form.nombre_empresa} 
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={errors.empresa && touched.empresa ? 'input-error' : ''}
+                  className={errors.nombre_empresa && touched.nombre_empresa ? 'input-error' : ''}
                   disabled={isSubmitting}
                 />
-                {errors.empresa && touched.empresa && (
-                  <span className="error-text">{errors.empresa}</span>
+                {errors.nombre_empresa && touched.nombre_empresa && (
+                  <span className="error-text">{errors.nombre_empresa}</span>
                 )}
               </div>
             </div>
@@ -508,11 +494,9 @@ const RegisterPage = () => {
 
           {/* ========== MENSAJES Y BOTONES ========== */}
           <div className="form-footer">
-            {/* Mensajes de error/éxito */}
             {error && <div className="error-message">❌ {error}</div>}
             {success && <div className="success-message">✅ {success}</div>}
             
-            {/* Botones */}
             <div className="buttons-container">
               <button 
                 type="submit" 

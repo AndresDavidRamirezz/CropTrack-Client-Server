@@ -1,0 +1,13 @@
+###
+POST http://localhost:4000/api/register/register-admin
+Content-Type: application/json
+
+{
+  "nombre": "Nombre Admin uno",
+  "apellido": "Apellido admin uno",
+  "usuario": "admin_1",
+  "email": "admin-1@email.com",
+  "contrasena": "adminpass-1",
+	"rol": "administrador",
+  "nombre_empresa": "Empresa Uno"
+}
