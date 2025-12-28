@@ -4,6 +4,7 @@ import cors from 'cors';
 import dbConnection from './config/dbConfig.js';
 
 import registerRoutes from './routes/registerRoutes.js';
+import loginRoutes from './routes/loginRoutes.js';
 
 const app = express();
 
@@ -28,6 +29,12 @@ app.get('/', (req, res) => {
 // Rutas de registro
 app.use('/api/register', registerRoutes);
 console.log('🚀 Rutas de registro registradas en /api/register');
+
+// Rutas de login
+app.use('/api/auth', loginRoutes);
+console.log('🚀 Rutas de login registradas en /api/auth');
+
+
 
 const PORT = process.env.PORT || 4000;
 

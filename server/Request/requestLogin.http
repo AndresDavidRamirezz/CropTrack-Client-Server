@@ -1,0 +1,9 @@
+###
+POST http://localhost:4000/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "admin_1",
+  "contrasena": "adminpass-1",
+  "rol": "administrador"
+}

@@ -5,47 +5,47 @@ const AuthModal = ({ role, setRole }) => (
     <button
       style={{ 
         marginRight: 8, 
-        background: role === 'Administrador' ? '#87D000' : 'rgba(255, 255, 255, 0.2)', 
+        background: role === 'administrador' ? '#87D000' : 'rgba(255, 255, 255, 0.2)', 
         color: '#fff', 
-        border: role === 'Administrador' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)', 
+        border: role === 'administrador' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)', 
         padding: '8px 24px', 
         borderRadius: 6, 
         cursor: 'pointer',
         backdropFilter: 'blur(10px)',
         transition: 'all 0.3s ease'
       }}
-      onClick={() => setRole('Administrador')}
+      onClick={() => setRole('administrador')}
     >
       Administrador
     </button>
     <button
       style={{ 
         marginRight: 8, 
-        background: role === 'Trabajador' ? '#87D000' : 'rgba(255, 255, 255, 0.2)', 
+        background: role === 'trabajador' ? '#87D000' : 'rgba(255, 255, 255, 0.2)', 
         color: '#fff', 
-        border: role === 'Trabajador' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)', 
+        border: role === 'trabajador' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)', 
         padding: '8px 24px', 
         borderRadius: 6, 
         cursor: 'pointer',
         backdropFilter: 'blur(10px)',
         transition: 'all 0.3s ease'
       }}
-      onClick={() => setRole('Trabajador')}
+      onClick={() => setRole('trabajador')}
     >
       Trabajador
     </button>
     <button
       style={{ 
-        background: role === 'Supervisor' ? '#87D000' : 'rgba(255, 255, 255, 0.2)', 
+        background: role === 'supervisor' ? '#87D000' : 'rgba(255, 255, 255, 0.2)', 
         color: '#fff', 
-        border: role === 'Supervisor' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)', 
+        border: role === 'supervisor' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)', 
         padding: '8px 24px', 
         borderRadius: 6, 
         cursor: 'pointer',
         backdropFilter: 'blur(10px)',
         transition: 'all 0.3s ease'
       }}
-      onClick={() => setRole('Supervisor')}
+      onClick={() => setRole('supervisor')}
     >
       Supervisor
     </button>
