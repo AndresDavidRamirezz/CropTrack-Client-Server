@@ -48,6 +48,38 @@ class UserModel {
     );
   }
 
+  static findById(conn, id, callback) {
+    console.log('🔍 [USER-MODEL] Buscando usuario por ID:', id);
+    
+    const query = 'SELECT * FROM users WHERE id = ?';
+    
+    conn.query(query, [id], (err, results) => {
+      if (err) {
+        console.error('❌ [USER-MODEL] Error en findById:', err);
+        return callback(err, null);
+      }
+      
+      console.log(`✅ [USER-MODEL] Búsqueda completada. Encontrados: ${results.length}`);
+      callback(null, results);
+    });
+  }
+
+  static updateLastAccess(conn, userId, callback) {
+    console.log('🕐 [USER-MODEL] Actualizando último acceso para usuario:', userId);
+    
+    const query = 'UPDATE users SET ultimo_acceso = NOW() WHERE id = ?';
+    
+    conn.query(query, [userId], (err, result) => {
+      if (err) {
+        console.error('❌ [USER-MODEL] Error al actualizar último acceso:', err);
+        return callback(err, null);
+      }
+      
+      console.log('✅ [USER-MODEL] Último acceso actualizado');
+      callback(null, result);
+    });
+  }
+
 }
 
 export default UserModel;

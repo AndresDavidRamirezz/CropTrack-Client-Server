@@ -4,9 +4,9 @@ import AuthModal from '../../components/AuthModal/AuthModal';
 import './LoginPage.css';
 
 const LoginPage = () => {
-  const [role, setRole] = useState('Administrador');
+  const [role, setRole] = useState('administrador');
   const [formData, setFormData] = useState({ 
-    nombre_usuario: '', 
+    usuario: '', 
     contrasena: '' 
   });
   const [error, setError] = useState('');
@@ -22,11 +22,11 @@ const LoginPage = () => {
   };
 
   const validateForm = () => {
-    if (!formData.nombre_usuario.trim() || !formData.contrasena.trim()) {
+    if (!formData.usuario.trim() || !formData.contrasena.trim()) {
       setError('Todos los campos son obligatorios');
       return false;
     }
-    if (formData.nombre_usuario.length < 3) {
+    if (formData.usuario.length < 3) {
       setError('El usuario debe tener al menos 3 caracteres');
       return false;
     }
@@ -48,7 +48,7 @@ const LoginPage = () => {
     try {
       console.log('🔐 LOGIN - Enviando credenciales...');
       console.log('📤 Datos enviados:', {
-        nombre_usuario: formData.nombre_usuario,
+        usuario: formData.usuario,
         rol: role.toLowerCase()
       });
 
@@ -56,9 +56,9 @@ const LoginPage = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          nombre_usuario: formData.nombre_usuario, 
+          usuario: formData.usuario, 
           contrasena: formData.contrasena, 
-          rol: role.toLowerCase() // 'administrador', 'supervisor', 'trabajador'
+          rol: role
         })
       });
       
@@ -71,7 +71,7 @@ const LoginPage = () => {
         // Guardar en localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('userData', JSON.stringify(data.user));
-        localStorage.setItem('usuario', formData.nombre_usuario);
+        localStorage.setItem('usuario', formData.usuario);
         
         console.log('💾 LOGIN - Datos guardados en localStorage');
         
@@ -105,8 +105,8 @@ const LoginPage = () => {
             <label className="form-label">Usuario</label>
             <input
               type="text"
-              name="nombre_usuario"
-              value={formData.nombre_usuario}
+              name="usuario"
+              value={formData.usuario}
               onChange={handleInputChange}
               className="form-input"
               placeholder="Ingresa tu usuario"
