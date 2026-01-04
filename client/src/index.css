@@ -1,0 +1,87 @@
+/* ===== RESET Y ESTILOS GLOBALES ===== */
+
+/* Reset básico para todos los elementos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos para html y body */
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* Previene scroll horizontal */
+}
+
+/* Eliminar estilos por defecto de listas */
+ul, ol {
+  list-style: none;
+}
+
+/* Eliminar subrayado de enlaces */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Estilos para imágenes responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Eliminar estilos por defecto de botones */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Eliminar estilos por defecto de inputs */
+input, textarea, select {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+/* ===== CLASES UTILITARIAS ===== */
+
+/* Para contenedores que ocupan toda la pantalla */
+.full-screen {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Para imágenes que cubren todo el contenedor */
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Flexbox utilities */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
