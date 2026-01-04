@@ -13,6 +13,13 @@ import NavBar from './components/NavBar/NavBar';
 
 import MainPage from './pages/MainPage';
 
+import CropPage from './pages/Crop/CropPage.jsx';
+import MeasurementPage from './pages/Measurement/MeasurementPage.jsx';
+import TaskPage from './pages/Task/TaskPage.jsx';
+import WorkerPage from './pages/Worker/WorkerPage.jsx';
+import ProfilePage from './pages/Profile/ProfilePage.jsx';
+import ExtrasPage from './pages/Extras/ExtrasPage.jsx';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<React.StrictMode>
@@ -23,6 +30,12 @@ root.render(
 				<Route path="/login" element={ <LoginPage/>} />
 				<Route path="/register/register-admin" element={ <RegisterPage/>} />
 				<Route path="/main" element={ <ProtectedRoute> <MainPage /> </ProtectedRoute>} />
+				<Route path="/crop" element={ <ProtectedRoute> <CropPage /> </ProtectedRoute>} />
+				<Route path="/measurement" element={ <ProtectedRoute> <MeasurementPage /> </ProtectedRoute>} />
+				<Route path="/task" element={ <ProtectedRoute> <TaskPage /> </ProtectedRoute>} />
+				<Route path="/worker" element={ <ProtectedRoute> <WorkerPage /> </ProtectedRoute>} />
+				<Route path="/profile" element={ <ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
+				<Route path="/extras" element={ <ProtectedRoute> <ExtrasPage /> </ProtectedRoute>} />
 			</Routes>
 		</BrowserRouter>
 	</React.StrictMode>
