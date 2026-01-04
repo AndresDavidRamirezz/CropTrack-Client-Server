@@ -1,0 +1,44 @@
+/* components/Footer.css */
+.footer {
+  background-color: #2d5016;
+  color: white;
+  padding: 1.5rem 2rem;
+  margin-top: auto; /* Importante para que se quede abajo */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.footer-copyright {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1rem;
+  }
+  
+  .footer-text {
+    font-size: 0.9rem;
+  }
+  
+  .footer-copyright {
+    font-size: 0.8rem;
+  }
+}

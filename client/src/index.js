@@ -10,6 +10,7 @@ import LoginPage from './pages/Login/LoginPage';
 import RegisterPage from './pages/Register/RegisterPage';
 
 import NavBar from './components/NavBar/NavBar';
+import Footer from './components/Footer/Footer.jsx';
 
 import MainPage from './pages/MainPage';
 
@@ -25,6 +26,7 @@ root.render(
 	<React.StrictMode>
 		<BrowserRouter>
 			<NavBar />
+			<main>
 			<Routes>
 				<Route path="/" element={<h1>Bienvenido a la LandingPage de CropTrack</h1>} />
 				<Route path="/login" element={ <LoginPage/>} />
@@ -37,6 +39,8 @@ root.render(
 				<Route path="/profile" element={ <ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
 				<Route path="/extras" element={ <ProtectedRoute> <ExtrasPage /> </ProtectedRoute>} />
 			</Routes>
+			</main>
+			<Footer />
 		</BrowserRouter>
 	</React.StrictMode>
 );
