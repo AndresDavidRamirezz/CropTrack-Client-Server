@@ -16,28 +16,37 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden; /* Previene scroll horizontal */
+  overflow-x: hidden;
 }
 
-/* Eliminar estilos por defecto de listas */
+/* NUEVO: Convierte el root en un contenedor flex */
+#root {
+  min-height: 100vh; /* Ocupa al menos toda la altura de la ventana */
+  display: flex;
+  flex-direction: column; /* Apila elementos verticalmente */
+}
+
+/* NUEVO: El contenido principal debe crecer para ocupar el espacio disponible */
+main {
+  flex: 1; /* Esto hace que ocupe todo el espacio sobrante */
+}
+
+/* Resto de tu CSS sin cambios... */
 ul, ol {
   list-style: none;
 }
 
-/* Eliminar subrayado de enlaces */
 a {
   text-decoration: none;
   color: inherit;
 }
 
-/* Estilos para imágenes responsivas */
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* Eliminar estilos por defecto de botones */
 button {
   border: none;
   background: none;
@@ -45,7 +54,6 @@ button {
   font-family: inherit;
 }
 
-/* Eliminar estilos por defecto de inputs */
 input, textarea, select {
   font-family: inherit;
   border: none;
@@ -54,14 +62,12 @@ input, textarea, select {
 
 /* ===== CLASES UTILITARIAS ===== */
 
-/* Para contenedores que ocupan toda la pantalla */
 .full-screen {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
 }
 
-/* Para imágenes que cubren todo el contenedor */
 .cover-image {
   width: 100%;
   height: 100%;
@@ -69,7 +75,6 @@ input, textarea, select {
   display: block;
 }
 
-/* Flexbox utilities */
 .flex {
   display: flex;
 }
