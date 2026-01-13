@@ -1,0 +1,187 @@
+/* components/Crop/Card/CropCard.css */
+
+.crop-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 1px solid #e0e0e0;
+}
+
+.crop-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.crop-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.crop-nombre {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  flex: 1;
+}
+
+.crop-tipo {
+  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+/* Estado Badge */
+.crop-estado-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+  width: fit-content;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Body */
+.crop-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.crop-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.crop-info-row:last-child {
+  border-bottom: none;
+}
+
+.crop-label {
+  font-size: 0.85rem;
+  color: #718096;
+  font-weight: 500;
+}
+
+.crop-value {
+  font-size: 0.9rem;
+  color: #2d3748;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Notas */
+.crop-notas {
+  margin-top: 5px;
+  padding-top: 10px;
+  border-top: 1px dashed #e0e0e0;
+}
+
+.crop-notas .crop-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.crop-notas-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #4a5568;
+  line-height: 1.5;
+  background: #f7fafc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* Actions */
+.crop-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-crop {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
+  color: white;
+  box-shadow: 0 3px 10px rgba(135, 208, 0, 0.3);
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #76b800 0%, #669900 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(135, 208, 0, 0.4);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+}
+
+.btn-delete:hover {
+  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+.btn-crop:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .crop-card {
+    padding: 15px;
+  }
+
+  .crop-card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .crop-nombre {
+    font-size: 1.1rem;
+  }
+
+  .crop-card-actions {
+    flex-direction: column;
+  }
+
+  .btn-crop {
+    padding: 12px;
+  }
+}
