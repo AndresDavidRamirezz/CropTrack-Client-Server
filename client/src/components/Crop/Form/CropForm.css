@@ -1,0 +1,245 @@
+/* components/Crop/Form/CropForm.css */
+
+.crop-form-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Header del formulario */
+.crop-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.crop-form-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.editing-badge {
+  background: #ffc107;
+  color: #1a1a1a;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Form layout */
+.crop-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Labels */
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.required {
+  color: #dc3545;
+}
+
+/* Inputs */
+.form-input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #2d3748;
+  background: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #87D000;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(135, 208, 0, 0.15);
+}
+
+.form-input:hover:not(:focus):not(:disabled) {
+  border-color: #c0c0c0;
+  background: #ffffff;
+}
+
+.form-input:disabled {
+  background: #f0f0f0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-input::placeholder {
+  color: #a0aec0;
+}
+
+/* Select */
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+/* Textarea */
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+/* Error states */
+.input-error {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.input-error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+.error-text {
+  font-size: 0.8rem;
+  color: #dc3545;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.error-text::before {
+  content: '⚠';
+}
+
+/* Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-form {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(135, 208, 0, 0.3);
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #76b800 0%, #669900 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(135, 208, 0, 0.4);
+}
+
+.btn-cancel {
+  background: #f0f0f0;
+  color: #4a5568;
+  border: 2px solid #e0e0e0;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: #e0e0e0;
+  border-color: #c0c0c0;
+}
+
+.btn-form:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-form:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .crop-form-container {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .crop-form-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-form {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .crop-form-container {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .crop-form-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .form-input {
+    padding: 10px 14px;
+  }
+
+  .btn-form {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+}
