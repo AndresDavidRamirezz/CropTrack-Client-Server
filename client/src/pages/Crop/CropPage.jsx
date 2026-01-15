@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import CropForm from '../../components/Crop/Form/CropForm';
 import CropList from '../../components/Crop/List/CropList';
-import { getAllCrops, createCrop, updateCrop, deleteCrop } from '../../services/cropService';
 import './CropPage.css';
+
+const API_URL = 'http://localhost:4000/api/crops';
 
 const CropPage = () => {
   const [crops, setCrops] = useState([]);
@@ -15,25 +16,46 @@ const CropPage = () => {
   const getUserData = () => {
     try {
       const userData = JSON.parse(localStorage.getItem('userData'));
+      console.log('🔍 [CROP-PAGE] userData:', userData);
       return {
         usuario_creador_id: userData?.id,
         empresa: userData?.empresa
       };
-    } catch {
+    } catch (err) {
+      console.error('❌ [CROP-PAGE] Error obteniendo userData:', err);
       return { usuario_creador_id: null, empresa: null };
     }
   };
 
   // Cargar cosechas al montar el componente
   const fetchCrops = async () => {
+    const { usuario_creador_id } = getUserData();
+
+    if (!usuario_creador_id) {
+      setError('No se pudo identificar al usuario');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const data = await getAllCrops();
-      setCrops(data);
+      console.log('🟡 [CROP-PAGE] Cargando cosechas para usuario:', usuario_creador_id);
+
+      const response = await fetch(`${API_URL}/user/${usuario_creador_id}`);
+      const data = await response.json();
+
+      console.log('📥 [CROP-PAGE] Response status:', response.status);
+      console.log('📥 [CROP-PAGE] Data:', data);
+
+      if (response.ok) {
+        setCrops(data);
+        console.log('✅ [CROP-PAGE] Cosechas cargadas:', data.length);
+      } else {
+        throw new Error(data.error || 'Error al cargar las cosechas');
+      }
     } catch (err) {
-      console.error('Error al cargar cosechas:', err);
+      console.error('❌ [CROP-PAGE] Error al cargar cosechas:', err);
       setError(err.message || 'Error al cargar las cosechas');
     } finally {
       setLoading(false);
@@ -62,11 +84,26 @@ const CropPage = () => {
         usuario_creador_id
       };
 
-      await createCrop(cropData);
-      await fetchCrops();
-      setShowForm(false);
+      console.log('🟡 [CROP-PAGE] Creando cosecha:', cropData);
+
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cropData)
+      });
+
+      const data = await response.json();
+      console.log('📥 [CROP-PAGE] Response:', response.status, data);
+
+      if (response.ok) {
+        console.log('✅ [CROP-PAGE] Cosecha creada exitosamente');
+        await fetchCrops();
+        setShowForm(false);
+      } else {
+        throw new Error(data.error || 'Error al crear la cosecha');
+      }
     } catch (err) {
-      console.error('Error al crear cosecha:', err);
+      console.error('❌ [CROP-PAGE] Error al crear cosecha:', err);
       setError(err.message || 'Error al crear la cosecha');
     } finally {
       setLoading(false);
@@ -79,12 +116,27 @@ const CropPage = () => {
     setError(null);
 
     try {
-      await updateCrop(id, formData);
-      await fetchCrops();
-      setEditingCrop(null);
-      setShowForm(false);
+      console.log('🟡 [CROP-PAGE] Actualizando cosecha:', id, formData);
+
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+      console.log('📥 [CROP-PAGE] Response:', response.status, data);
+
+      if (response.ok) {
+        console.log('✅ [CROP-PAGE] Cosecha actualizada exitosamente');
+        await fetchCrops();
+        setEditingCrop(null);
+        setShowForm(false);
+      } else {
+        throw new Error(data.error || 'Error al actualizar la cosecha');
+      }
     } catch (err) {
-      console.error('Error al actualizar cosecha:', err);
+      console.error('❌ [CROP-PAGE] Error al actualizar cosecha:', err);
       setError(err.message || 'Error al actualizar la cosecha');
     } finally {
       setLoading(false);
@@ -97,26 +149,38 @@ const CropPage = () => {
     setError(null);
 
     try {
-      await deleteCrop(id);
-      await fetchCrops();
+      console.log('🟡 [CROP-PAGE] Eliminando cosecha:', id);
+
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE'
+      });
+
+      const data = await response.json();
+      console.log('📥 [CROP-PAGE] Response:', response.status, data);
+
+      if (response.ok) {
+        console.log('✅ [CROP-PAGE] Cosecha eliminada exitosamente');
+        await fetchCrops();
+      } else {
+        throw new Error(data.error || 'Error al eliminar la cosecha');
+      }
     } catch (err) {
-      console.error('Error al eliminar cosecha:', err);
+      console.error('❌ [CROP-PAGE] Error al eliminar cosecha:', err);
       setError(err.message || 'Error al eliminar la cosecha');
     } finally {
       setLoading(false);
     }
   };
 
-  // Activar modo edición
+  // Activar modo edicion
   const handleEdit = (crop) => {
     setEditingCrop(crop);
     setShowForm(true);
     setError(null);
-    // Scroll al formulario
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Cancelar edición / crear
+  // Cancelar edicion / crear
   const handleCancel = () => {
     setEditingCrop(null);
     setShowForm(false);
@@ -137,7 +201,7 @@ const CropPage = () => {
     <div className="crop-page">
       <header className="crop-page-header">
         <div className="header-content">
-          <h1>Gestión de Cosechas</h1>
+          <h1>Gestion de Cosechas</h1>
           <p>Administra todos tus cultivos en un solo lugar</p>
         </div>
         <button
@@ -152,7 +216,7 @@ const CropPage = () => {
         <div className="error-banner">
           <span className="error-icon">⚠️</span>
           <span>{error}</span>
-          <button className="error-close" onClick={() => setError(null)}>×</button>
+          <button className="error-close" onClick={() => setError(null)}>x</button>
         </div>
       )}
 
