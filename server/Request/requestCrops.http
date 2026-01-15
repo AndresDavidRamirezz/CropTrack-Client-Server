@@ -1,51 +1,47 @@
-### Variables
-@baseUrl = http://localhost:4000/api/crops
-@token = TU_TOKEN_JWT_AQUI
-
-### GET - Obtener todas las cosechas
-GET {{baseUrl}}
-Authorization: Bearer {{token}}
-
-### GET - Obtener cosecha por ID
-GET {{baseUrl}}/ID_DE_LA_COSECHA
-Authorization: Bearer {{token}}
-
-### POST - Crear nueva cosecha
-POST {{baseUrl}}
+###
+# POST - Crear nueva cosecha
+POST http://localhost:4000/api/crops
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 {
-  "nombre": "Maíz Amarillo 2024",
+  "usuario_creador_id": "ID_DEL_USUARIO",
   "empresa": "Finca El Sol",
+  "nombre": "Maiz Amarillo 2024",
   "tipo": "Cereal",
-  "variedad": "Híbrido DK-7088",
+  "variedad": "Hibrido DK-7088",
   "area_hectareas": 15.5,
   "ubicacion": "Lote Norte - Sector A",
   "fecha_siembra": "2024-03-15",
   "fecha_cosecha_estimada": "2024-08-20",
   "estado": "planificado",
-  "notas": "Preparar terreno con labranza mínima"
+  "notas": "Preparar terreno con labranza minima"
 }
 
-### PUT - Actualizar cosecha
-PUT {{baseUrl}}/ID_DE_LA_COSECHA
+###
+# GET - Obtener cosechas de un usuario
+GET http://localhost:4000/api/crops/user/ID_DEL_USUARIO
+
+###
+# GET - Obtener una cosecha por ID
+GET http://localhost:4000/api/crops/ID_DE_LA_COSECHA
+
+###
+# PUT - Actualizar cosecha
+PUT http://localhost:4000/api/crops/ID_DE_LA_COSECHA
 Content-Type: application/json
-Authorization: Bearer {{token}}
 
 {
-  "nombre": "Maíz Amarillo 2024",
-  "empresa": "Finca El Sol",
+  "nombre": "Maiz Amarillo 2024 - Actualizado",
   "tipo": "Cereal",
-  "variedad": "Híbrido DK-7088",
-  "area_hectareas": 15.5,
-  "ubicacion": "Lote Norte - Sector A",
+  "variedad": "Hibrido DK-7088",
+  "area_hectareas": 18.0,
+  "ubicacion": "Lote Norte - Sector A y B",
   "fecha_siembra": "2024-03-15",
-  "fecha_cosecha_estimada": "2024-08-20",
+  "fecha_cosecha_estimada": "2024-08-25",
   "estado": "sembrado",
   "notas": "Siembra completada el 15 de marzo"
 }
 
-### DELETE - Eliminar cosecha
-DELETE {{baseUrl}}/ID_DE_LA_COSECHA
-Authorization: Bearer {{token}}
+###
+# DELETE - Eliminar cosecha
+DELETE http://localhost:4000/api/crops/ID_DE_LA_COSECHA

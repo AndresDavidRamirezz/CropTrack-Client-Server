@@ -5,6 +5,7 @@ import dbConnection from './config/dbConfig.js';
 
 import registerRoutes from './routes/registerRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
+import cropRoutes from './routes/cropRoutes.js';
 
 const app = express();
 
@@ -34,7 +35,9 @@ console.log('🚀 Rutas de registro registradas en /api/register');
 app.use('/api/auth', loginRoutes);
 console.log('🚀 Rutas de login registradas en /api/auth');
 
-
+// Rutas de crops
+app.use('/api/crops', cropRoutes);
+console.log('🚀 Rutas de crops registradas en /api/crops');
 
 const PORT = process.env.PORT || 4000;
 
