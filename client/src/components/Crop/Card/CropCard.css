@@ -1,20 +1,21 @@
 /* components/Crop/Card/CropCard.css */
 
 .crop-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  background-color: #1e293b !important;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  padding: 0;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #334155;
+  overflow: hidden;
 }
 
 .crop-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+  border-color: #87D000;
 }
 
 /* Header */
@@ -22,159 +23,175 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
+  padding: 20px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-bottom: 3px solid #87D000;
 }
 
 .crop-nombre {
   margin: 0;
   font-size: 1.25rem;
-  font-weight: 600;
-  color: #2d3748;
+  font-weight: 700;
+  color: #ffffff !important;
   flex: 1;
+  line-height: 1.3;
 }
 
 .crop-tipo {
-  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #87D000 0%, #65a30d 100%);
+  color: #ffffff !important;
+  padding: 6px 16px;
+  border-radius: 25px;
   font-size: 0.75rem;
-  font-weight: 500;
-  text-transform: capitalize;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(135, 208, 0, 0.4);
 }
 
 /* Estado Badge */
 .crop-estado-badge {
   display: inline-block;
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 8px 18px;
+  border-radius: 25px;
   font-size: 0.8rem;
-  font-weight: 600;
-  color: white;
-  text-transform: capitalize;
+  font-weight: 700;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   width: fit-content;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin: 18px 20px 0 20px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Body */
 .crop-card-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   flex: 1;
+  padding: 18px 20px;
+  background-color: #1e293b;
 }
 
 .crop-info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+  border-bottom: 1px solid #334155;
 }
 
-.crop-info-row:last-child {
+.crop-info-row:last-of-type {
   border-bottom: none;
 }
 
 .crop-label {
   font-size: 0.85rem;
-  color: #718096;
-  font-weight: 500;
+  color: #94a3b8 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .crop-value {
-  font-size: 0.9rem;
-  color: #2d3748;
-  font-weight: 500;
+  font-size: 0.95rem;
+  color: #f1f5f9 !important;
+  font-weight: 600;
   text-align: right;
+  max-width: 60%;
 }
 
 /* Notas */
 .crop-notas {
-  margin-top: 5px;
-  padding-top: 10px;
-  border-top: 1px dashed #e0e0e0;
+  margin-top: 12px;
+  padding-top: 15px;
+  border-top: 2px dashed #334155;
 }
 
 .crop-notas .crop-label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  color: #94a3b8 !important;
+  font-weight: 700;
 }
 
 .crop-notas-text {
   margin: 0;
-  font-size: 0.85rem;
-  color: #4a5568;
-  line-height: 1.5;
-  background: #f7fafc;
-  padding: 10px;
-  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #e2e8f0 !important;
+  line-height: 1.6;
+  background-color: #0f172a !important;
+  padding: 14px;
+  border-radius: 10px;
+  border-left: 4px solid #87D000;
 }
 
 /* Actions */
 .crop-card-actions {
   display: flex;
-  gap: 10px;
+  gap: 0;
   margin-top: auto;
-  padding-top: 15px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 2px solid #334155;
 }
 
 .btn-crop {
   flex: 1;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
+  padding: 16px 18px;
+  border: none !important;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
-  color: white;
-  box-shadow: 0 3px 10px rgba(135, 208, 0, 0.3);
+  background-color: #166534 !important;
+  color: #ffffff !important;
+  border-right: 1px solid #334155 !important;
 }
 
 .btn-edit:hover {
-  background: linear-gradient(135deg, #76b800 0%, #669900 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(135, 208, 0, 0.4);
+  background-color: #87D000 !important;
+  color: #0f172a !important;
 }
 
 .btn-delete {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-  color: white;
-  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+  background-color: #991b1b !important;
+  color: #ffffff !important;
 }
 
 .btn-delete:hover {
-  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
 }
 
 .btn-crop:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-  .crop-card {
-    padding: 15px;
-  }
-
   .crop-card-header {
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+    padding: 18px;
   }
 
   .crop-nombre {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+  }
+
+  .crop-card-body {
+    padding: 15px 18px;
+  }
+
+  .crop-estado-badge {
+    margin: 15px 18px 0 18px;
   }
 
   .crop-card-actions {
@@ -182,6 +199,11 @@
   }
 
   .btn-crop {
-    padding: 12px;
+    padding: 16px;
+    border-right: none !important;
+  }
+
+  .btn-edit {
+    border-bottom: 1px solid #334155 !important;
   }
 }
