@@ -9,7 +9,7 @@ const NavigationButtons = () => {
     {
       id: 'cosechas',
       label: 'Cosechas',
-      path: '/crop',
+      path: '/crops',
       icon: '🌱',
       color: 'green'
     },

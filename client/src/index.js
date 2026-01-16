@@ -32,7 +32,7 @@ root.render(
 				<Route path="/login" element={ <LoginPage/>} />
 				<Route path="/register/register-admin" element={ <RegisterPage/>} />
 				<Route path="/main" element={ <ProtectedRoute> <MainPage /> </ProtectedRoute>} />
-				<Route path="/crop" element={ <ProtectedRoute> <CropPage /> </ProtectedRoute>} />
+				<Route path="/crops" element={ <ProtectedRoute> <CropPage /> </ProtectedRoute>} />
 				<Route path="/measurement" element={ <ProtectedRoute> <MeasurementPage /> </ProtectedRoute>} />
 				<Route path="/task" element={ <ProtectedRoute> <TaskPage /> </ProtectedRoute>} />
 				<Route path="/worker" element={ <ProtectedRoute> <WorkerPage /> </ProtectedRoute>} />
