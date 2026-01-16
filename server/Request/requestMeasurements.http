@@ -1,0 +1,43 @@
+###
+# POST - Crear nueva medicion
+POST http://localhost:4000/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "ID_DEL_CULTIVO",
+  "usuario_id": "ID_DEL_USUARIO",
+  "tipo_medicion": "temperatura",
+  "valor": 25.5,
+  "unidad": "celsius",
+  "fecha_medicion": "2024-03-15T10:30:00",
+  "observaciones": "Medicion tomada en la manana",
+  "imagen_url": null
+}
+
+###
+# GET - Obtener mediciones de un usuario
+GET http://localhost:4000/api/measurements/user/ID_DEL_USUARIO
+
+###
+# GET - Obtener mediciones de un cultivo
+GET http://localhost:4000/api/measurements/crop/ID_DEL_CULTIVO
+
+###
+# GET - Obtener una medicion por ID
+GET http://localhost:4000/api/measurements/ID_DE_LA_MEDICION
+
+###
+# PUT - Actualizar medicion
+PUT http://localhost:4000/api/measurements/ID_DE_LA_MEDICION
+Content-Type: application/json
+
+{
+  "tipo_medicion": "humedad",
+  "valor": 65.0,
+  "unidad": "porcentaje",
+  "observaciones": "Medicion actualizada"
+}
+
+###
+# DELETE - Eliminar medicion
+DELETE http://localhost:4000/api/measurements/ID_DE_LA_MEDICION
