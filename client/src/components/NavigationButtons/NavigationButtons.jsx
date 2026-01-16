@@ -16,7 +16,7 @@ const NavigationButtons = () => {
     {
       id: 'mediciones',
       label: 'Mediciones',
-      path: '/measurement',
+      path: '/measurements',
       icon: '📊',
       color: 'blue'
     },
