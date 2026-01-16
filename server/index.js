@@ -6,6 +6,7 @@ import dbConnection from './config/dbConfig.js';
 import registerRoutes from './routes/registerRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
 import cropRoutes from './routes/cropRoutes.js';
+import measurementRoutes from './routes/measurementRoutes.js';
 
 const app = express();
 
@@ -38,6 +39,10 @@ console.log('🚀 Rutas de login registradas en /api/auth');
 // Rutas de crops
 app.use('/api/crops', cropRoutes);
 console.log('🚀 Rutas de crops registradas en /api/crops');
+
+// Rutas de measurements
+app.use('/api/measurements', measurementRoutes);
+console.log('🚀 Rutas de measurements registradas en /api/measurements');
 
 const PORT = process.env.PORT || 4000;
 
