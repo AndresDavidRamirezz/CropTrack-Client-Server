@@ -1,0 +1,61 @@
+###
+# POST - Crear nueva tarea
+POST http://localhost:4000/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "Finca El Sol",
+  "cultivo_id": "ID_DEL_CULTIVO",
+  "creado_por": "ID_DEL_USUARIO",
+  "asignado_a": "ID_DEL_TRABAJADOR",
+  "titulo": "Riego de parcela norte",
+  "descripcion": "Realizar riego completo de la parcela norte, sector A",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2024-03-15",
+  "fecha_limite": "2024-03-20",
+  "observaciones": "Verificar humedad antes de regar",
+  "imagen_url": null
+}
+
+###
+# GET - Obtener tareas creadas por un usuario
+GET http://localhost:4000/api/tasks/user/ID_DEL_USUARIO
+
+###
+# GET - Obtener tareas asignadas a un usuario
+GET http://localhost:4000/api/tasks/assigned/ID_DEL_TRABAJADOR
+
+###
+# GET - Obtener tareas de un cultivo
+GET http://localhost:4000/api/tasks/crop/ID_DEL_CULTIVO
+
+###
+# GET - Obtener una tarea por ID
+GET http://localhost:4000/api/tasks/ID_DE_LA_TAREA
+
+###
+# PUT - Actualizar tarea
+PUT http://localhost:4000/api/tasks/ID_DE_LA_TAREA
+Content-Type: application/json
+
+{
+  "titulo": "Riego de parcela norte - Actualizado",
+  "estado": "en_proceso",
+  "prioridad": "urgente",
+  "observaciones": "Tarea en progreso"
+}
+
+###
+# PUT - Marcar tarea como completada
+PUT http://localhost:4000/api/tasks/ID_DE_LA_TAREA
+Content-Type: application/json
+
+{
+  "estado": "completada",
+  "observaciones": "Tarea finalizada correctamente"
+}
+
+###
+# DELETE - Eliminar tarea
+DELETE http://localhost:4000/api/tasks/ID_DE_LA_TAREA

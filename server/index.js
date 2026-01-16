@@ -7,6 +7,7 @@ import registerRoutes from './routes/registerRoutes.js';
 import loginRoutes from './routes/loginRoutes.js';
 import cropRoutes from './routes/cropRoutes.js';
 import measurementRoutes from './routes/measurementRoutes.js';
+import taskRoutes from './routes/taskRoutes.js';
 
 const app = express();
 
@@ -43,6 +44,10 @@ console.log('🚀 Rutas de crops registradas en /api/crops');
 // Rutas de measurements
 app.use('/api/measurements', measurementRoutes);
 console.log('🚀 Rutas de measurements registradas en /api/measurements');
+
+// Rutas de tasks
+app.use('/api/tasks', taskRoutes);
+console.log('🚀 Rutas de tasks registradas en /api/tasks');
 
 const PORT = process.env.PORT || 4000;
 
