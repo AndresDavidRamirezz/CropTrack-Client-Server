@@ -23,7 +23,7 @@ const NavigationButtons = () => {
     {
       id: 'tareas',
       label: 'Tareas',
-      path: '/task',
+      path: '/tasks',
       icon: '✅',
       color: 'orange'
     },
