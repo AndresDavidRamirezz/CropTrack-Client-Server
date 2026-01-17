@@ -33,8 +33,8 @@ root.render(
 				<Route path="/register/register-admin" element={ <RegisterPage/>} />
 				<Route path="/main" element={ <ProtectedRoute> <MainPage /> </ProtectedRoute>} />
 				<Route path="/crops" element={ <ProtectedRoute> <CropPage /> </ProtectedRoute>} />
-				<Route path="/measurement" element={ <ProtectedRoute> <MeasurementPage /> </ProtectedRoute>} />
-				<Route path="/task" element={ <ProtectedRoute> <TaskPage /> </ProtectedRoute>} />
+				<Route path="/measurements" element={ <ProtectedRoute> <MeasurementPage /> </ProtectedRoute>} />
+				<Route path="/tasks" element={ <ProtectedRoute> <TaskPage /> </ProtectedRoute>} />
 				<Route path="/worker" element={ <ProtectedRoute> <WorkerPage /> </ProtectedRoute>} />
 				<Route path="/profile" element={ <ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
 				<Route path="/extras" element={ <ProtectedRoute> <ExtrasPage /> </ProtectedRoute>} />
