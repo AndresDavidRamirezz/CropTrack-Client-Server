@@ -1,0 +1,74 @@
+###
+# POST - Crear nuevo trabajador
+POST http://localhost:4000/api/users
+Content-Type: application/json
+
+{
+  "usuario": "trabajador1",
+  "contrasena": "123456",
+  "nombre": "Juan",
+  "apellido": "Perez",
+  "email": "juan.perez@ejemplo.com",
+  "empresa": "Finca El Sol",
+  "telefono": "123456789",
+  "rol": "trabajador"
+}
+
+###
+# POST - Crear nuevo supervisor
+POST http://localhost:4000/api/users
+Content-Type: application/json
+
+{
+  "usuario": "supervisor1",
+  "contrasena": "123456",
+  "nombre": "Maria",
+  "apellido": "Garcia",
+  "email": "maria.garcia@ejemplo.com",
+  "empresa": "Finca El Sol",
+  "telefono": "987654321",
+  "rol": "supervisor"
+}
+
+###
+# GET - Listar workers de una empresa
+GET http://localhost:4000/api/users/empresa/Finca%20El%20Sol
+
+###
+# GET - Obtener un usuario por ID
+GET http://localhost:4000/api/users/ID_DEL_USUARIO
+
+###
+# PUT - Actualizar datos de usuario (nombre, apellido, email, telefono)
+PUT http://localhost:4000/api/users/ID_DEL_USUARIO
+Content-Type: application/json
+
+{
+  "nombre": "Juan Carlos",
+  "apellido": "Perez Lopez",
+  "email": "juancarlos.perez@ejemplo.com",
+  "telefono": "111222333"
+}
+
+###
+# PUT - Actualizar solo telefono
+PUT http://localhost:4000/api/users/ID_DEL_USUARIO
+Content-Type: application/json
+
+{
+  "telefono": "999888777"
+}
+
+###
+# PUT - Cambiar contrasena
+PUT http://localhost:4000/api/users/ID_DEL_USUARIO
+Content-Type: application/json
+
+{
+  "contrasena": "nuevaContrasena123"
+}
+
+###
+# DELETE - Eliminar un worker
+DELETE http://localhost:4000/api/users/ID_DEL_USUARIO
+
