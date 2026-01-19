@@ -35,7 +35,7 @@ root.render(
 				<Route path="/crops" element={ <ProtectedRoute> <CropPage /> </ProtectedRoute>} />
 				<Route path="/measurements" element={ <ProtectedRoute> <MeasurementPage /> </ProtectedRoute>} />
 				<Route path="/tasks" element={ <ProtectedRoute> <TaskPage /> </ProtectedRoute>} />
-				<Route path="/worker" element={ <ProtectedRoute> <WorkerPage /> </ProtectedRoute>} />
+				<Route path="/users" element={ <ProtectedRoute> <WorkerPage /> </ProtectedRoute>} />
 				<Route path="/profile" element={ <ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
 				<Route path="/extras" element={ <ProtectedRoute> <ExtrasPage /> </ProtectedRoute>} />
 			</Routes>
