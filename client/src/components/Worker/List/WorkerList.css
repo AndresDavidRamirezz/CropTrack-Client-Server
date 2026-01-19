@@ -1,0 +1,132 @@
+/* components/Worker/List/WorkerList.css */
+
+.worker-list {
+  width: 100%;
+}
+
+/* Header de la lista */
+.worker-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.worker-list-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.worker-count {
+  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(135, 208, 0, 0.3);
+}
+
+/* Grid de cards */
+.worker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+/* Estado de carga */
+.worker-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #87D000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.worker-list-loading p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Estado vacio */
+.worker-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: #f7fafc;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+
+.worker-list-empty h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+.worker-list-empty p {
+  margin: 0;
+  color: #718096;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .worker-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .worker-list-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .worker-list-header h2 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .worker-list-empty {
+    padding: 40px 15px;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+
+  .worker-list-empty h3 {
+    font-size: 1.1rem;
+  }
+}

@@ -99,6 +99,39 @@ class UserModel {
       }
     );
   }
+  
+  static findWorkerByUsername(conn, nombre_usuario, callback) {
+    console.log('🔍 [USER-MODEL] Buscando trabajador por username:', nombre_usuario);
+    conn.query(
+      'SELECT * FROM users WHERE nombre_usuario = ?',
+      [nombre_usuario],
+      (err, results) => {
+        if (err) {
+          console.error('❌ [USER-MODEL] Error en findWorkerByUsername:', err);
+        } else {
+          console.log(`✅ [USER-MODEL] Busqueda completada. Encontrados: ${results.length}`);
+        }
+        callback(err, results);
+      }
+    );
+  }
+
+  static findWorkerByEmail(conn, email, callback) {
+    console.log('🔍 [USER-MODEL] Buscando trabajador por email:', email);
+    conn.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email],
+      (err, results) => {
+        if (err) {
+          console.error('❌ [USER-MODEL] Error en findWorkerByEmail:', err);
+        } else {
+          console.log(`✅ [USER-MODEL] Busqueda completada. Encontrados: ${results.length}`);
+        }
+        callback(err, results);
+      }
+    );
+  }
+
 
   static findWorkerByEmpresa(conn, empresa, callback) {
     console.log('🔍 [USER-MODEL] Buscando usuarios de empresa:', empresa);

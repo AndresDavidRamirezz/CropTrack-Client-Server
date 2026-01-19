@@ -30,7 +30,7 @@ const NavigationButtons = () => {
     {
       id: 'trabajadores',
       label: 'Trabajadores',
-      path: '/worker',
+      path: '/users',
       icon: '👥',
       color: 'purple'
     },
