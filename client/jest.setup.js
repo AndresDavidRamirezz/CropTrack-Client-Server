@@ -1,5 +1,14 @@
 import '@testing-library/jest-dom';
 
+// ==================== POLYFILLS PARA REACT ROUTER V7 ====================
+
+// TextEncoder y TextDecoder para React Router v7
+const { TextEncoder, TextDecoder } = require('util');
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
+// ==================== MOCKS GLOBALES ====================
+
 // Mock de localStorage
 const localStorageMock = {
   getItem: jest.fn(),
@@ -48,7 +57,10 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
 };
 
+// Mock de fetch global
 global.fetch = jest.fn();
+
+// ==================== CONFIGURACIÓN ====================
 
 // Timeout para tests
 jest.setTimeout(10000);
