@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar - Tests Unitarios Snapshot debe coincidir con snapshot - usuario NO autenticado 1`] = `
+<nav
+  class="navbar"
+>
+  <div
+    class="navbar-left"
+  >
+    <img
+      alt="Logo CropTrack"
+      class="navbar-logo"
+      src="test-file-stub"
+      style="cursor: pointer;"
+      title="Ir al Inicio"
+    />
+  </div>
+  <div
+    class="navbar-center"
+  >
+    <h1
+      class="navbar-title"
+    >
+      CropTrack
+    </h1>
+  </div>
+  <div
+    class="navbar-right"
+  >
+    <div
+      class="auth-buttons-right"
+    >
+      <button
+        aria-label="Ir a iniciar sesión"
+        class="nav-login-btn"
+        title="Iniciar Sesión"
+      >
+        Iniciar Sesión
+      </button>
+      <button
+        aria-label="Ir a registrarse"
+        class="nav-register-btn"
+        title="Registrarse como nuevo usuario"
+      >
+        Registrarse
+      </button>
+    </div>
+  </div>
+</nav>
+`;
+
+exports[`NavBar - Tests Unitarios Snapshot debe coincidir con snapshot - usuario autenticado 1`] = `
+<nav
+  class="navbar"
+>
+  <div
+    class="navbar-left"
+  >
+    <img
+      alt="Logo CropTrack"
+      class="navbar-logo"
+      src="test-file-stub"
+      style="cursor: pointer;"
+      title="Ir al Dashboard"
+    />
+    <div
+      class="role-container"
+    >
+      <span
+        class="user-role-badge"
+        title="Rol actual: administrador"
+      >
+        administrador
+      </span>
+    </div>
+  </div>
+  <div
+    class="navbar-center"
+  >
+    <h1
+      class="navbar-title"
+    >
+      CropTrack
+    </h1>
+  </div>
+  <div
+    class="navbar-right"
+  >
+    <div
+      class="user-info"
+    >
+      <span
+        class="user-name"
+        title="Usuario: testuser"
+      >
+        testuser
+      </span>
+      <button
+        aria-label="Cerrar sesión"
+        class="logout-btn"
+        title="Cerrar sesión y volver al inicio"
+      >
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+</nav>
+`;
