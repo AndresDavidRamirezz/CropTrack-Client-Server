@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer - Tests Unitarios Snapshot debe coincidir con el snapshot 1`] = `
+<footer
+  class="footer"
+>
+  <div
+    class="footer-content"
+  >
+    <p
+      class="footer-text"
+    >
+      Universidad del Norte Santo Tomás de Aquino
+    </p>
+    <p
+      class="footer-copyright"
+    >
+      © 
+      2024
+       Andrés David Ramírez - Todos los derechos reservados
+    </p>
+  </div>
+</footer>
+`;
