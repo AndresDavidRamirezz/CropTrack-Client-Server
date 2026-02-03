@@ -9,7 +9,7 @@ jest.mock('../../../models/userModel.js');
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 
-describe('LoginController - login', () => {
+describe('LoginController - Unit Tests', () => {
   let mockReq;
   let mockRes;
   let mockConn;
