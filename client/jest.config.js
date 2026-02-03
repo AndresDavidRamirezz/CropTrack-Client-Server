@@ -1,57 +1,39 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  
-  roots: ['<rootDir>/src', '<rootDir>/tests'],
-  
+  setupFilesAfterEnv: ['<rootDir>/tests/setup/setupTests.js'],
   moduleNameMapper: {
-    // IMPORTANTE: usar identity-obj-proxy es mejor que styleMock.js
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-    '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
+    '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/tests/__mocks__/fileMock.js'
   },
-  
   transform: {
-    '^.+\\.(js|jsx)$': ['babel-jest', { 
-      configFile: './.babelrc' 
-    }],
+    '^.+\\.(js|jsx)$': 'babel-jest'
   },
   
-  testMatch: [
-    '<rootDir>/tests/**/*.test.js',
-    '<rootDir>/tests/**/*.test.jsx',
-  ],
-  
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/build/',
-    '/dist/',
-  ],
-  
+  // ✅ CONFIGURACIÓN DE COBERTURA
+  collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!src/index.js',
+    '!src/reportWebVitals.js',
     '!src/**/*.test.{js,jsx}',
+    '!src/setupTests.js'
   ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
   
+  // ✅ UMBRALES DE COBERTURA (opcional - puedes ajustarlos)
   coverageThreshold: {
     global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70,
-    },
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
   },
   
-  coverageDirectory: '<rootDir>/coverage',
-  
-  moduleDirectories: ['node_modules', 'src'],
-  
-  moduleFileExtensions: ['js', 'jsx', 'json'],
-  
-  verbose: true,
-  
-  transformIgnorePatterns: [
-    'node_modules/(?!(axios)/)',
+  testMatch: [
+    '<rootDir>/tests/**/*.test.{js,jsx}',
+    '<rootDir>/src/**/*.test.{js,jsx}'
   ],
+  verbose: true
 };

@@ -3,7 +3,22 @@
     ["@babel/preset-env", {
       "targets": {
         "node": "current"
-      }
+      },
+      "modules": "auto"
     }]
-  ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        ["@babel/preset-env", {
+          "targets": {
+            "node": "current"
+          }
+        }]
+      ]
+    }
+  }
 }
