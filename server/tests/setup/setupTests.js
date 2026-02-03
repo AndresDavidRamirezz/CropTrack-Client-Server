@@ -19,7 +19,8 @@ global.console = {
   debug: jest.fn(),    // Silenciar debug
   info: jest.fn(),     // Silenciar info
   warn: jest.fn(),     // Silenciar warn
-  error: originalConsole.error, // Mantener error para debugging
+  error: jest.fn(),    // Silenciar error
+
 };
 
 // Variables de entorno para testing
