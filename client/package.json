@@ -14,9 +14,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "test": "jest",
+    "test": "jest --silent",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --verbose",
     "test:verbose": "jest --verbose",
     "test:unit": "jest --testPathPattern=tests/unit",
     "test:unit:components": "jest --testPathPattern=tests/unit/components",
@@ -25,7 +25,7 @@
     "test:integration": "jest --testPathPattern=tests/integration",
     "test:e2e": "jest --testPathPattern=tests/e2e --runInBand",
     "test:all": "jest && jest --testPathPattern=integration && jest --testPathPattern=e2e --runInBand",
-    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "test:ci": "jest --ci --coverage --maxWorkers=2 --silent",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "eslintConfig": {
