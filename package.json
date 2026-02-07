@@ -8,14 +8,13 @@
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
-    "test": "npm run test:server && npm run test:client",
-    "test:server": "cd server && npm test",
-    "test:client": "cd client && npm test -- --watchAll=false",
-    "test:parallel": "concurrently -n SERVER,CLIENT -c bgBlue,bgMagenta \"npm run test:server\" \"npm run test:client\"",
-    "test:watch": "concurrently \"cd server && npm test -- --watch\" \"cd client && npm test\"",
-    "test:coverage": "npm run test:server && npm run test:client",
-    "test:server-only": "cd server && npm test",
-    "test:client-only": "cd client && npm test -- --watchAll=false"
+    "test:unit:client": "cd client && npm run test:unit:coverage",
+    "test:unit:server": "cd server && npm run test:unit:coverage",
+    "test:unit": "npm run test:unit:client && npm run test:unit:server",
+    "test:integration:client": "cd client && npm run test:integration:coverage",
+    "test:integration:server": "cd server && npm run test:integration:coverage",
+    "test:integration": "npm run test:integration:client && npm run test:integration:server",
+    "test:all": "npm run test:unit && npm run test:integration"
   },
   "keywords": [
     "agriculture",
