@@ -11,11 +11,11 @@
     "test:watch": "jest --watch",
     "test:unit": "jest --testPathPattern=tests/unit --verbose --passWithNoTests",
     "test:unit:coverage": "jest --testPathPattern=tests/unit --coverage --verbose --passWithNoTests",
-    "test:integration": "mocha 'tests/integration/**/*.test.js' --timeout 10000 --exit",
-    "test:integration:coverage": "nyc --reporter=text --reporter=lcov mocha 'tests/integration/**/*.test.js' --timeout 10000 --exit",
-    "test:all": "jest --coverage --verbose --passWithNoTests && npm run test:integration",
-    "migrate": "node database/migrate.js",
-    "seed": "node database/seed.js"
+    "test:integration": "jest --testPathPattern=tests/integration --verbose --forceExit",
+    "test:integration:coverage": "jest --testPathPattern=tests/integration --coverage --verbose --forceExit",
+    "test:all": "jest --coverage --verbose --detectOpenHandles",
+    "db:create-test": "mysql -u root -p -e \"CREATE DATABASE IF NOT EXISTS croptrack_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\"",
+    "db:setup-test": "mysql -u root -p croptrack_test < database/schema.sql"
   },
   "keywords": [],
   "author": "Andres",
