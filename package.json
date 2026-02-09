@@ -14,7 +14,11 @@
     "test:integration:client": "cd client && npm run test:integration:coverage",
     "test:integration:server": "cd server && npm run test:integration:coverage",
     "test:integration": "npm run test:integration:client && npm run test:integration:server",
-    "test:all": "npm run test:unit && npm run test:integration"
+    "test:e2e": "cd client && npm run test:e2e",
+    "test:e2e:headed": "cd client && npm run test:e2e:headed",
+    "test:e2e:open": "cd client && npm run cypress:open",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:all:no-e2e": "npm run test:unit && npm run test:integration"
   },
   "keywords": [
     "agriculture",

@@ -25,5 +25,14 @@ module.exports = {
     '<rootDir>/tests/**/*.test.{js,jsx}',
     '<rootDir>/src/**/*.test.{js,jsx}'
   ],
+
+  // Ignorar archivos de Cypress y su configuración
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '<rootDir>/tests/e2e/',
+    '<rootDir>/tests/setup/cypress/',
+    '\\.cy\\.(js|jsx)$'
+  ],
+
   verbose: true
 };
