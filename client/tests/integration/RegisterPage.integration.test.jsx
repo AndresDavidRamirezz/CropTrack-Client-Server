@@ -129,40 +129,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
       expect(emailInput).toHaveValue('juan@test.com');
     });
 
-    test('El indicador de fortaleza de contraseña aparece al escribir', async () => {
-      const user = userEvent.setup();
-      renderRegisterPage();
-
-      const contrasenaInput = getInputById('contrasena');
-
-      // Inicialmente no debe haber indicador
-      expect(screen.queryByText(/Muy débil|Débil|Media|Buena|Excelente/i)).not.toBeInTheDocument();
-
-      // Escribir contraseña
-      await user.type(contrasenaInput, 'Pass123!');
-
-      // Ahora debe aparecer el indicador
-      await waitFor(() => {
-        expect(screen.getByText(/Muy débil|Débil|Media|Buena|Excelente/i)).toBeInTheDocument();
-      });
-    });
-
-    test('El indicador muestra mejor fortaleza con contraseña compleja', async () => {
-      const user = userEvent.setup();
-      renderRegisterPage();
-
-      const contrasenaInput = getInputById('contrasena');
-
-      // Contraseña compleja
-      await user.type(contrasenaInput, 'MiPassword123!@#');
-
-      await waitFor(() => {
-        // Debe mostrar Buena o Excelente
-        const strengthText = screen.getByText(/Buena|Excelente/i);
-        expect(strengthText).toBeInTheDocument();
-      });
-    });
-  });
+});
 
   // ==================== ENVÍO DEL FORMULARIO ====================
 

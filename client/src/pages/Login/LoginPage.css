@@ -79,6 +79,8 @@
   outline: none !important;
   box-shadow: none !important;
   color-scheme: normal !important;
+  transition: none !important;
+  -webkit-transition: none !important;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -89,15 +91,15 @@
 }
 
 /* Anular el fondo blanco/celeste que Chrome pone en autofill */
-.login-form .form-input:-webkit-autofill,
-.login-form .form-input:-webkit-autofill:hover,
-.login-form .form-input:-webkit-autofill:focus,
-.login-form .form-input:-webkit-autofill:active {
+.login-form .form-group input:-webkit-autofill,
+.login-form .form-group input:-webkit-autofill:hover,
+.login-form .form-group input:-webkit-autofill:focus,
+.login-form .form-group input:-webkit-autofill:active {
   -webkit-text-fill-color: white !important;
-  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-  box-shadow: 0 0 0px 1000px transparent inset !important;
-  background-color: transparent !important;
-  transition: background-color 5000s ease-in-out 0s;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  border-color: white !important;
+  transition: none !important;
 }
 
 .error-message {

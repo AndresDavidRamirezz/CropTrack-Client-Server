@@ -58,20 +58,6 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       expect(screen.getByRole('button', { name: /Volver al Login/i })).toBeInTheDocument();
     });
 
-    it('debe mostrar hints de ayuda en los campos', () => {
-      renderWithRouter(<RegisterPage />);
-      
-      expect(screen.getByText(/3-50 caracteres/i)).toBeInTheDocument();
-      expect(screen.getByText(/Mínimo 6 caracteres/i)).toBeInTheDocument();
-      expect(screen.getByText(/Debe coincidir con la contraseña/i)).toBeInTheDocument();
-    });
-
-    it('debe mostrar asterisco (*) en campos requeridos', () => {
-      const { container } = renderWithRouter(<RegisterPage />);
-      const requiredSpans = container.querySelectorAll('.required');
-      expect(requiredSpans.length).toBeGreaterThanOrEqual(7);
-    });
-
     it('los inputs deben estar vacíos inicialmente', () => {
       renderWithRouter(<RegisterPage />);
       
@@ -217,49 +203,6 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       await waitFor(() => {
         expect(screen.getByText(/solo puede contener números/i)).toBeInTheDocument();
       });
-    });
-  });
-
-  // ==================== INDICADOR DE FORTALEZA DE CONTRASEÑA ====================
-
-  describe('Indicador de fortaleza de contraseña', () => {
-    it('debe mostrar indicador cuando se escribe una contraseña', async () => {
-      renderWithRouter(<RegisterPage />);
-      
-      const input = screen.getByLabelText(/^Contraseña/);
-      fireEvent.change(input, { target: { value: 'password' } });
-
-      await waitFor(() => {
-        expect(screen.getByText(/Débil|Media|Buena|Excelente|Muy débil/i)).toBeInTheDocument();
-      });
-    });
-
-    it('debe mostrar "Muy débil" o "Débil" para contraseñas cortas', async () => {
-      renderWithRouter(<RegisterPage />);
-      
-      const input = screen.getByLabelText(/^Contraseña/);
-      fireEvent.change(input, { target: { value: '123456' } });
-
-      await waitFor(() => {
-        expect(screen.getByText(/Muy débil|Débil/i)).toBeInTheDocument();
-      });
-    });
-
-    it('debe mostrar mejor fortaleza con contraseña compleja', async () => {
-      renderWithRouter(<RegisterPage />);
-      
-      const input = screen.getByLabelText(/^Contraseña/);
-      fireEvent.change(input, { target: { value: 'MyP@ssw0rd123!' } });
-
-      await waitFor(() => {
-        expect(screen.getByText(/Buena|Excelente/i)).toBeInTheDocument();
-      });
-    });
-
-    it('no debe mostrar indicador con contraseña vacía', () => {
-      renderWithRouter(<RegisterPage />);
-      
-      expect(screen.queryByText(/Muy débil|Débil|Media|Buena|Excelente/i)).not.toBeInTheDocument();
     });
   });
 
@@ -651,106 +594,6 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
           expect(usuarioInput).toHaveValue('');
           expect(passwordInput).toHaveValue('');
           expect(emailInput).toHaveValue('');
-        });
-      });
-    });
-
-    // ==================== LÍNEAS 251-252: Barra de Fortaleza de Contraseña ====================
-    
-    describe('Barra de fortaleza de contraseña - Estilos y colores', () => {
-      it('debe aplicar ancho y color correcto para contraseña muy débil', async () => {
-        const { container } = renderWithRouter(<RegisterPage />);
-        
-        const passwordInput = screen.getByLabelText(/^Contraseña/);
-        fireEvent.change(passwordInput, { target: { value: '123456' } });
-
-        await waitFor(() => {
-          const strengthBar = container.querySelector('.strength-bar');
-          expect(strengthBar).toBeInTheDocument();
-          
-          // Verificar que tiene estilos (no importa el valor exacto, solo que existan)
-          const styles = window.getComputedStyle(strengthBar);
-          expect(strengthBar.style.width).toBeTruthy();
-          expect(strengthBar.style.backgroundColor).toBeTruthy();
-        });
-      });
-
-      it('debe calcular ancho correcto basado en strength level', async () => {
-        const { container } = renderWithRouter(<RegisterPage />);
-        
-        const passwordInput = screen.getByLabelText(/^Contraseña/);
-        
-        // Contraseña débil (strength = 1-2)
-        fireEvent.change(passwordInput, { target: { value: 'pass12' } });
-
-        await waitFor(() => {
-          const strengthBar = container.querySelector('.strength-bar');
-          const width = strengthBar.style.width;
-          
-          // El ancho debe ser un porcentaje entre 0-100%
-          expect(width).toMatch(/^\d+(\.\d+)?%$/);
-          
-          // Para strength bajo, debe ser <= 40%
-          const widthValue = parseFloat(width);
-          expect(widthValue).toBeLessThanOrEqual(40);
-        });
-      });
-
-      it('debe mostrar color correcto para cada nivel de fortaleza', async () => {
-        renderWithRouter(<RegisterPage />);
-        
-        const passwordInput = screen.getByLabelText(/^Contraseña/);
-        
-        // Contraseña fuerte
-        fireEvent.change(passwordInput, { target: { value: 'MyP@ssw0rd123!' } });
-
-        await waitFor(() => {
-          const strengthText = screen.getByText(/Buena|Excelente/i);
-          
-          // Verificar que el elemento existe con estilo
-          expect(strengthText.style.color).toBeTruthy();
-        });
-      });
-
-      it('debe actualizar la barra al cambiar la contraseña', async () => {
-        const { container } = renderWithRouter(<RegisterPage />);
-        
-        const passwordInput = screen.getByLabelText(/^Contraseña/);
-        
-        // Contraseña débil
-        fireEvent.change(passwordInput, { target: { value: '123456' } });
-        
-        await waitFor(() => {
-          expect(screen.getByText(/Muy débil|Débil/i)).toBeInTheDocument();
-        });
-
-        // Cambiar a contraseña fuerte
-        fireEvent.change(passwordInput, { target: { value: 'StrongP@ss123!' } });
-
-        await waitFor(() => {
-          expect(screen.getByText(/Buena|Excelente/i)).toBeInTheDocument();
-        });
-      });
-
-      it('no debe renderizar .strength-bar cuando contraseña está vacía', () => {
-        const { container } = renderWithRouter(<RegisterPage />);
-        
-        const strengthBar = container.querySelector('.strength-bar');
-        expect(strengthBar).not.toBeInTheDocument();
-      });
-
-      it('debe mostrar .password-strength solo cuando hay contraseña', async () => {
-        const { container } = renderWithRouter(<RegisterPage />);
-        
-        // Sin contraseña
-        expect(container.querySelector('.password-strength')).not.toBeInTheDocument();
-        
-        // Con contraseña
-        const passwordInput = screen.getByLabelText(/^Contraseña/);
-        fireEvent.change(passwordInput, { target: { value: 'test123' } });
-
-        await waitFor(() => {
-          expect(container.querySelector('.password-strength')).toBeInTheDocument();
         });
       });
     });

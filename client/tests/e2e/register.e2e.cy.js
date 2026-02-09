@@ -70,18 +70,7 @@ describe('Flujo E2E de Registro de Administrador', () => {
       cy.contains('button', 'Volver al Login').should('be.visible');
     });
 
-    it('debería mostrar labels con asterisco para campos requeridos', () => {
-      cy.get('label[for="usuario"]').should('contain', '*');
-      cy.get('label[for="contrasena"]').should('contain', '*');
-      cy.get('label[for="nombre"]').should('contain', '*');
-      cy.get('label[for="apellido"]').should('contain', '*');
-      cy.get('label[for="email"]').should('contain', '*');
-      cy.get('label[for="nombre_empresa"]').should('contain', '*');
-
-      // Teléfono no es requerido
-      cy.get('label[for="telefono"]').should('not.contain', '*');
-    });
-  });
+});
 
   // ============================================
   // TESTS DE VALIDACIÓN EN CLIENTE
@@ -115,25 +104,7 @@ describe('Flujo E2E de Registro de Administrador', () => {
       cy.get('.error-text').should('contain', 'Debe ser un email válido');
     });
 
-    it('debería mostrar indicador de fortaleza de contraseña', () => {
-      // Contraseña débil - escribir y verificar que aparece el indicador
-      cy.get('#contrasena').type('123456');
-
-      // El indicador de fortaleza debería aparecer
-      cy.get('.password-strength').should('be.visible');
-
-      // Verificar que hay una barra de fortaleza
-      cy.get('.strength-bar').should('be.visible');
-
-      // Verificar que hay un texto de nivel (puede ser cualquier nivel)
-      cy.get('.password-strength span').should('be.visible');
-
-      // Contraseña más fuerte
-      cy.get('#contrasena').clear().type('Test123456!');
-      cy.get('.password-strength').should('be.visible');
-      cy.get('.strength-bar').should('be.visible');
-    });
-  });
+});
 
   // ============================================
   // TESTS DE FLUJO COMPLETO (E2E REAL)

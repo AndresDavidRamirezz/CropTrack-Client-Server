@@ -263,35 +263,9 @@ const RegisterPage = () => {
     }
   };
 
-  // ============================================
-  // 9. INDICADOR DE FORTALEZA DE CONTRASEÑA
-  // ============================================
-  const getPasswordStrength = (password) => {
-    if (!password) return { strength: 0, label: '', color: '' };
-    
-    let strength = 0;
-    
-    if (password.length >= 6) strength++;
-    if (password.length >= 10) strength++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^a-zA-Z0-9]/.test(password)) strength++;
-
-    const levels = [
-      { strength: 1, label: 'Muy débil', color: '#ff4444' },
-      { strength: 2, label: 'Débil', color: '#ff8800' },
-      { strength: 3, label: 'Media', color: '#ffbb33' },
-      { strength: 4, label: 'Buena', color: '#87D000' },
-      { strength: 5, label: 'Excelente', color: '#00C851' }
-    ];
-
-    return levels[strength - 1] || levels[0];
-  };
-
-  const passwordStrength = getPasswordStrength(form.contrasena);
 
   // ============================================
-  // 10. RENDERIZADO
+  // 9. RENDERIZADO
   // ============================================
   return (
     <div className="registro-container">
@@ -300,195 +274,168 @@ const RegisterPage = () => {
         
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-columns">
-            {/* ========== COLUMNA 1 ========== */}
-            <div className="form-column">
-              
-              {/* Usuario */}
-              <div className="form-group">
-                <label htmlFor="usuario">
-                  Usuario <span className="required">*</span>
-                </label>
-                <p className="field-hint">3-50 caracteres. Solo letras, números y guion bajo</p>
-                <input 
-                  type="text" 
-                  id="usuario"
-                  name="usuario"  // ✅ Cambio
-                  value={form.usuario} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.usuario && touched.usuario ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
-                {errors.usuario && touched.usuario && (
-                  <span className="error-text">{errors.usuario}</span>
-                )}
-              </div>
-              
-              {/* Nombre */}
-              <div className="form-group">
-                <label htmlFor="nombre">
-                  Nombre <span className="required">*</span>
-                </label>
-                <p className="field-hint">2-100 caracteres. Solo letras y espacios</p>
-                <input 
-                  type="text" 
-                  id="nombre"
-                  name="nombre" 
-                  value={form.nombre} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.nombre && touched.nombre ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
+            {/* ========== Fila 1: Nombre | Apellido ========== */}
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="nombre">Nombre</label>
                 {errors.nombre && touched.nombre && (
                   <span className="error-text">{errors.nombre}</span>
                 )}
               </div>
-
-              {/* Email */}
-              <div className="form-group">
-                <label htmlFor="email">
-                  Email <span className="required">*</span>
-                </label>
-                <p className="field-hint">Debe ser un email válido (máx. 100 caracteres)</p>
-                <input 
-                  type="email" 
-                  id="email"
-                  name="email" 
-                  value={form.email} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.email && touched.email ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
-                {errors.email && touched.email && (
-                  <span className="error-text">{errors.email}</span>
-                )}
-              </div>
-
-              {/* Empresa */}
-              <div className="form-group">
-                <label htmlFor="nombre_empresa">
-                  Empresa <span className="required">*</span>
-                </label>
-                <p className="field-hint">2-100 caracteres</p>
-                <input 
-                  type="text" 
-                  id="nombre_empresa"
-                  name="nombre_empresa"  // ✅ Cambio
-                  value={form.nombre_empresa} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.nombre_empresa && touched.nombre_empresa ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
-                {errors.nombre_empresa && touched.nombre_empresa && (
-                  <span className="error-text">{errors.nombre_empresa}</span>
-                )}
-              </div>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                placeholder="Solo letras, min. 2"
+                value={form.nombre}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.nombre && touched.nombre ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
             </div>
 
-            {/* ========== COLUMNA 2 ========== */}
-            <div className="form-column">
-              
-              {/* Contraseña */}
-              <div className="form-group">
-                <label htmlFor="contrasena">
-                  Contraseña <span className="required">*</span>
-                </label>
-                <p className="field-hint">Mínimo 6 caracteres. Usa letras, números y símbolos</p>
-                <input 
-                  type="password" 
-                  id="contrasena"
-                  name="contrasena" 
-                  value={form.contrasena} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.contrasena && touched.contrasena ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
-                {errors.contrasena && touched.contrasena && (
-                  <span className="error-text">{errors.contrasena}</span>
-                )}
-                
-                {/* Indicador de fortaleza */}
-                {form.contrasena && (
-                  <div className="password-strength">
-                    <div 
-                      className="strength-bar" 
-                      style={{
-                        width: `${(passwordStrength.strength / 5) * 100}%`,
-                        backgroundColor: passwordStrength.color
-                      }}
-                    />
-                    <span style={{ color: passwordStrength.color }}>
-                      {passwordStrength.label}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Confirmar Contraseña */}
-              <div className="form-group">
-                <label htmlFor="confirmar_contrasena">
-                  Confirmar Contraseña <span className="required">*</span>
-                </label>
-                <p className="field-hint">Debe coincidir con la contraseña</p>
-                <input 
-                  type="password" 
-                  id="confirmar_contrasena"
-                  name="confirmar_contrasena" 
-                  value={form.confirmar_contrasena} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.confirmar_contrasena && touched.confirmar_contrasena ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
-                {errors.confirmar_contrasena && touched.confirmar_contrasena && (
-                  <span className="error-text">{errors.confirmar_contrasena}</span>
-                )}
-              </div>
-              
-              {/* Apellido */}
-              <div className="form-group">
-                <label htmlFor="apellido">
-                  Apellido <span className="required">*</span>
-                </label>
-                <p className="field-hint">2-100 caracteres. Solo letras y espacios</p>
-                <input 
-                  type="text" 
-                  id="apellido"
-                  name="apellido" 
-                  value={form.apellido} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.apellido && touched.apellido ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="apellido">Apellido</label>
                 {errors.apellido && touched.apellido && (
                   <span className="error-text">{errors.apellido}</span>
                 )}
               </div>
-              
-              {/* Teléfono */}
-              <div className="form-group">
+              <input
+                type="text"
+                id="apellido"
+                name="apellido"
+                placeholder="Solo letras, min. 2"
+                value={form.apellido}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.apellido && touched.apellido ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* ========== Fila 2: Usuario | Email ========== */}
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="usuario">Usuario</label>
+                {errors.usuario && touched.usuario && (
+                  <span className="error-text">{errors.usuario}</span>
+                )}
+              </div>
+              <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                placeholder="Letras, numeros y guion bajo"
+                value={form.usuario}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.usuario && touched.usuario ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="email">Email</label>
+                {errors.email && touched.email && (
+                  <span className="error-text">{errors.email}</span>
+                )}
+              </div>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="ejemplo@correo.com"
+                value={form.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.email && touched.email ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* ========== Fila 3: Contraseña | Confirmar Contraseña ========== */}
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="contrasena">Contraseña</label>
+                {errors.contrasena && touched.contrasena && (
+                  <span className="error-text">{errors.contrasena}</span>
+                )}
+              </div>
+              <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                placeholder="Min. 6 caracteres"
+                value={form.contrasena}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.contrasena && touched.contrasena ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="confirmar_contrasena">Confirmar Contraseña</label>
+                {errors.confirmar_contrasena && touched.confirmar_contrasena && (
+                  <span className="error-text">{errors.confirmar_contrasena}</span>
+                )}
+              </div>
+              <input
+                type="password"
+                id="confirmar_contrasena"
+                name="confirmar_contrasena"
+                placeholder="Repeti la contraseña"
+                value={form.confirmar_contrasena}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.confirmar_contrasena && touched.confirmar_contrasena ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {/* ========== Fila 4: Empresa | Teléfono ========== */}
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="nombre_empresa">Empresa</label>
+                {errors.nombre_empresa && touched.nombre_empresa && (
+                  <span className="error-text">{errors.nombre_empresa}</span>
+                )}
+              </div>
+              <input
+                type="text"
+                id="nombre_empresa"
+                name="nombre_empresa"
+                placeholder="Nombre de la empresa"
+                value={form.nombre_empresa}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.nombre_empresa && touched.nombre_empresa ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className="form-group">
+              <div className="label-row">
                 <label htmlFor="telefono">Teléfono</label>
-                <p className="field-hint">Opcional. Máximo 20 caracteres</p>
-                <input 
-                  type="tel" 
-                  id="telefono"
-                  name="telefono" 
-                  value={form.telefono} 
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="+54 381 123-4567"
-                  className={errors.telefono && touched.telefono ? 'input-error' : ''}
-                  disabled={isSubmitting}
-                />
                 {errors.telefono && touched.telefono && (
                   <span className="error-text">{errors.telefono}</span>
                 )}
               </div>
+              <input
+                type="tel"
+                id="telefono"
+                name="telefono"
+                placeholder="+54 381 123-4567 (opcional)"
+                value={form.telefono}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.telefono && touched.telefono ? 'input-error' : ''}
+                disabled={isSubmitting}
+              />
             </div>
           </div>
 
