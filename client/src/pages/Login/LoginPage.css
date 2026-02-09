@@ -1,6 +1,6 @@
 /* pages/LoginPage.css */
 .login-container {
-  min-height: 100vh;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +29,7 @@
 .login-form {
   position: relative;
   z-index: 2;
-  max-width: 400px;
+  max-width: 480px;
   width: 100%;
   padding: 30px;
   background: rgba(255, 255, 255, 0.15); /* Más transparente */
@@ -57,32 +57,47 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.form-input {
+.login-form .form-input,
+.login-form .form-input:hover,
+.login-form .form-input:focus,
+.login-form .form-input:active,
+.login-form .form-input:focus-visible,
+.login-form .form-input:focus-within,
+.login-form .form-input:hover:not(:focus):not(:disabled),
+.login-form .form-input[type="text"],
+.login-form .form-input[type="password"] {
   width: 100%;
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Borde más sutil */
-  border-radius: 8px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.15); /* Fondo transparente */
-  backdrop-filter: blur(10px);
-  color: white; /* Texto blanco */
+  padding: 12px !important;
+  border: 1px solid white !important;
+  border-color: white !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: normal !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  color: white !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color-scheme: normal !important;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.form-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+.login-form .form-input::placeholder {
+  color: white !important;
+  font-style: normal !important;
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
-}
-
-.form-input:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.2);
+/* Anular el fondo blanco/celeste que Chrome pone en autofill */
+.login-form .form-input:-webkit-autofill,
+.login-form .form-input:-webkit-autofill:hover,
+.login-form .form-input:-webkit-autofill:focus,
+.login-form .form-input:-webkit-autofill:active {
+  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  background-color: transparent !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .error-message {

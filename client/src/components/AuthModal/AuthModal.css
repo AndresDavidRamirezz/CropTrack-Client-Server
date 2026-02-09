@@ -3,11 +3,14 @@
 .auth-modal-nav {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 24px;
 }
 
 .role-button {
-  margin-right: 8px;
+  flex: 1;
+  text-align: center;
   padding: 8px 24px;
   border-radius: 6px;
   cursor: pointer;
@@ -28,7 +31,14 @@
   border: 1px solid #87D000;
 }
 
-/* Quitar margen del último botón */
-.role-button:last-child {
-  margin-right: 0;
+/* Responsive: botones en columna en móvil */
+@media (max-width: 480px) {
+  .auth-modal-nav {
+    flex-direction: column;
+  }
+
+  .role-button {
+    width: 100%;
+    text-align: center;
+  }
 }

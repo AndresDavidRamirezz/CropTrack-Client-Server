@@ -29,6 +29,8 @@ html, body {
 /* NUEVO: El contenido principal debe crecer para ocupar el espacio disponible */
 main {
   flex: 1; /* Esto hace que ocupe todo el espacio sobrante */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Resto de tu CSS sin cambios... */
@@ -58,6 +60,8 @@ input, textarea, select {
   font-family: inherit;
   border: none;
   outline: none;
+  background: transparent;
+  color: inherit;
 }
 
 /* ===== CLASES UTILITARIAS ===== */
