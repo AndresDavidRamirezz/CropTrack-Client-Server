@@ -25,10 +25,16 @@
     "test:unit:utils": "jest --testPathPattern=tests/unit/utils",
     "test:integration": "jest --testPathPattern=tests/integration --verbose",
     "test:integration:coverage": "jest --testPathPattern=tests/integration --coverage --verbose",
-    "test:e2e": "jest --testPathPattern=tests/e2e --runInBand",
     "test:all": "jest --coverage --verbose",
     "test:ci": "jest --ci --coverage --maxWorkers=2 --silent",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "cypress:open": "cypress open --config-file tests/cypress.config.js",
+    "cypress:run": "cypress run --config-file tests/cypress.config.js",
+    "cypress:run:headed": "cypress run --config-file tests/cypress.config.js --headed",
+    "test:e2e": "cypress run --config-file tests/cypress.config.js",
+    "test:e2e:headed": "cypress run --config-file tests/cypress.config.js --headed",
+    "test:e2e:chrome": "cypress run --config-file tests/cypress.config.js --browser chrome",
+    "test:e2e:firefox": "cypress run --config-file tests/cypress.config.js --browser firefox"
   },
   "eslintConfig": {
     "extends": [
