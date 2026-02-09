@@ -15,6 +15,7 @@ docs/
 .env.production.local
 server/.env
 server/.env.local
+server/.env.test
 client/.env.local
 
 # Build outputs
