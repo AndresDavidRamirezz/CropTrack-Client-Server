@@ -276,50 +276,63 @@ const ProfilePage = () => {
         </div>
       )}
 
-      <div className="profile-content">
-        {/* Seccion de informacion del perfil */}
-        <div className="profile-info-card">
+      {/* Card horizontal de informacion del usuario */}
+      <div className="profile-info-card">
+        <div className="profile-card-left">
           <div className="profile-avatar">
             <span className="avatar-icon">👤</span>
           </div>
-          <div className="profile-identity">
-            <h2 className="profile-name">{userData.nombre} {userData.apellido}</h2>
-            <span className="profile-username">@{userData.usuario || userData.nombre_usuario}</span>
-          </div>
-          <div className="profile-badges">
-            <span
-              className="profile-rol-badge"
-              style={{ backgroundColor: ROL_COLORS[userData.rol] || '#6c757d' }}
-            >
-              {ROL_LABELS[userData.rol] || userData.rol}
-            </span>
-          </div>
-          <div className="profile-meta">
-            <div className="meta-item">
-              <span className="meta-label">Empresa:</span>
-              <span className="meta-value">{userData.empresa}</span>
+          <span
+            className="profile-rol-badge"
+            style={{ backgroundColor: ROL_COLORS[userData.rol] || '#6c757d' }}
+          >
+            {ROL_LABELS[userData.rol] || userData.rol}
+          </span>
+          <span className="profile-username">@{userData.usuario || userData.nombre_usuario}</span>
+        </div>
+        <div className="profile-card-right">
+          <div className="profile-details-grid">
+            <div className="detail-item">
+              <span className="detail-label">Nombre</span>
+              <span className="detail-value">{userData.nombre}</span>
             </div>
-            <div className="meta-item">
-              <span className="meta-label">Ultimo acceso:</span>
-              <span className="meta-value">{formatDate(userData.ultimo_acceso)}</span>
+            <div className="detail-item">
+              <span className="detail-label">Apellido</span>
+              <span className="detail-value">{userData.apellido}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Email</span>
+              <span className="detail-value">{userData.email}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Telefono</span>
+              <span className="detail-value">{userData.telefono || 'No registrado'}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Empresa</span>
+              <span className="detail-value">{userData.empresa}</span>
+            </div>
+            <div className="detail-item">
+              <span className="detail-label">Ultimo acceso</span>
+              <span className="detail-value">{formatDate(userData.ultimo_acceso)}</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Formulario de edicion */}
-        <div className={`profile-form-container ${isEditing ? 'editing' : 'viewing'}`}>
+      {/* Formulario de edicion - solo visible al hacer click en Editar Perfil */}
+      {isEditing && (
+        <div className="profile-form-container editing">
           <div className="profile-form-header">
-            <h3>{isEditing ? 'Editar Informacion' : 'Informacion de Contacto'}</h3>
-            {isEditing && (
-              <span className="editing-indicator">Modo edicion activo</span>
-            )}
+            <h3>Editar Informacion</h3>
+            <span className="editing-indicator">Modo edicion activo</span>
           </div>
 
           <form onSubmit={handleSubmit} className="profile-form">
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="nombre" className="form-label">
-                  Nombre {isEditing && <span className="required">*</span>}
+            <div className="profile-row">
+              <div className="profile-group">
+                <label htmlFor="nombre" className="profile-label">
+                  Nombre
                 </label>
                 <input
                   type="text"
@@ -327,16 +340,16 @@ const ProfilePage = () => {
                   name="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
-                  className={`form-input ${errors.nombre ? 'input-error' : ''}`}
-                  disabled={!isEditing || loading}
+                  className={`profile-input ${errors.nombre ? 'profile-input-error' : ''}`}
+                  disabled={loading}
                   maxLength={100}
                 />
-                {errors.nombre && <span className="error-text">{errors.nombre}</span>}
+                {errors.nombre && <span className="profile-error-text">{errors.nombre}</span>}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="apellido" className="form-label">
-                  Apellido {isEditing && <span className="required">*</span>}
+              <div className="profile-group">
+                <label htmlFor="apellido" className="profile-label">
+                  Apellido
                 </label>
                 <input
                   type="text"
@@ -344,18 +357,18 @@ const ProfilePage = () => {
                   name="apellido"
                   value={formData.apellido}
                   onChange={handleChange}
-                  className={`form-input ${errors.apellido ? 'input-error' : ''}`}
-                  disabled={!isEditing || loading}
+                  className={`profile-input ${errors.apellido ? 'profile-input-error' : ''}`}
+                  disabled={loading}
                   maxLength={100}
                 />
-                {errors.apellido && <span className="error-text">{errors.apellido}</span>}
+                {errors.apellido && <span className="profile-error-text">{errors.apellido}</span>}
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="email" className="form-label">
-                  Email {isEditing && <span className="required">*</span>}
+            <div className="profile-row">
+              <div className="profile-group">
+                <label htmlFor="email" className="profile-label">
+                  Email
                 </label>
                 <input
                   type="email"
@@ -363,15 +376,15 @@ const ProfilePage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`form-input ${errors.email ? 'input-error' : ''}`}
-                  disabled={!isEditing || loading}
+                  className={`profile-input ${errors.email ? 'profile-input-error' : ''}`}
+                  disabled={loading}
                   maxLength={100}
                 />
-                {errors.email && <span className="error-text">{errors.email}</span>}
+                {errors.email && <span className="profile-error-text">{errors.email}</span>}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="telefono" className="form-label">
+              <div className="profile-group">
+                <label htmlFor="telefono" className="profile-label">
                   Telefono
                 </label>
                 <input
@@ -380,83 +393,77 @@ const ProfilePage = () => {
                   name="telefono"
                   value={formData.telefono}
                   onChange={handleChange}
-                  className={`form-input ${errors.telefono ? 'input-error' : ''}`}
-                  placeholder={isEditing ? 'Ej: +54 11 1234-5678' : ''}
-                  disabled={!isEditing || loading}
+                  className={`profile-input ${errors.telefono ? 'profile-input-error' : ''}`}
+                  placeholder="Ej: +54 11 1234-5678"
+                  disabled={loading}
                   maxLength={20}
                 />
-                {errors.telefono && <span className="error-text">{errors.telefono}</span>}
+                {errors.telefono && <span className="profile-error-text">{errors.telefono}</span>}
               </div>
             </div>
 
-            {isEditing && (
-              <>
-                <div className="form-divider">
-                  <span>Cambiar Contrasena (opcional)</span>
-                </div>
+            <div className="profile-divider">
+              <span>Cambiar Contrasena (opcional)</span>
+            </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="contrasena" className="form-label">
-                      Nueva Contrasena
-                    </label>
-                    <input
-                      type="password"
-                      id="contrasena"
-                      name="contrasena"
-                      value={formData.contrasena}
-                      onChange={handleChange}
-                      className={`form-input ${errors.contrasena ? 'input-error' : ''}`}
-                      placeholder="Dejar vacio para no cambiar"
-                      disabled={loading}
-                      maxLength={100}
-                    />
-                    {errors.contrasena && <span className="error-text">{errors.contrasena}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="confirmarContrasena" className="form-label">
-                      Confirmar Contrasena
-                    </label>
-                    <input
-                      type="password"
-                      id="confirmarContrasena"
-                      name="confirmarContrasena"
-                      value={formData.confirmarContrasena}
-                      onChange={handleChange}
-                      className={`form-input ${errors.confirmarContrasena ? 'input-error' : ''}`}
-                      placeholder="Repetir nueva contrasena"
-                      disabled={loading}
-                      maxLength={100}
-                    />
-                    {errors.confirmarContrasena && <span className="error-text">{errors.confirmarContrasena}</span>}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {isEditing && (
-              <div className="form-actions">
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="btn-form btn-cancel"
+            <div className="profile-row">
+              <div className="profile-group">
+                <label htmlFor="contrasena" className="profile-label">
+                  Nueva Contrasena
+                </label>
+                <input
+                  type="password"
+                  id="contrasena"
+                  name="contrasena"
+                  value={formData.contrasena}
+                  onChange={handleChange}
+                  className={`profile-input ${errors.contrasena ? 'profile-input-error' : ''}`}
+                  placeholder="Dejar vacio para no cambiar"
                   disabled={loading}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="btn-form btn-submit"
-                  disabled={loading}
-                >
-                  {loading ? 'Guardando...' : 'Guardar Cambios'}
-                </button>
+                  maxLength={100}
+                />
+                {errors.contrasena && <span className="profile-error-text">{errors.contrasena}</span>}
               </div>
-            )}
+
+              <div className="profile-group">
+                <label htmlFor="confirmarContrasena" className="profile-label">
+                  Confirmar Contrasena
+                </label>
+                <input
+                  type="password"
+                  id="confirmarContrasena"
+                  name="confirmarContrasena"
+                  value={formData.confirmarContrasena}
+                  onChange={handleChange}
+                  className={`profile-input ${errors.confirmarContrasena ? 'profile-input-error' : ''}`}
+                  placeholder="Repetir nueva contrasena"
+                  disabled={loading}
+                  maxLength={100}
+                />
+                {errors.confirmarContrasena && <span className="profile-error-text">{errors.confirmarContrasena}</span>}
+              </div>
+            </div>
+
+            <div className="profile-actions">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="profile-btn profile-btn-cancel"
+                disabled={loading}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="profile-btn profile-btn-submit"
+                disabled={loading}
+              >
+                {loading ? 'Guardando...' : 'Guardar Cambios'}
+              </button>
+            </div>
           </form>
         </div>
-      </div>
+      )}
     </div>
   );
 };
