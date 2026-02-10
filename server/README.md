@@ -13,54 +13,76 @@ API RESTful con Express.js para el sistema de gestion agricola CropTrack.
 | MySQL | 8.0+ | Base de datos |
 | JWT | 9.0.2 | Autenticacion |
 | bcryptjs | 3.0.3 | Hash de contrasenas |
+| Jest | 29.7.0 | Testing unitario e integracion |
+| Supertest | 6.3.4 | Testing de endpoints HTTP |
 
 ---
 
 ## Dependencias
 
-```json
-{
-  "type": "module",
-  "dependencies": {
-    "express": "^4.18.2",
-    "express-myconnection": "^1.0.4",
-    "mysql2": "^3.6.5",
-    "bcrypt": "^5.1.1",
-    "bcryptjs": "^3.0.3",
-    "jsonwebtoken": "^9.0.2",
-    "express-validator": "^7.3.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "helmet": "^7.1.0",
-    "express-rate-limit": "^7.1.5",
-    "multer": "^1.4.5-lts.1",
-    "uuid": "^13.0.0",
-    "winston": "^3.11.0"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "mocha": "^10.2.0",
-    "chai": "^4.3.10",
-    "chai-http": "^4.4.0",
-    "supertest": "^6.3.3",
-    "nodemon": "^3.0.2"
-  }
-}
-```
+### Produccion
+
+| Dependencia | Version | Descripcion |
+|-------------|---------|-------------|
+| express | ^4.18.2 | Framework web HTTP |
+| express-myconnection | ^1.0.4 | Inyeccion de conexion MySQL por request |
+| express-validator | ^7.3.1 | Validacion y sanitizacion de inputs |
+| express-rate-limit | ^7.1.5 | Limitacion de peticiones por IP |
+| cors | ^2.8.5 | Configuracion de Cross-Origin Resource Sharing |
+| dotenv | ^16.3.1 | Variables de entorno desde archivo .env |
+| helmet | ^7.1.0 | Headers de seguridad HTTP |
+| bcrypt | ^5.1.1 | Hash de contrasenas (nativo) |
+| bcryptjs | ^3.0.3 | Hash de contrasenas (JavaScript puro) |
+| jsonwebtoken | ^9.0.2 | Generacion y verificacion de JWT |
+| multer | ^1.4.5-lts.1 | Manejo de uploads multipart/form-data |
+| uuid | ^13.0.0 | Generacion de identificadores unicos UUID v4 |
+| winston | ^3.11.0 | Logger con niveles y transportes |
+
+### Desarrollo
+
+| Dependencia | Version | Descripcion |
+|-------------|---------|-------------|
+| jest | ^29.7.0 | Framework de testing |
+| @types/jest | ^30.0.0 | Tipos TypeScript para autocompletado Jest |
+| babel-jest | ^30.2.0 | Transformador Babel para Jest |
+| @babel/core | ^7.29.0 | Compilador Babel (core) |
+| @babel/preset-env | ^7.29.0 | Preset de Babel para ES modules |
+| @babel/plugin-transform-runtime | ^7.29.0 | Plugin para async/await en tests |
+| @babel/runtime | ^7.28.6 | Runtime helpers de Babel |
+| supertest | ^6.3.4 | Testing de endpoints HTTP |
+| mysql2 | ^3.16.1 | Driver MySQL para tests de integracion |
+| nodemon | ^3.0.2 | Reinicio automatico en desarrollo |
+| nyc | ^17.1.0 | Cobertura de codigo |
 
 ---
 
 ## Scripts Disponibles
 
+### Desarrollo
+
 | Script | Comando | Descripcion |
 |--------|---------|-------------|
 | Produccion | `npm start` | Inicia con node |
 | Desarrollo | `npm run dev` | Inicia con nodemon (hot reload) |
-| Tests | `npm test` | Ejecuta tests con Jest + coverage |
-| Tests Watch | `npm run test:watch` | Tests en modo observacion |
-| Tests Integracion | `npm run test:integration` | Tests con Mocha |
-| Migraciones | `npm run migrate` | Ejecuta migraciones de BD |
-| Seeds | `npm run seed` | Ejecuta seeders de BD |
+
+### Testing
+
+| Script | Comando | Descripcion |
+|--------|---------|-------------|
+| Tests todos | `npm test` | Ejecuta todos los tests con Jest |
+| Tests watch | `npm run test:watch` | Tests en modo observacion |
+| Tests unitarios | `npm run test:unit` | Solo tests unitarios |
+| Tests unitarios + cobertura | `npm run test:unit:coverage` | Unitarios con reporte de cobertura |
+| Tests integracion | `npm run test:integration` | Solo tests de integracion (secuencial) |
+| Tests integracion + cobertura | `npm run test:integration:coverage` | Integracion con reporte de cobertura |
+| Tests todos + cobertura | `npm run test:all` | Todos los tests con cobertura |
+
+### Base de Datos de Test
+
+| Script | Comando | Descripcion |
+|--------|---------|-------------|
+| Crear BD test | `npm run db:create-test` | Crea la base de datos `croptrack_test` |
+| Setup BD test | `npm run db:setup-test` | Ejecuta el schema SQL en `croptrack_test` |
 
 ---
 
@@ -94,41 +116,60 @@ NODE_ENV=development
 ```
 server/
 ├── config/
-│   └── dbConfig.js           # Configuracion MySQL con express-myconnection
+│   └── dbConfig.js              # Configuracion MySQL con express-myconnection
 ├── controllers/
-│   ├── registerController.js # Logica de registro
-│   ├── loginController.js    # Logica de autenticacion
-│   ├── cropController.js     # CRUD de cultivos
+│   ├── registerController.js    # Logica de registro
+│   ├── loginController.js       # Logica de autenticacion
+│   ├── cropController.js        # CRUD de cultivos
 │   ├── measurementController.js # CRUD de mediciones
-│   └── taskController.js     # CRUD de tareas
+│   ├── taskController.js        # CRUD de tareas
+│   ├── userController.js        # CRUD de usuarios/trabajadores
+│   └── reportController.js      # Reportes (en desarrollo)
 ├── models/
-│   ├── userModel.js          # Modelo de usuarios
-│   ├── cropModel.js          # Modelo de cultivos
-│   ├── measurementModel.js   # Modelo de mediciones
-│   └── taskModel.js          # Modelo de tareas
+│   ├── userModel.js             # Modelo de usuarios (admin + worker)
+│   ├── cropModel.js             # Modelo de cultivos
+│   ├── measurementModel.js      # Modelo de mediciones
+│   ├── taskModel.js             # Modelo de tareas
+│   └── reportModel.js           # Modelo de reportes (en desarrollo)
 ├── routes/
-│   ├── registerRoutes.js     # Rutas de registro
-│   ├── loginRoutes.js        # Rutas de login
-│   ├── cropRoutes.js         # Rutas de cultivos
-│   ├── measurementRoutes.js  # Rutas de mediciones
-│   └── taskRoutes.js         # Rutas de tareas
+│   ├── registerRoutes.js        # Rutas de registro
+│   ├── loginRoutes.js           # Rutas de login
+│   ├── cropRoutes.js            # Rutas de cultivos
+│   ├── measurementRoutes.js     # Rutas de mediciones
+│   ├── taskRoutes.js            # Rutas de tareas
+│   ├── userRoutes.js            # Rutas de usuarios/trabajadores
+│   └── reportRoutes.js          # Rutas de reportes (en desarrollo)
 ├── middleware/
-│   ├── generateId.js         # Genera UUID para cada request
-│   ├── validate.js           # Validacion de registro
-│   ├── validateLogin.js      # Validacion de login
-│   ├── validateCrop.js       # Validacion de cultivos
-│   ├── validateMeasurement.js # Validacion de mediciones
-│   └── validateTask.js       # Validacion de tareas
-├── tests/
-│   ├── unit/                 # Tests unitarios
-│   └── integration/          # Tests de integracion
+│   ├── authMiddleware.js        # Verificacion de JWT en rutas protegidas
+│   ├── generateId.js            # Genera UUID para cada request de creacion
+│   ├── validate.js              # Validacion de registro de admin
+│   ├── validateLogin.js         # Validacion de login
+│   ├── validateCrop.js          # Validacion de cultivos
+│   ├── validateMeasurement.js   # Validacion de mediciones
+│   ├── validateTask.js          # Validacion de tareas
+│   ├── validateUser.js          # Validacion de creacion de usuario/worker
+│   └── validateUserUpdate.js    # Validacion de actualizacion de usuario
 ├── database/
-│   ├── migrate.js            # Script de migraciones
-│   └── seed.js               # Script de seeders
-├── index.js                  # Entry point de la aplicacion
+│   └── schema.sql               # Esquema de la base de datos
+├── tests/
+│   ├── unit/
+│   │   ├── controllers/
+│   │   │   ├── loginController.test.js
+│   │   │   └── registerController.test.js
+│   │   ├── models/
+│   │   │   └── userModel.test.js
+│   │   └── middleware/
+│   │       ├── validate.test.js
+│   │       ├── validateLogin.test.js
+│   │       └── generateId.test.js
+│   ├── integration/
+│   │   ├── loginFlow.integration.test.js
+│   │   └── registerFlow.integration.test.js
+│   └── setup/
+│       └── testDbConfig.js
+├── index.js                     # Entry point de la aplicacion
 ├── package.json
-├── .env                      # Variables de entorno (no versionado)
-└── .env.example              # Plantilla de variables
+└── .env                         # Variables de entorno (no versionado)
 ```
 
 ---
@@ -167,6 +208,7 @@ const PORT = process.env.PORT || 4000;
 | `/api/crops` | cropRoutes | Gestion de cultivos |
 | `/api/measurements` | measurementRoutes | Gestion de mediciones |
 | `/api/tasks` | taskRoutes | Gestion de tareas |
+| `/api/users` | userRoutes | Gestion de usuarios/trabajadores |
 
 ---
 
@@ -251,9 +293,20 @@ req.getConnection((err, conn) => {
 | PUT | `/api/tasks/:id` | Actualizar tarea | - |
 | DELETE | `/api/tasks/:id` | Eliminar tarea | - |
 
+### Usuarios / Trabajadores (Users)
+
+| Metodo | Endpoint | Descripcion | Middleware |
+|--------|----------|-------------|------------|
+| GET | `/api/users/:id` | Obtener usuario por ID | - |
+| PUT | `/api/users/:id` | Actualizar datos de usuario | validateUserUpdate |
+
 ---
 
 ## Middleware
+
+### authMiddleware.js
+
+Verifica el JWT en el header `Authorization: Bearer <token>` para rutas protegidas.
 
 ### generateId.js
 
@@ -343,6 +396,14 @@ Validaciones para tareas:
 | observaciones | Opcional, max 5000 chars |
 | imagen_url | Opcional, max 255 chars |
 
+### validateUser.js
+
+Validaciones para creacion de trabajadores.
+
+### validateUserUpdate.js
+
+Validaciones para actualizacion de datos de usuario/perfil.
+
 ---
 
 ## Controllers
@@ -418,6 +479,15 @@ deleteTask(req, res)
 
 **Logica especial:** Cuando estado = 'completada', se agrega automaticamente fecha_completada
 
+### userController.js
+
+```javascript
+getUserById(req, res)
+updateUser(req, res)
+```
+
+Maneja la obtencion y actualizacion de datos de perfil de usuario.
+
 ---
 
 ## Models
@@ -438,6 +508,8 @@ class Model {
 
 ### userModel.js
 
+**Metodos de Admin:**
+
 | Metodo | Descripcion |
 |--------|-------------|
 | `findByUsername(conn, username, cb)` | Busca usuario por nombre_usuario |
@@ -445,6 +517,19 @@ class Model {
 | `createAdmin(conn, userData, cb)` | Inserta nuevo administrador |
 | `findById(conn, id, cb)` | Busca usuario por ID |
 | `updateLastAccess(conn, userId, cb)` | Actualiza timestamp ultimo_acceso |
+
+**Metodos de Worker:**
+
+| Metodo | Descripcion |
+|--------|-------------|
+| `createWorker(conn, data, cb)` | Crea trabajador |
+| `findWorkerByUsername(conn, username, cb)` | Busca worker por username |
+| `findWorkerByEmail(conn, email, cb)` | Busca worker por email |
+| `findWorkerByEmpresa(conn, empresa, cb)` | Workers por empresa (ORDER BY created_at DESC) |
+| `findWorkerByIdSafe(conn, id, cb)` | Busca worker excluyendo password_hash |
+| `updateWorker(conn, id, data, cb)` | Actualiza worker (protege campos criticos) |
+| `deleteWorker(conn, id, cb)` | Elimina worker |
+| `findWorkerByEmailExcludingId(conn, email, id, cb)` | Busca email excluyendo un ID |
 
 ### cropModel.js
 
@@ -571,6 +656,105 @@ CREATE TABLE tasks (
 
 ---
 
+## Testing
+
+### Estructura de Tests
+
+```
+tests/
+├── unit/
+│   ├── controllers/
+│   │   ├── loginController.test.js      # ~30 tests
+│   │   └── registerController.test.js   # ~40 tests
+│   ├── models/
+│   │   └── userModel.test.js            # ~70 tests
+│   └── middleware/
+│       ├── validate.test.js             # ~35 tests
+│       ├── validateLogin.test.js        # ~25 tests
+│       └── generateId.test.js
+├── integration/
+│   ├── loginFlow.integration.test.js    # ~25 tests
+│   └── registerFlow.integration.test.js # ~100 tests
+└── setup/
+    └── testDbConfig.js
+```
+
+### Tests Unitarios
+
+**loginController.test.js (~30 tests)**
+- Errores de conexion a BD (500)
+- Usuario no encontrado (401)
+- Contrasena invalida (401)
+- Login exitoso con generacion de JWT
+- Validacion de rol (403 si no coincide)
+- Actualizacion de ultimo_acceso
+- Casos borde: sin rol, sin telefono
+
+**registerController.test.js (~40 tests)**
+- Validacion de campos obligatorios (400)
+- Errores de conexion a BD (500)
+- Verificacion de usuario/email duplicado (400)
+- Encriptacion de contrasena con bcrypt (10 salt rounds)
+- Creacion exitosa de admin
+- Normalizacion de email a minusculas
+- Mapeo de campos: usuario → nombre_usuario, nombre_empresa → empresa
+
+**userModel.test.js (~70 tests)**
+- Metodos de Admin: findByUsername, findByEmail, createAdmin, findById, updateLastAccess
+- Metodos de Worker: createWorker, findWorkerByUsername, findWorkerByEmail, findWorkerByEmpresa, findWorkerByIdSafe, updateWorker, deleteWorker, findWorkerByEmailExcludingId
+- Manejo de errores en cada metodo
+- Resultados vacios
+
+**validate.test.js (~35 tests)**
+- Validacion exitosa con todos los campos
+- Validacion exitosa sin telefono (opcional)
+- Errores por campo: usuario, contrasena, nombre, apellido, email, nombre_empresa, telefono
+- Multiples errores retornados juntos
+- Estructura de respuesta de error
+
+**validateLogin.test.js (~25 tests)**
+- Validacion exitosa con y sin rol
+- Errores: usuario vacio/<3 chars/>50 chars, contrasena vacia/<6 chars
+- Rol invalido
+- Multiples errores simultaneos
+
+### Tests de Integracion
+
+**loginFlow.integration.test.js (~25 tests)**
+- Flujo completo: Route → ValidateLogin → Controller → Model → BD → JWT
+- Setup: conexion a BD test, creacion de app, limpieza de tabla users
+- Login exitoso de admin/supervisor/worker
+- Validacion de formato JWT
+- Rechazo por contrasena incorrecta (401), usuario inexistente (401), rol incorrecto (403)
+- Verificacion de actualizacion de ultimo_acceso
+
+**registerFlow.integration.test.js (~100 tests)**
+- Flujo completo: Route → Middleware → Controller → Model → BD
+- Registro exitoso (201) con verificacion de UUID
+- Normalizacion de email
+- Manejo de telefono opcional
+
+### Ejecutar Tests
+
+```bash
+# Todos los tests
+npm test
+
+# Solo unitarios
+npm run test:unit
+
+# Solo unitarios con cobertura
+npm run test:unit:coverage
+
+# Solo integracion (requiere BD croptrack_test)
+npm run test:integration
+
+# Todo con cobertura
+npm run test:all
+```
+
+---
+
 ## Respuestas de la API
 
 ### Exito (200/201)
@@ -688,42 +872,6 @@ Los modelos protegen campos criticos en operaciones de update:
 
 ---
 
-## Tipos de Medicion Soportados
-
-| Tipo | Descripcion |
-|------|-------------|
-| temperatura | Temperatura del ambiente/suelo |
-| humedad | Humedad del suelo/ambiente |
-| ph | Nivel de pH del suelo |
-| nutrientes | Niveles de nutrientes |
-| altura | Altura de las plantas |
-| peso | Peso de la cosecha |
-| rendimiento | Rendimiento por hectarea |
-| plaga | Registro de plagas |
-| enfermedad | Registro de enfermedades |
-| riego | Cantidad de riego aplicado |
-| fertilizacion | Fertilizante aplicado |
-| otro | Otros tipos |
-
----
-
-## Unidades de Medida Soportadas
-
-| Unidad | Uso |
-|--------|-----|
-| celsius, fahrenheit | Temperatura |
-| porcentaje | Humedad |
-| ph | Acidez/Alcalinidad |
-| kg, g, ton | Peso |
-| cm, m | Altura/Longitud |
-| litros, ml | Volumen |
-| kg/ha, ton/ha | Rendimiento |
-| ppm | Concentracion |
-| unidades | Conteo |
-| otro | Otros |
-
----
-
 ## Desarrollo
 
 ```bash
@@ -735,9 +883,6 @@ cp .env.example .env
 
 # Editar .env con credenciales de MySQL
 
-# Ejecutar migraciones (si existen)
-npm run migrate
-
 # Iniciar en desarrollo
 npm run dev
 
@@ -745,24 +890,7 @@ npm run dev
 npm test
 
 # Tests con cobertura
-npm test -- --coverage
-```
-
----
-
-## Testing
-
-### Jest (Tests Unitarios)
-
-```bash
-npm test              # Ejecuta todos los tests
-npm run test:watch    # Modo observacion
-```
-
-### Mocha (Tests de Integracion)
-
-```bash
-npm run test:integration
+npm run test:all
 ```
 
 ---
