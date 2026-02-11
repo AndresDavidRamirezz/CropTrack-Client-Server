@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
+    "server:test": "cd server && npm run dev:test",
+    "dev:test": "concurrently \"npm run server:test\" \"npm run client\"",
     "client": "cd client && npm start",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install",
     "test:unit:client": "cd client && npm run test:unit:coverage",

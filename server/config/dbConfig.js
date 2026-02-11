@@ -1,7 +1,13 @@
 import myConnection from 'express-myconnection';
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-dotenv.config();
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+// Cargar .env.test cuando NODE_ENV=test, sino .env (producción)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+dotenv.config({ path: path.resolve(__dirname, '..', envFile) });
 
 const dbOptions = {
 	host: process.env.DB_HOST,
@@ -17,7 +23,7 @@ const dbConnection = (app) => {
 			console.error('Error al conectar a la base de datos:', err);
 			process.exit(1);
 		} else {
-			console.log('Conexion a la base de datos exitosa')
+			console.log(`Conexion a la base de datos "${process.env.DB_NAME}" exitosa (${envFile})`)
 		}
 	}));
 };
