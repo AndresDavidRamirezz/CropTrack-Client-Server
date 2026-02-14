@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './TaskForm.css';
+
+const API_URL = 'http://localhost:4000/api/tasks';
 
 const PRIORIDADES = [
   { value: 'baja', label: 'Baja' },
@@ -30,6 +32,17 @@ const initialFormState = {
 const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
+  const [imageUrl, setImageUrl] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageMessage, setImageMessage] = useState({ type: '', text: '' });
+  const [showWebcam, setShowWebcam] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
+
+  const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
 
   const isEditing = Boolean(initialData);
 
@@ -46,10 +59,13 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
         descripcion: initialData.descripcion || '',
         observaciones: initialData.observaciones || ''
       });
+      setImageUrl(initialData.imagen_url || null);
     } else {
       setFormData(initialFormState);
+      setImageUrl(null);
     }
     setErrors({});
+    setImageMessage({ type: '', text: '' });
   }, [initialData]);
 
   const handleChange = (e) => {
@@ -126,6 +142,106 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
     setFormData(initialFormState);
     setErrors({});
     if (onCancel) onCancel();
+  };
+
+  const getFullImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `http://localhost:4000${url}`;
+  };
+
+  const uploadImageFile = async (file) => {
+    if (!initialData?.id) return;
+    setImageLoading(true);
+    setImageMessage({ type: '', text: '' });
+
+    try {
+      const data = new FormData();
+      data.append('image', file);
+
+      const response = await fetch(`${API_URL}/${initialData.id}/image`, {
+        method: 'PUT',
+        body: data
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setImageUrl(result.imagen_url);
+        setImageMessage({ type: 'success', text: 'Imagen actualizada' });
+      } else {
+        throw new Error(result.error || 'Error al subir la imagen');
+      }
+    } catch (err) {
+      setImageMessage({ type: 'error', text: err.message || 'Error al subir la imagen' });
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setImageMessage({ type: 'error', text: 'Solo JPEG, PNG, GIF o WEBP' });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setImageMessage({ type: 'error', text: 'La imagen no puede superar los 5MB' });
+      return;
+    }
+
+    await uploadImageFile(file);
+    e.target.value = '';
+  };
+
+  const startWebcam = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+      });
+      streamRef.current = stream;
+      setShowWebcam(true);
+      setCapturedPhoto(null);
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (err) {
+      console.log('Webcam no disponible, usando camara nativa');
+      cameraInputRef.current?.click();
+    }
+  };
+
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    setCapturedPhoto(canvas.toDataURL('image/jpeg', 0.9));
+  };
+
+  const stopWebcam = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setShowWebcam(false);
+    setCapturedPhoto(null);
+  };
+
+  const usePhoto = async () => {
+    if (!capturedPhoto) return;
+    const response = await fetch(capturedPhoto);
+    const blob = await response.blob();
+    const file = new File([blob], `task-${Date.now()}.jpg`, { type: 'image/jpeg' });
+    stopWebcam();
+    await uploadImageFile(file);
   };
 
   return (
@@ -290,6 +406,62 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
           {errors.observaciones && <span className="error-text">{errors.observaciones}</span>}
         </div>
 
+        {/* Seccion de imagen - solo al editar */}
+        {isEditing && (
+          <div className="task-image-section">
+            <label className="form-label">Imagen de la tarea</label>
+            {imageMessage.text && (
+              <span className={`task-image-message ${imageMessage.type}`}>
+                {imageMessage.text}
+              </span>
+            )}
+            <div className="task-image-area">
+              {imageUrl ? (
+                <div className="task-image-preview">
+                  <img src={getFullImageUrl(imageUrl)} alt="Tarea" />
+                </div>
+              ) : (
+                <div className="task-image-empty">Sin imagen</div>
+              )}
+              <div className="task-image-buttons">
+                <button
+                  type="button"
+                  className="task-image-btn"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={imageLoading}
+                >
+                  {imageLoading ? 'Subiendo...' : 'Subir imagen'}
+                </button>
+                <button
+                  type="button"
+                  className="task-image-btn"
+                  onClick={startWebcam}
+                  disabled={imageLoading}
+                >
+                  Tomar foto
+                </button>
+              </div>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              disabled={imageLoading}
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              disabled={imageLoading}
+            />
+          </div>
+        )}
+
         <div className="form-actions">
           <button
             type="button"
@@ -308,6 +480,44 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
           </button>
         </div>
       </form>
+
+      {/* Modal de webcam */}
+      {showWebcam && (
+        <div className="task-webcam-overlay" onClick={stopWebcam}>
+          <div className="task-webcam-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="task-webcam-header">
+              <h3>Tomar foto</h3>
+              <button type="button" className="task-webcam-close" onClick={stopWebcam}>
+                &times;
+              </button>
+            </div>
+            <div className="task-webcam-preview">
+              {!capturedPhoto ? (
+                <video ref={videoRef} autoPlay playsInline muted className="task-webcam-video" />
+              ) : (
+                <img src={capturedPhoto} alt="Foto capturada" className="task-webcam-captured" />
+              )}
+              <canvas ref={canvasRef} style={{ display: 'none' }} />
+            </div>
+            <div className="task-webcam-actions">
+              {!capturedPhoto ? (
+                <button type="button" className="task-webcam-btn task-webcam-btn-capture" onClick={capturePhoto}>
+                  Capturar
+                </button>
+              ) : (
+                <>
+                  <button type="button" className="task-webcam-btn task-webcam-btn-retake" onClick={() => setCapturedPhoto(null)}>
+                    Reintentar
+                  </button>
+                  <button type="button" className="task-webcam-btn task-webcam-btn-use" onClick={usePhoto}>
+                    {imageLoading ? 'Subiendo...' : 'Usar foto'}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

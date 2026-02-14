@@ -88,6 +88,31 @@ class CropModel {
     });
   }
 
+  static updateImageUrl(conn, id, imagenUrl, callback) {
+    console.log('📸 [CROP-MODEL] Actualizando imagen para cultivo:', id);
+    const query = 'UPDATE crops SET imagen_url = ? WHERE id = ?';
+    conn.query(query, [imagenUrl, id], (err, result) => {
+      if (err) {
+        console.error('❌ [CROP-MODEL] Error en updateImageUrl:', err);
+      } else {
+        console.log('✅ [CROP-MODEL] Imagen actualizada. Filas afectadas:', result.affectedRows);
+      }
+      callback(err, result);
+    });
+  }
+
+  static getImageUrl(conn, id, callback) {
+    console.log('🔍 [CROP-MODEL] Obteniendo imagen URL para cultivo:', id);
+    conn.query('SELECT imagen_url FROM crops WHERE id = ?', [id], (err, results) => {
+      if (err) {
+        console.error('❌ [CROP-MODEL] Error en getImageUrl:', err);
+        return callback(err, null);
+      }
+      const url = results[0]?.imagen_url || null;
+      callback(null, url);
+    });
+  }
+
   static delete(conn, id, callback) {
     console.log('🟡 [CROP-MODEL] delete - Ejecutando...');
     console.log('🆔 [CROP-MODEL] delete - id:', id);

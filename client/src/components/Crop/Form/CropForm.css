@@ -225,6 +225,198 @@
   transform: translateY(0);
 }
 
+/* ===== Image Section ===== */
+.crop-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: #0f172a;
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.crop-image-message {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  align-self: flex-start;
+}
+
+.crop-image-message.success {
+  background: rgba(135, 208, 0, 0.15);
+  color: #87D000;
+}
+
+.crop-image-message.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+.crop-image-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.crop-image-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #334155;
+  flex-shrink: 0;
+}
+
+.crop-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.crop-image-empty {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  border: 2px dashed #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.crop-image-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crop-image-btn {
+  padding: 8px 16px;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.crop-image-btn:hover:not(:disabled) {
+  background: #87D000;
+  color: #0f172a;
+  border-color: #87D000;
+}
+
+.crop-image-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Crop Webcam Modal ===== */
+.crop-webcam-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.crop-webcam-modal {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 25px;
+  width: 90%;
+  max-width: 500px;
+  border: 2px solid #334155;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.crop-webcam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.crop-webcam-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.crop-webcam-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.crop-webcam-close:hover {
+  color: #ffffff;
+}
+
+.crop-webcam-preview {
+  background: #0f172a;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.crop-webcam-video,
+.crop-webcam-captured {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
+.crop-webcam-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.crop-webcam-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.crop-webcam-btn-capture,
+.crop-webcam-btn-use {
+  background: linear-gradient(135deg, #87D000 0%, #65a30d 100%);
+  color: #ffffff;
+}
+
+.crop-webcam-btn-capture:hover,
+.crop-webcam-btn-use:hover {
+  background: linear-gradient(135deg, #65a30d 0%, #4d7c0f 100%);
+}
+
+.crop-webcam-btn-retake {
+  background: #475569;
+  color: #e2e8f0;
+}
+
+.crop-webcam-btn-retake:hover {
+  background: #64748b;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .crop-form-container {

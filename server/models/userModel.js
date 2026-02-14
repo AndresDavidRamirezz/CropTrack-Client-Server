@@ -137,7 +137,7 @@ class UserModel {
     console.log('🔍 [USER-MODEL] Buscando usuarios de empresa:', empresa);
     const query = `
       SELECT id, nombre_usuario, nombre, apellido, email, empresa,
-             telefono, rol, ultimo_acceso, created_at
+             telefono, rol, imagen_url, ultimo_acceso, created_at
       FROM users
       WHERE empresa = ? AND rol IN ('trabajador', 'supervisor')
       ORDER BY created_at DESC
@@ -156,7 +156,7 @@ class UserModel {
     console.log('🔍 [USER-MODEL] Buscando usuario por ID (sin password):', id);
     const query = `
       SELECT id, nombre_usuario, nombre, apellido, email, empresa,
-             telefono, rol, ultimo_acceso, created_at
+             telefono, rol, imagen_url, ultimo_acceso, created_at
       FROM users WHERE id = ?
     `;
     conn.query(query, [id], (err, results) => {
@@ -209,6 +209,31 @@ class UserModel {
         callback(err, result);
       }
     );
+  }
+
+  static updateImageUrl(conn, id, imagenUrl, callback) {
+    console.log('📸 [USER-MODEL] Actualizando imagen para usuario:', id);
+    const query = 'UPDATE users SET imagen_url = ? WHERE id = ?';
+    conn.query(query, [imagenUrl, id], (err, result) => {
+      if (err) {
+        console.error('❌ [USER-MODEL] Error en updateImageUrl:', err);
+      } else {
+        console.log('✅ [USER-MODEL] Imagen actualizada. Filas afectadas:', result.affectedRows);
+      }
+      callback(err, result);
+    });
+  }
+
+  static getImageUrl(conn, id, callback) {
+    console.log('🔍 [USER-MODEL] Obteniendo imagen URL para usuario:', id);
+    conn.query('SELECT imagen_url FROM users WHERE id = ?', [id], (err, results) => {
+      if (err) {
+        console.error('❌ [USER-MODEL] Error en getImageUrl:', err);
+        return callback(err, null);
+      }
+      const url = results[0]?.imagen_url || null;
+      callback(null, url);
+    });
   }
 
   static findWorkerByEmailExcludingId(conn, email, excludeId, callback) {

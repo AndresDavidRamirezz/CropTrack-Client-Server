@@ -60,6 +60,10 @@ export const validateUserUpdate = [
     .not().exists()
     .withMessage('No se puede modificar el rol'),
 
+  body('imagen_url')
+    .not().exists()
+    .withMessage('Usar el endpoint PUT /:id/image para cambiar la imagen de perfil'),
+
   (req, res, next) => {
     const errors = validationResult(req);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ProfilePage.css';
 
 const API_URL = 'http://localhost:4000/api/users';
@@ -31,6 +31,15 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const [showWebcam, setShowWebcam] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
+
+  const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
 
   // Obtener datos del usuario desde localStorage
   const loadUserData = () => {
@@ -232,6 +241,114 @@ const ProfilePage = () => {
     setMessage({ type: '', text: '' });
   };
 
+  const getAvatarUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `http://localhost:4000${url}`;
+  };
+
+  // Subir un archivo (File o Blob) como avatar al servidor
+  const uploadAvatarFile = async (file) => {
+    setAvatarLoading(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${API_URL}/${userData.id}/image`, {
+        method: 'PUT',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const updatedUserData = { ...userData, imagen_url: data.imagen_url };
+        localStorage.setItem('userData', JSON.stringify(updatedUserData));
+        setUserData(updatedUserData);
+        setMessage({ type: 'success', text: 'Avatar actualizado correctamente' });
+      } else {
+        throw new Error(data.error || 'Error al subir la imagen');
+      }
+    } catch (err) {
+      console.error('❌ [PROFILE-PAGE] Error subiendo avatar:', err);
+      setMessage({ type: 'error', text: err.message || 'Error al subir la imagen' });
+    } finally {
+      setAvatarLoading(false);
+    }
+  };
+
+  // Handler para input file (subir imagen desde archivos)
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage({ type: 'error', text: 'Tipo de archivo no permitido. Solo JPEG, PNG, GIF o WEBP' });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'La imagen no puede superar los 5MB' });
+      return;
+    }
+
+    await uploadAvatarFile(file);
+    e.target.value = '';
+  };
+
+  // Intentar abrir webcam. Si falla, caer al input nativo con capture
+  const handleTakePhoto = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+      });
+      streamRef.current = stream;
+      setShowWebcam(true);
+      setCapturedPhoto(null);
+      // Asignar stream al video una vez que se renderice
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (err) {
+      console.log('Webcam no disponible, usando camara nativa');
+      // Fallback: abrir camara nativa del dispositivo
+      cameraInputRef.current?.click();
+    }
+  };
+
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    setCapturedPhoto(canvas.toDataURL('image/jpeg', 0.9));
+  };
+
+  const stopWebcam = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setShowWebcam(false);
+    setCapturedPhoto(null);
+  };
+
+  const usePhoto = async () => {
+    if (!capturedPhoto) return;
+    const response = await fetch(capturedPhoto);
+    const blob = await response.blob();
+    const file = new File([blob], `foto-${Date.now()}.jpg`, { type: 'image/jpeg' });
+    stopWebcam();
+    await uploadAvatarFile(file);
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return 'No disponible';
     return new Date(dateString).toLocaleDateString('es-ES', {
@@ -279,8 +396,66 @@ const ProfilePage = () => {
       {/* Card horizontal de informacion del usuario */}
       <div className="profile-info-card">
         <div className="profile-card-left">
-          <div className="profile-avatar">
-            <span className="avatar-icon">👤</span>
+          <div className="profile-avatar-container">
+            <div className="profile-avatar">
+              {userData.imagen_url ? (
+                <img
+                  src={getAvatarUrl(userData.imagen_url)}
+                  alt="Avatar"
+                  className="avatar-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <span
+                className="avatar-icon"
+                style={{ display: userData.imagen_url ? 'none' : 'flex' }}
+              >
+                👤
+              </span>
+              {avatarLoading && (
+                <div className="avatar-overlay" style={{ opacity: 1 }}>
+                  <div className="avatar-spinner"></div>
+                </div>
+              )}
+            </div>
+            <div className="profile-image-buttons">
+              <button
+                type="button"
+                className="profile-image-btn"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={avatarLoading}
+              >
+                Subir imagen
+              </button>
+              <button
+                type="button"
+                className="profile-image-btn"
+                onClick={handleTakePhoto}
+                disabled={avatarLoading}
+              >
+                Tomar foto
+              </button>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              style={{ display: 'none' }}
+              disabled={avatarLoading}
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleAvatarChange}
+              style={{ display: 'none' }}
+              disabled={avatarLoading}
+            />
           </div>
           <span
             className="profile-rol-badge"
@@ -462,6 +637,44 @@ const ProfilePage = () => {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* Modal de webcam */}
+      {showWebcam && (
+        <div className="webcam-overlay" onClick={stopWebcam}>
+          <div className="webcam-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="webcam-header">
+              <h3>Tomar foto</h3>
+              <button type="button" className="webcam-close" onClick={stopWebcam}>
+                &times;
+              </button>
+            </div>
+            <div className="webcam-preview">
+              {!capturedPhoto ? (
+                <video ref={videoRef} autoPlay playsInline muted className="webcam-video" />
+              ) : (
+                <img src={capturedPhoto} alt="Foto capturada" className="webcam-captured" />
+              )}
+              <canvas ref={canvasRef} style={{ display: 'none' }} />
+            </div>
+            <div className="webcam-actions">
+              {!capturedPhoto ? (
+                <button type="button" className="webcam-btn webcam-btn-capture" onClick={capturePhoto}>
+                  Capturar
+                </button>
+              ) : (
+                <>
+                  <button type="button" className="webcam-btn webcam-btn-retake" onClick={() => setCapturedPhoto(null)}>
+                    Reintentar
+                  </button>
+                  <button type="button" className="webcam-btn webcam-btn-use" onClick={usePhoto}>
+                    {avatarLoading ? 'Subiendo...' : 'Usar foto'}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

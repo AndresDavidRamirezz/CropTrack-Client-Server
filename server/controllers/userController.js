@@ -1,5 +1,6 @@
 import UserModel from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
+import multerService from '../services/multerService.js';
 
 // CREATE - Crear nuevo trabajador/supervisor
 const createUser = async (req, res) => {
@@ -319,10 +320,108 @@ const deleteUser = (req, res) => {
   });
 };
 
+// UPLOAD IMAGE - Subir/actualizar imagen de usuario
+const uploadImage = (req, res) => {
+  const { id } = req.params;
+
+  console.log('📸 [USER-CONTROLLER] Subiendo imagen para usuario:', id);
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'No se proporciono ninguna imagen' });
+  }
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [USER-CONTROLLER] Error de conexion BD:', err);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    // 1. Obtener imagen actual para borrar el archivo viejo
+    UserModel.getImageUrl(conn, id, (err, oldImageUrl) => {
+      if (err) {
+        console.error('❌ [USER-CONTROLLER] Error al obtener imagen actual:', err);
+      }
+
+      // 2. Construir nueva URL
+      const newImageUrl = multerService.getFileUrl('users', req.file.filename);
+
+      // 3. Actualizar base de datos
+      UserModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
+        if (err) {
+          console.error('❌ [USER-CONTROLLER] Error al actualizar imagen en BD:', err);
+          return res.status(500).json({ error: 'Error al actualizar la imagen' });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        // 4. Borrar archivo viejo
+        if (oldImageUrl) {
+          try {
+            multerService.deleteFile(oldImageUrl);
+          } catch (deleteErr) {
+            console.warn('⚠️ [USER-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
+          }
+        }
+
+        console.log('✅ [USER-CONTROLLER] Imagen actualizada:', newImageUrl);
+        res.status(200).json({
+          message: 'Imagen actualizada correctamente',
+          imagen_url: newImageUrl
+        });
+      });
+    });
+  });
+};
+
+// DELETE IMAGE - Eliminar imagen de usuario
+const deleteImage = (req, res) => {
+  const { id } = req.params;
+
+  console.log('🗑️ [USER-CONTROLLER] Eliminando imagen para usuario:', id);
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [USER-CONTROLLER] Error de conexion BD:', err);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    UserModel.getImageUrl(conn, id, (err, imageUrl) => {
+      if (err) {
+        console.error('❌ [USER-CONTROLLER] Error al obtener imagen actual:', err);
+        return res.status(500).json({ error: 'Error al obtener imagen actual' });
+      }
+
+      if (!imageUrl) {
+        return res.status(404).json({ error: 'El usuario no tiene imagen' });
+      }
+
+      UserModel.updateImageUrl(conn, id, null, (err, result) => {
+        if (err) {
+          console.error('❌ [USER-CONTROLLER] Error al eliminar imagen en BD:', err);
+          return res.status(500).json({ error: 'Error al eliminar la imagen' });
+        }
+
+        try {
+          multerService.deleteFile(imageUrl);
+        } catch (deleteErr) {
+          console.warn('⚠️ [USER-CONTROLLER] No se pudo eliminar archivo:', deleteErr);
+        }
+
+        console.log('✅ [USER-CONTROLLER] Imagen eliminada para usuario:', id);
+        res.status(200).json({ message: 'Imagen eliminada correctamente' });
+      });
+    });
+  });
+};
+
 export {
   createUser,
   getUsersByEmpresa,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  uploadImage,
+  deleteImage
 };

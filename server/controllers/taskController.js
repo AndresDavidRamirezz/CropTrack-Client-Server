@@ -1,4 +1,5 @@
 import TaskModel from '../models/taskModel.js';
+import multerService from '../services/multerService.js';
 
 // CREATE - Crear nueva tarea
 const createTask = (req, res) => {
@@ -213,6 +214,98 @@ const deleteTask = (req, res) => {
   });
 };
 
+// UPLOAD IMAGE - Subir/actualizar imagen de tarea
+const uploadImage = (req, res) => {
+  const { id } = req.params;
+
+  console.log('📸 [TASK-CONTROLLER] Subiendo imagen para tarea:', id);
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'No se proporciono ninguna imagen' });
+  }
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [TASK-CONTROLLER] Error de conexion BD:', err);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    TaskModel.getImageUrl(conn, id, (err, oldImageUrl) => {
+      if (err) {
+        console.error('❌ [TASK-CONTROLLER] Error al obtener imagen actual:', err);
+      }
+
+      const newImageUrl = multerService.getFileUrl('tasks', req.file.filename);
+
+      TaskModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
+        if (err) {
+          console.error('❌ [TASK-CONTROLLER] Error al actualizar imagen en BD:', err);
+          return res.status(500).json({ error: 'Error al actualizar la imagen' });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Tarea no encontrada' });
+        }
+
+        if (oldImageUrl) {
+          try {
+            multerService.deleteFile(oldImageUrl);
+          } catch (deleteErr) {
+            console.warn('⚠️ [TASK-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
+          }
+        }
+
+        console.log('✅ [TASK-CONTROLLER] Imagen actualizada:', newImageUrl);
+        res.status(200).json({
+          message: 'Imagen actualizada correctamente',
+          imagen_url: newImageUrl
+        });
+      });
+    });
+  });
+};
+
+// DELETE IMAGE - Eliminar imagen de tarea
+const deleteImage = (req, res) => {
+  const { id } = req.params;
+
+  console.log('🗑️ [TASK-CONTROLLER] Eliminando imagen para tarea:', id);
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [TASK-CONTROLLER] Error de conexion BD:', err);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    TaskModel.getImageUrl(conn, id, (err, imageUrl) => {
+      if (err) {
+        console.error('❌ [TASK-CONTROLLER] Error al obtener imagen actual:', err);
+        return res.status(500).json({ error: 'Error al obtener imagen actual' });
+      }
+
+      if (!imageUrl) {
+        return res.status(404).json({ error: 'La tarea no tiene imagen' });
+      }
+
+      TaskModel.updateImageUrl(conn, id, null, (err, result) => {
+        if (err) {
+          console.error('❌ [TASK-CONTROLLER] Error al eliminar imagen en BD:', err);
+          return res.status(500).json({ error: 'Error al eliminar la imagen' });
+        }
+
+        try {
+          multerService.deleteFile(imageUrl);
+        } catch (deleteErr) {
+          console.warn('⚠️ [TASK-CONTROLLER] No se pudo eliminar archivo:', deleteErr);
+        }
+
+        console.log('✅ [TASK-CONTROLLER] Imagen eliminada para tarea:', id);
+        res.status(200).json({ message: 'Imagen eliminada correctamente' });
+      });
+    });
+  });
+};
+
 export {
   createTask,
   getTasksByUser,
@@ -220,5 +313,7 @@ export {
   getTasksByCrop,
   getTaskById,
   updateTask,
-  deleteTask
+  deleteTask,
+  uploadImage,
+  deleteImage
 };

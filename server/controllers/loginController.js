@@ -107,6 +107,7 @@ const login = async (req, res) => {
           empresa: user.empresa,
           telefono: user.telefono,
           rol: user.rol,
+          imagen_url: user.imagen_url || null,
           ultimo_acceso: user.ultimo_acceso,
           created_at: user.created_at
         };

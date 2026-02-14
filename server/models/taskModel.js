@@ -141,6 +141,31 @@ class TaskModel {
     });
   }
 
+  static updateImageUrl(conn, id, imagenUrl, callback) {
+    console.log('📸 [TASK-MODEL] Actualizando imagen para tarea:', id);
+    const query = 'UPDATE tasks SET imagen_url = ? WHERE id = ?';
+    conn.query(query, [imagenUrl, id], (err, result) => {
+      if (err) {
+        console.error('❌ [TASK-MODEL] Error en updateImageUrl:', err);
+      } else {
+        console.log('✅ [TASK-MODEL] Imagen actualizada. Filas afectadas:', result.affectedRows);
+      }
+      callback(err, result);
+    });
+  }
+
+  static getImageUrl(conn, id, callback) {
+    console.log('🔍 [TASK-MODEL] Obteniendo imagen URL para tarea:', id);
+    conn.query('SELECT imagen_url FROM tasks WHERE id = ?', [id], (err, results) => {
+      if (err) {
+        console.error('❌ [TASK-MODEL] Error en getImageUrl:', err);
+        return callback(err, null);
+      }
+      const url = results[0]?.imagen_url || null;
+      callback(null, url);
+    });
+  }
+
   static delete(conn, id, callback) {
     console.log('🟡 [TASK-MODEL] delete - Ejecutando...');
     console.log('🆔 [TASK-MODEL] delete - id:', id);

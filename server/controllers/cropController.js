@@ -1,4 +1,5 @@
 import CropModel from '../models/cropModel.js';
+import multerService from '../services/multerService.js';
 
 // CREATE - Crear nueva cosecha
 const createCrop = (req, res) => {
@@ -155,10 +156,104 @@ const deleteCrop = (req, res) => {
   });
 };
 
+// UPLOAD IMAGE - Subir/actualizar imagen de cultivo
+const uploadImage = (req, res) => {
+  const { id } = req.params;
+
+  console.log('📸 [CROP-CONTROLLER] Subiendo imagen para cultivo:', id);
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'No se proporciono ninguna imagen' });
+  }
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [CROP-CONTROLLER] Error de conexion BD:', err);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    CropModel.getImageUrl(conn, id, (err, oldImageUrl) => {
+      if (err) {
+        console.error('❌ [CROP-CONTROLLER] Error al obtener imagen actual:', err);
+      }
+
+      const newImageUrl = multerService.getFileUrl('crops', req.file.filename);
+
+      CropModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
+        if (err) {
+          console.error('❌ [CROP-CONTROLLER] Error al actualizar imagen en BD:', err);
+          return res.status(500).json({ error: 'Error al actualizar la imagen' });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Cultivo no encontrado' });
+        }
+
+        if (oldImageUrl) {
+          try {
+            multerService.deleteFile(oldImageUrl);
+          } catch (deleteErr) {
+            console.warn('⚠️ [CROP-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
+          }
+        }
+
+        console.log('✅ [CROP-CONTROLLER] Imagen actualizada:', newImageUrl);
+        res.status(200).json({
+          message: 'Imagen actualizada correctamente',
+          imagen_url: newImageUrl
+        });
+      });
+    });
+  });
+};
+
+// DELETE IMAGE - Eliminar imagen de cultivo
+const deleteImage = (req, res) => {
+  const { id } = req.params;
+
+  console.log('🗑️ [CROP-CONTROLLER] Eliminando imagen para cultivo:', id);
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [CROP-CONTROLLER] Error de conexion BD:', err);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    CropModel.getImageUrl(conn, id, (err, imageUrl) => {
+      if (err) {
+        console.error('❌ [CROP-CONTROLLER] Error al obtener imagen actual:', err);
+        return res.status(500).json({ error: 'Error al obtener imagen actual' });
+      }
+
+      if (!imageUrl) {
+        return res.status(404).json({ error: 'El cultivo no tiene imagen' });
+      }
+
+      CropModel.updateImageUrl(conn, id, null, (err, result) => {
+        if (err) {
+          console.error('❌ [CROP-CONTROLLER] Error al eliminar imagen en BD:', err);
+          return res.status(500).json({ error: 'Error al eliminar la imagen' });
+        }
+
+        try {
+          multerService.deleteFile(imageUrl);
+        } catch (deleteErr) {
+          console.warn('⚠️ [CROP-CONTROLLER] No se pudo eliminar archivo:', deleteErr);
+        }
+
+        console.log('✅ [CROP-CONTROLLER] Imagen eliminada para cultivo:', id);
+        res.status(200).json({ message: 'Imagen eliminada correctamente' });
+      });
+    });
+  });
+};
+
 export {
   createCrop,
   getCropsByUser,
   getCropById,
   updateCrop,
-  deleteCrop
+  deleteCrop,
+  uploadImage,
+  deleteImage
 };

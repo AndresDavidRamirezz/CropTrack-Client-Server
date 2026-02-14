@@ -11,7 +11,6 @@ const createMeasurement = (req, res) => {
     unidad: req.body.unidad,
     fecha_medicion: req.body.fecha_medicion || new Date(),
     observaciones: req.body.observaciones || null,
-    imagen_url: req.body.imagen_url || null
   };
 
   req.getConnection((err, conn) => {

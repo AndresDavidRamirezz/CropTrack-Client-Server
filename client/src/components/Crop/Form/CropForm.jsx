@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './CropForm.css';
+
+const API_URL = 'http://localhost:4000/api/crops';
 
 const TIPOS_CULTIVO = [
   { value: '', label: 'Seleccionar tipo...' },
@@ -35,6 +37,17 @@ const initialFormState = {
 const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
+  const [imageUrl, setImageUrl] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageMessage, setImageMessage] = useState({ type: '', text: '' });
+  const [showWebcam, setShowWebcam] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
+
+  const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
 
   const isEditing = Boolean(initialData);
 
@@ -51,10 +64,13 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
         estado: initialData.estado || 'planificado',
         notas: initialData.notas || ''
       });
+      setImageUrl(initialData.imagen_url || null);
     } else {
       setFormData(initialFormState);
+      setImageUrl(null);
     }
     setErrors({});
+    setImageMessage({ type: '', text: '' });
   }, [initialData]);
 
   const handleChange = (e) => {
@@ -133,6 +149,108 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     setFormData(initialFormState);
     setErrors({});
     if (onCancel) onCancel();
+  };
+
+  const getFullImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `http://localhost:4000${url}`;
+  };
+
+  // Subir archivo como imagen del cultivo
+  const uploadImageFile = async (file) => {
+    if (!initialData?.id) return;
+    setImageLoading(true);
+    setImageMessage({ type: '', text: '' });
+
+    try {
+      const data = new FormData();
+      data.append('image', file);
+
+      const response = await fetch(`${API_URL}/${initialData.id}/image`, {
+        method: 'PUT',
+        body: data
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setImageUrl(result.imagen_url);
+        setImageMessage({ type: 'success', text: 'Imagen actualizada' });
+      } else {
+        throw new Error(result.error || 'Error al subir la imagen');
+      }
+    } catch (err) {
+      setImageMessage({ type: 'error', text: err.message || 'Error al subir la imagen' });
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setImageMessage({ type: 'error', text: 'Solo JPEG, PNG, GIF o WEBP' });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setImageMessage({ type: 'error', text: 'La imagen no puede superar los 5MB' });
+      return;
+    }
+
+    await uploadImageFile(file);
+    e.target.value = '';
+  };
+
+  // Intentar abrir webcam. Si falla, caer al input nativo con capture
+  const startWebcam = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+      });
+      streamRef.current = stream;
+      setShowWebcam(true);
+      setCapturedPhoto(null);
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (err) {
+      console.log('Webcam no disponible, usando camara nativa');
+      cameraInputRef.current?.click();
+    }
+  };
+
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    setCapturedPhoto(canvas.toDataURL('image/jpeg', 0.9));
+  };
+
+  const stopWebcam = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setShowWebcam(false);
+    setCapturedPhoto(null);
+  };
+
+  const usePhoto = async () => {
+    if (!capturedPhoto) return;
+    const response = await fetch(capturedPhoto);
+    const blob = await response.blob();
+    const file = new File([blob], `crop-${Date.now()}.jpg`, { type: 'image/jpeg' });
+    stopWebcam();
+    await uploadImageFile(file);
   };
 
   return (
@@ -302,6 +420,62 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
           />
         </div>
 
+        {/* Seccion de imagen - solo al editar */}
+        {isEditing && (
+          <div className="crop-image-section">
+            <label className="form-label">Imagen del cultivo</label>
+            {imageMessage.text && (
+              <span className={`crop-image-message ${imageMessage.type}`}>
+                {imageMessage.text}
+              </span>
+            )}
+            <div className="crop-image-area">
+              {imageUrl ? (
+                <div className="crop-image-preview">
+                  <img src={getFullImageUrl(imageUrl)} alt="Cultivo" />
+                </div>
+              ) : (
+                <div className="crop-image-empty">Sin imagen</div>
+              )}
+              <div className="crop-image-buttons">
+                <button
+                  type="button"
+                  className="crop-image-btn"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={imageLoading}
+                >
+                  {imageLoading ? 'Subiendo...' : 'Subir imagen'}
+                </button>
+                <button
+                  type="button"
+                  className="crop-image-btn"
+                  onClick={startWebcam}
+                  disabled={imageLoading}
+                >
+                  Tomar foto
+                </button>
+              </div>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              disabled={imageLoading}
+            />
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+              disabled={imageLoading}
+            />
+          </div>
+        )}
+
         <div className="form-actions">
           <button
             type="button"
@@ -320,6 +494,44 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
           </button>
         </div>
       </form>
+
+      {/* Modal de webcam */}
+      {showWebcam && (
+        <div className="crop-webcam-overlay" onClick={stopWebcam}>
+          <div className="crop-webcam-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="crop-webcam-header">
+              <h3>Tomar foto</h3>
+              <button type="button" className="crop-webcam-close" onClick={stopWebcam}>
+                &times;
+              </button>
+            </div>
+            <div className="crop-webcam-preview">
+              {!capturedPhoto ? (
+                <video ref={videoRef} autoPlay playsInline muted className="crop-webcam-video" />
+              ) : (
+                <img src={capturedPhoto} alt="Foto capturada" className="crop-webcam-captured" />
+              )}
+              <canvas ref={canvasRef} style={{ display: 'none' }} />
+            </div>
+            <div className="crop-webcam-actions">
+              {!capturedPhoto ? (
+                <button type="button" className="crop-webcam-btn crop-webcam-btn-capture" onClick={capturePhoto}>
+                  Capturar
+                </button>
+              ) : (
+                <>
+                  <button type="button" className="crop-webcam-btn crop-webcam-btn-retake" onClick={() => setCapturedPhoto(null)}>
+                    Reintentar
+                  </button>
+                  <button type="button" className="crop-webcam-btn crop-webcam-btn-use" onClick={usePhoto}>
+                    {imageLoading ? 'Subiendo...' : 'Usar foto'}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
