@@ -29,87 +29,40 @@ const formatDate = (dateString) => {
   });
 };
 
-const CropCard = ({ crop, onEdit, onDelete }) => {
-  const handleDelete = () => {
-    if (window.confirm(`¿Estás seguro de eliminar la cosecha "${crop.nombre}"?`)) {
-      onDelete(crop.id);
-    }
-  };
+const getFullImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith('http')) return url;
+  return `http://localhost:4000${url}`;
+};
 
+const CropCard = ({ crop, onSelect }) => {
   return (
-    <div className="crop-card">
-      <div className="crop-card-header">
-        <h3 className="crop-nombre">{crop.nombre}</h3>
-        <span className="crop-tipo">{crop.tipo}</span>
+    <div className="crop-card" onClick={() => onSelect(crop)}>
+      <div className="crop-card-thumb">
+        {crop.imagen_url ? (
+          <img src={getFullImageUrl(crop.imagen_url)} alt={crop.nombre} />
+        ) : (
+          <span className="crop-card-thumb-icon">🌱</span>
+        )}
       </div>
-
+      <div className="crop-card-info">
+        <h3 className="crop-card-name">{crop.nombre}</h3>
+        {crop.ubicacion && (
+          <span className="crop-card-location">{crop.ubicacion}</span>
+        )}
+        {crop.fecha_cosecha_estimada && (
+          <span className="crop-card-date">Cosecha: {formatDate(crop.fecha_cosecha_estimada)}</span>
+        )}
+      </div>
       <span
-        className="crop-estado-badge"
+        className="crop-card-estado"
         style={{ backgroundColor: ESTADO_COLORS[crop.estado] || '#6c757d' }}
       >
         {ESTADO_LABELS[crop.estado] || crop.estado}
       </span>
-
-      <div className="crop-card-body">
-        {crop.variedad && (
-          <div className="crop-info-row">
-            <span className="crop-label">Variedad:</span>
-            <span className="crop-value">{crop.variedad}</span>
-          </div>
-        )}
-
-        {crop.area_hectareas && (
-          <div className="crop-info-row">
-            <span className="crop-label">Área:</span>
-            <span className="crop-value">{crop.area_hectareas} ha</span>
-          </div>
-        )}
-
-        {crop.ubicacion && (
-          <div className="crop-info-row">
-            <span className="crop-label">Ubicación:</span>
-            <span className="crop-value">{crop.ubicacion}</span>
-          </div>
-        )}
-
-        {crop.fecha_siembra && (
-          <div className="crop-info-row">
-            <span className="crop-label">Siembra:</span>
-            <span className="crop-value">{formatDate(crop.fecha_siembra)}</span>
-          </div>
-        )}
-
-        {crop.fecha_cosecha_estimada && (
-          <div className="crop-info-row">
-            <span className="crop-label">Cosecha est.:</span>
-            <span className="crop-value">{formatDate(crop.fecha_cosecha_estimada)}</span>
-          </div>
-        )}
-
-        {crop.notas && (
-          <div className="crop-notas">
-            <span className="crop-label">Notas:</span>
-            <p className="crop-notas-text">{crop.notas}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="crop-card-actions">
-        <button
-          className="btn-crop btn-edit"
-          onClick={() => onEdit(crop)}
-        >
-          Editar
-        </button>
-        <button
-          className="btn-crop btn-delete"
-          onClick={handleDelete}
-        >
-          Eliminar
-        </button>
-      </div>
     </div>
   );
 };
 
+export { ESTADO_COLORS, ESTADO_LABELS, formatDate, getFullImageUrl };
 export default CropCard;

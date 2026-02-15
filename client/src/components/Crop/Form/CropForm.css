@@ -1,12 +1,13 @@
 /* components/Crop/Form/CropForm.css */
 
 .crop-form-container {
-  background-color: #1e293b !important;
-  border-radius: 16px;
+  background-color: rgba(30, 41, 59, 0.85) !important;
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  padding: 35px;
-  margin-bottom: 30px;
-  border: 2px solid #334155;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 2px solid rgba(51, 65, 85, 0.7);
 }
 
 /* Header del formulario */
@@ -14,14 +15,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 3px solid #87D000;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #87D000;
 }
 
 .crop-form-header h2 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.05rem;
   color: #ffffff !important;
   font-weight: 700;
 }
@@ -29,9 +30,9 @@
 .editing-badge {
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
   color: #1a1a1a !important;
-  padding: 8px 18px;
-  border-radius: 25px;
-  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
 }
@@ -40,19 +41,20 @@
 .crop-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 4px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 4px;
 }
 
-.form-group {
+.crop-form-container .form-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1px;
+  margin-bottom: 0;
 }
 
 .form-group.full-width {
@@ -60,26 +62,26 @@
 }
 
 /* Labels */
-.form-label {
-  font-size: 0.95rem;
+.crop-form-container .form-label {
+  font-size: 0.75rem;
   font-weight: 600;
   color: #e2e8f0 !important;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
-.required {
+.crop-form-container .required {
   color: #ef4444 !important;
-  margin-left: 4px;
+  margin-left: 3px;
   font-weight: 700;
 }
 
 /* INPUTS - ESTILO VISIBLE Y CLARO */
-.form-input {
-  padding: 16px 18px !important;
-  border: 2px solid #475569 !important;
-  border-radius: 10px !important;
-  font-size: 1rem !important;
+.crop-form-container .form-input {
+  padding: 7px 10px !important;
+  border: 1.5px solid #475569 !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
   color: #0f172a !important;
   background-color: #f8fafc !important;
   transition: all 0.3s ease !important;
@@ -90,7 +92,7 @@
   outline: none !important;
   border-color: #87D000 !important;
   background-color: #ffffff !important;
-  box-shadow: 0 0 0 4px rgba(135, 208, 0, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(135, 208, 0, 0.3) !important;
 }
 
 .form-input:hover:not(:focus):not(:disabled) {
@@ -131,9 +133,9 @@
 /* Textarea */
 .form-textarea {
   resize: vertical;
-  min-height: 130px;
+  min-height: 60px;
   font-family: inherit;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* Error states */
@@ -148,11 +150,11 @@
 }
 
 .error-text {
-  font-size: 0.85rem;
+  font-size: 0.73rem;
   color: #fca5a5 !important;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   font-weight: 600;
 }
 
@@ -161,12 +163,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   background: #ef4444;
   color: white;
   border-radius: 50%;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: bold;
 }
 
@@ -174,22 +176,22 @@
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
-  margin-top: 20px;
-  padding-top: 25px;
-  border-top: 2px solid #334155;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1.5px solid #334155;
 }
 
 .btn-form {
-  padding: 16px 36px;
+  padding: 8px 20px;
   border: none !important;
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .btn-submit {
@@ -225,22 +227,37 @@
   transform: translateY(0);
 }
 
+/* Bottom row - notas + imagen en la misma fila */
+.form-row-bottom {
+  align-items: stretch;
+}
+
+.form-row-bottom .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row-bottom .form-textarea {
+  flex: 1;
+  min-height: 0;
+}
+
 /* ===== Image Section ===== */
 .crop-image-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  background: #0f172a;
-  border-radius: 10px;
-  border: 1px solid #334155;
+  gap: 6px;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(51, 65, 85, 0.7);
 }
 
 .crop-image-message {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
   align-self: flex-start;
 }
 
@@ -257,13 +274,13 @@
 .crop-image-area {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
 }
 
 .crop-image-preview {
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
   overflow: hidden;
   border: 2px solid #334155;
   flex-shrink: 0;
@@ -276,15 +293,15 @@
 }
 
 .crop-image-empty {
-  width: 120px;
-  height: 120px;
-  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
   border: 2px dashed #475569;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #64748b;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   flex-shrink: 0;
 }
 
@@ -295,12 +312,12 @@
 }
 
 .crop-image-btn {
-  padding: 8px 16px;
+  padding: 5px 12px;
   border: 1px solid #475569;
-  border-radius: 8px;
+  border-radius: 6px;
   background: #1e293b;
   color: #e2e8f0;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -420,17 +437,17 @@
 /* Responsive */
 @media (max-width: 768px) {
   .crop-form-container {
-    padding: 25px;
+    padding: 12px;
   }
 
   .form-row {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 8px;
   }
 
   .crop-form-header {
     flex-direction: column;
-    gap: 15px;
+    gap: 8px;
     align-items: flex-start;
   }
 
@@ -446,20 +463,7 @@
 
 @media (max-width: 480px) {
   .crop-form-container {
-    padding: 20px;
-    border-radius: 12px;
-  }
-
-  .crop-form-header h2 {
-    font-size: 1.3rem;
-  }
-
-  .form-input {
-    padding: 14px 16px !important;
-  }
-
-  .btn-form {
-    padding: 14px 24px;
-    font-size: 0.95rem;
+    padding: 10px;
+    border-radius: 10px;
   }
 }

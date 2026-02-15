@@ -2,7 +2,7 @@ import React from 'react';
 import CropCard from '../Card/CropCard';
 import './CropList.css';
 
-const CropList = ({ crops, onEdit, onDelete, loading }) => {
+const CropList = ({ crops, onSelect, loading }) => {
   if (loading) {
     return (
       <div className="crop-list-loading">
@@ -34,8 +34,7 @@ const CropList = ({ crops, onEdit, onDelete, loading }) => {
           <CropCard
             key={crop.id}
             crop={crop}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onSelect={onSelect}
           />
         ))}
       </div>

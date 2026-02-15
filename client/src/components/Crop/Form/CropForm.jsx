@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CropForm.css';
 
-const API_URL = 'http://localhost:4000/api/crops';
-
 const TIPOS_CULTIVO = [
   { value: '', label: 'Seleccionar tipo...' },
   { value: 'hortaliza', label: 'Hortaliza' },
   { value: 'fruta', label: 'Fruta' },
   { value: 'cereal', label: 'Cereal' },
   { value: 'legumbre', label: 'Legumbre' },
-  { value: 'tuberculo', label: 'Tubérculo' },
+  { value: 'tuberculo', label: 'Tuberculo' },
   { value: 'otro', label: 'Otro' }
 ];
 
@@ -37,8 +35,8 @@ const initialFormState = {
 const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
-  const [imageUrl, setImageUrl] = useState(null);
-  const [imageLoading, setImageLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [pendingImageFile, setPendingImageFile] = useState(null);
   const [imageMessage, setImageMessage] = useState({ type: '', text: '' });
   const [showWebcam, setShowWebcam] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
@@ -50,6 +48,12 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
   const streamRef = useRef(null);
 
   const isEditing = Boolean(initialData);
+
+  const getFullImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `http://localhost:4000${url}`;
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -64,11 +68,12 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
         estado: initialData.estado || 'planificado',
         notas: initialData.notas || ''
       });
-      setImageUrl(initialData.imagen_url || null);
+      setImagePreview(initialData.imagen_url ? getFullImageUrl(initialData.imagen_url) : null);
     } else {
       setFormData(initialFormState);
-      setImageUrl(null);
+      setImagePreview(null);
     }
+    setPendingImageFile(null);
     setErrors({});
     setImageMessage({ type: '', text: '' });
   }, [initialData]);
@@ -106,11 +111,11 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     }
 
     if (formData.area_hectareas && formData.area_hectareas < 0) {
-      newErrors.area_hectareas = 'El área no puede ser negativa';
+      newErrors.area_hectareas = 'El area no puede ser negativa';
     }
 
     if (formData.ubicacion && formData.ubicacion.length > 200) {
-      newErrors.ubicacion = 'La ubicación no puede exceder 200 caracteres';
+      newErrors.ubicacion = 'La ubicacion no puede exceder 200 caracteres';
     }
 
     if (formData.fecha_siembra && formData.fecha_cosecha_estimada) {
@@ -139,58 +144,23 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     };
 
     if (isEditing) {
-      onSubmit(initialData.id, dataToSubmit);
+      onSubmit(initialData.id, dataToSubmit, pendingImageFile);
     } else {
-      onSubmit(dataToSubmit);
+      onSubmit(dataToSubmit, pendingImageFile);
     }
   };
 
   const handleReset = () => {
     setFormData(initialFormState);
     setErrors({});
+    setPendingImageFile(null);
+    setImagePreview(null);
+    setImageMessage({ type: '', text: '' });
     if (onCancel) onCancel();
   };
 
-  const getFullImageUrl = (url) => {
-    if (!url) return null;
-    if (url.startsWith('http')) return url;
-    return `http://localhost:4000${url}`;
-  };
-
-  // Subir archivo como imagen del cultivo
-  const uploadImageFile = async (file) => {
-    if (!initialData?.id) return;
-    setImageLoading(true);
-    setImageMessage({ type: '', text: '' });
-
-    try {
-      const data = new FormData();
-      data.append('image', file);
-
-      const response = await fetch(`${API_URL}/${initialData.id}/image`, {
-        method: 'PUT',
-        body: data
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setImageUrl(result.imagen_url);
-        setImageMessage({ type: 'success', text: 'Imagen actualizada' });
-      } else {
-        throw new Error(result.error || 'Error al subir la imagen');
-      }
-    } catch (err) {
-      setImageMessage({ type: 'error', text: err.message || 'Error al subir la imagen' });
-    } finally {
-      setImageLoading(false);
-    }
-  };
-
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
+  // Seleccionar archivo de imagen (guardarlo local, no subir todavia)
+  const handleImageSelect = (file) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       setImageMessage({ type: 'error', text: 'Solo JPEG, PNG, GIF o WEBP' });
@@ -201,11 +171,19 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
       return;
     }
 
-    await uploadImageFile(file);
+    setPendingImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setImageMessage({ type: 'success', text: 'Imagen seleccionada' });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    handleImageSelect(file);
     e.target.value = '';
   };
 
-  // Intentar abrir webcam. Si falla, caer al input nativo con capture
+  // Webcam
   const startWebcam = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -250,7 +228,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     const blob = await response.blob();
     const file = new File([blob], `crop-${Date.now()}.jpg`, { type: 'image/jpeg' });
     stopWebcam();
-    await uploadImageFile(file);
+    handleImageSelect(file);
   };
 
   return (
@@ -275,7 +253,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
               value={formData.nombre}
               onChange={handleChange}
               className={`form-input ${errors.nombre ? 'input-error' : ''}`}
-              placeholder="Ej: Maíz temporada 2024"
+              placeholder="Ej: Maiz temporada 2024"
               disabled={loading}
               maxLength={100}
             />
@@ -314,7 +292,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
               value={formData.variedad}
               onChange={handleChange}
               className={`form-input ${errors.variedad ? 'input-error' : ''}`}
-              placeholder="Ej: Híbrido DK-7088"
+              placeholder="Ej: Hibrido DK-7088"
               disabled={loading}
               maxLength={100}
             />
@@ -342,7 +320,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
 
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="area_hectareas" className="form-label">Área (hectáreas)</label>
+            <label htmlFor="area_hectareas" className="form-label">Area (hectareas)</label>
             <input
               type="number"
               id="area_hectareas"
@@ -359,7 +337,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="ubicacion" className="form-label">Ubicación</label>
+            <label htmlFor="ubicacion" className="form-label">Ubicacion</label>
             <input
               type="text"
               id="ubicacion"
@@ -406,22 +384,22 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
           </div>
         </div>
 
-        <div className="form-group full-width">
-          <label htmlFor="notas" className="form-label">Notas</label>
-          <textarea
-            id="notas"
-            name="notas"
-            value={formData.notas}
-            onChange={handleChange}
-            className="form-input form-textarea"
-            placeholder="Notas adicionales sobre el cultivo..."
-            disabled={loading}
-            rows={4}
-          />
-        </div>
+        <div className="form-row form-row-bottom">
+          <div className="form-group">
+            <label htmlFor="notas" className="form-label">Notas</label>
+            <textarea
+              id="notas"
+              name="notas"
+              value={formData.notas}
+              onChange={handleChange}
+              className="form-input form-textarea"
+              placeholder="Notas adicionales sobre el cultivo..."
+              disabled={loading}
+              rows={3}
+            />
+          </div>
 
-        {/* Seccion de imagen - solo al editar */}
-        {isEditing && (
+          {/* Seccion de imagen - disponible para crear y editar */}
           <div className="crop-image-section">
             <label className="form-label">Imagen del cultivo</label>
             {imageMessage.text && (
@@ -430,9 +408,9 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
               </span>
             )}
             <div className="crop-image-area">
-              {imageUrl ? (
+              {imagePreview ? (
                 <div className="crop-image-preview">
-                  <img src={getFullImageUrl(imageUrl)} alt="Cultivo" />
+                  <img src={imagePreview} alt="Cultivo" />
                 </div>
               ) : (
                 <div className="crop-image-empty">Sin imagen</div>
@@ -442,15 +420,15 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
                   type="button"
                   className="crop-image-btn"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={imageLoading}
+                  disabled={loading}
                 >
-                  {imageLoading ? 'Subiendo...' : 'Subir imagen'}
+                  Subir imagen
                 </button>
                 <button
                   type="button"
                   className="crop-image-btn"
                   onClick={startWebcam}
-                  disabled={imageLoading}
+                  disabled={loading}
                 >
                   Tomar foto
                 </button>
@@ -462,7 +440,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
               accept="image/*"
               onChange={handleImageChange}
               style={{ display: 'none' }}
-              disabled={imageLoading}
+              disabled={loading}
             />
             <input
               ref={cameraInputRef}
@@ -471,10 +449,10 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
               capture="environment"
               onChange={handleImageChange}
               style={{ display: 'none' }}
-              disabled={imageLoading}
+              disabled={loading}
             />
           </div>
-        )}
+        </div>
 
         <div className="form-actions">
           <button
@@ -524,7 +502,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
                     Reintentar
                   </button>
                   <button type="button" className="crop-webcam-btn crop-webcam-btn-use" onClick={usePhoto}>
-                    {imageLoading ? 'Subiendo...' : 'Usar foto'}
+                    Usar foto
                   </button>
                 </>
               )}

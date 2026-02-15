@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CropForm from '../../components/Crop/Form/CropForm';
 import CropList from '../../components/Crop/List/CropList';
+import { ESTADO_COLORS, ESTADO_LABELS, formatDate, getFullImageUrl } from '../../components/Crop/Card/CropCard';
 import './CropPage.css';
 
 const API_URL = 'http://localhost:4000/api/crops';
@@ -11,18 +12,17 @@ const CropPage = () => {
   const [error, setError] = useState(null);
   const [editingCrop, setEditingCrop] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [selectedCrop, setSelectedCrop] = useState(null);
 
   // Obtener datos del usuario logueado
   const getUserData = () => {
     try {
       const userData = JSON.parse(localStorage.getItem('userData'));
-      console.log('🔍 [CROP-PAGE] userData:', userData);
       return {
         usuario_creador_id: userData?.id,
         empresa: userData?.empresa
       };
     } catch (err) {
-      console.error('❌ [CROP-PAGE] Error obteniendo userData:', err);
       return { usuario_creador_id: null, empresa: null };
     }
   };
@@ -40,22 +40,15 @@ const CropPage = () => {
     setError(null);
 
     try {
-      console.log('🟡 [CROP-PAGE] Cargando cosechas para usuario:', usuario_creador_id);
-
       const response = await fetch(`${API_URL}/user/${usuario_creador_id}`);
       const data = await response.json();
 
-      console.log('📥 [CROP-PAGE] Response status:', response.status);
-      console.log('📥 [CROP-PAGE] Data:', data);
-
       if (response.ok) {
         setCrops(data);
-        console.log('✅ [CROP-PAGE] Cosechas cargadas:', data.length);
       } else {
         throw new Error(data.error || 'Error al cargar las cosechas');
       }
     } catch (err) {
-      console.error('❌ [CROP-PAGE] Error al cargar cosechas:', err);
       setError(err.message || 'Error al cargar las cosechas');
     } finally {
       setLoading(false);
@@ -66,8 +59,28 @@ const CropPage = () => {
     fetchCrops();
   }, []);
 
+  // Subir imagen a una cosecha por ID
+  const uploadImageToCrop = async (cropId, imageFile) => {
+    try {
+      const data = new FormData();
+      data.append('image', imageFile);
+
+      const response = await fetch(`${API_URL}/${cropId}/image`, {
+        method: 'PUT',
+        body: data
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        console.error('Error al subir imagen:', result.error);
+      }
+    } catch (err) {
+      console.error('Error al subir imagen:', err);
+    }
+  };
+
   // Crear nueva cosecha
-  const handleCreate = async (formData) => {
+  const handleCreate = async (formData, imageFile) => {
     setLoading(true);
     setError(null);
 
@@ -75,7 +88,7 @@ const CropPage = () => {
       const { usuario_creador_id, empresa } = getUserData();
 
       if (!usuario_creador_id || !empresa) {
-        throw new Error('No se pudo obtener la información del usuario');
+        throw new Error('No se pudo obtener la informacion del usuario');
       }
 
       const cropData = {
@@ -84,8 +97,6 @@ const CropPage = () => {
         usuario_creador_id
       };
 
-      console.log('🟡 [CROP-PAGE] Creando cosecha:', cropData);
-
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,17 +104,18 @@ const CropPage = () => {
       });
 
       const data = await response.json();
-      console.log('📥 [CROP-PAGE] Response:', response.status, data);
 
       if (response.ok) {
-        console.log('✅ [CROP-PAGE] Cosecha creada exitosamente');
+        // Si hay imagen seleccionada, subirla con el ID de la nueva cosecha
+        if (imageFile && data.id) {
+          await uploadImageToCrop(data.id, imageFile);
+        }
         await fetchCrops();
         setShowForm(false);
       } else {
         throw new Error(data.error || 'Error al crear la cosecha');
       }
     } catch (err) {
-      console.error('❌ [CROP-PAGE] Error al crear cosecha:', err);
       setError(err.message || 'Error al crear la cosecha');
     } finally {
       setLoading(false);
@@ -111,13 +123,11 @@ const CropPage = () => {
   };
 
   // Actualizar cosecha existente
-  const handleUpdate = async (id, formData) => {
+  const handleUpdate = async (id, formData, imageFile) => {
     setLoading(true);
     setError(null);
 
     try {
-      console.log('🟡 [CROP-PAGE] Actualizando cosecha:', id, formData);
-
       const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -125,10 +135,12 @@ const CropPage = () => {
       });
 
       const data = await response.json();
-      console.log('📥 [CROP-PAGE] Response:', response.status, data);
 
       if (response.ok) {
-        console.log('✅ [CROP-PAGE] Cosecha actualizada exitosamente');
+        // Si hay imagen nueva seleccionada, subirla
+        if (imageFile) {
+          await uploadImageToCrop(id, imageFile);
+        }
         await fetchCrops();
         setEditingCrop(null);
         setShowForm(false);
@@ -136,7 +148,6 @@ const CropPage = () => {
         throw new Error(data.error || 'Error al actualizar la cosecha');
       }
     } catch (err) {
-      console.error('❌ [CROP-PAGE] Error al actualizar cosecha:', err);
       setError(err.message || 'Error al actualizar la cosecha');
     } finally {
       setLoading(false);
@@ -149,35 +160,44 @@ const CropPage = () => {
     setError(null);
 
     try {
-      console.log('🟡 [CROP-PAGE] Eliminando cosecha:', id);
-
       const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE'
       });
 
       const data = await response.json();
-      console.log('📥 [CROP-PAGE] Response:', response.status, data);
 
       if (response.ok) {
-        console.log('✅ [CROP-PAGE] Cosecha eliminada exitosamente');
+        setSelectedCrop(null);
         await fetchCrops();
       } else {
         throw new Error(data.error || 'Error al eliminar la cosecha');
       }
     } catch (err) {
-      console.error('❌ [CROP-PAGE] Error al eliminar cosecha:', err);
       setError(err.message || 'Error al eliminar la cosecha');
     } finally {
       setLoading(false);
     }
   };
 
-  // Activar modo edicion
+  // Activar modo edicion desde el modal
   const handleEdit = (crop) => {
+    setSelectedCrop(null);
     setEditingCrop(crop);
     setShowForm(true);
     setError(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Seleccionar cultivo para ver detalle (modal solo lectura)
+  const handleSelect = (crop) => {
+    setSelectedCrop(crop);
+  };
+
+  // Eliminar desde modal
+  const handleDeleteFromModal = () => {
+    if (selectedCrop && window.confirm(`Estas seguro de eliminar la cosecha "${selectedCrop.nombre}"?`)) {
+      handleDelete(selectedCrop.id);
+    }
   };
 
   // Cancelar edicion / crear
@@ -200,10 +220,7 @@ const CropPage = () => {
   return (
     <div className="crop-page">
       <header className="crop-page-header">
-        <div className="header-content">
-          <h1>Gestion de Cosechas</h1>
-          <p>Administra todos tus cultivos en un solo lugar</p>
-        </div>
+        <h1>Gestion de Cosechas</h1>
         <button
           className={`btn-toggle-form ${showForm ? 'active' : ''}`}
           onClick={handleToggleForm}
@@ -214,29 +231,119 @@ const CropPage = () => {
 
       {error && (
         <div className="error-banner">
-          <span className="error-icon">⚠️</span>
+          <span className="error-icon">!</span>
           <span>{error}</span>
           <button className="error-close" onClick={() => setError(null)}>x</button>
         </div>
       )}
 
       <div className="crop-page-content">
-        {showForm && (
-          <CropForm
-            initialData={editingCrop}
-            onSubmit={editingCrop ? handleUpdate : handleCreate}
-            onCancel={handleCancel}
-            loading={loading}
-          />
-        )}
-
         <CropList
           crops={crops}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
+          onSelect={handleSelect}
           loading={loading && !showForm}
         />
       </div>
+
+      {/* Modal del formulario (crear / editar) */}
+      {showForm && (
+        <div className="crop-form-overlay" onClick={handleCancel}>
+          <div className="crop-form-modal" onClick={(e) => e.stopPropagation()}>
+            <CropForm
+              initialData={editingCrop}
+              onSubmit={editingCrop ? handleUpdate : handleCreate}
+              onCancel={handleCancel}
+              loading={loading}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de detalle del cultivo - solo lectura */}
+      {selectedCrop && (
+        <div className="crop-detail-overlay" onClick={() => setSelectedCrop(null)}>
+          <div className="crop-detail-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="crop-detail-header">
+              <div className="crop-detail-header-info">
+                <h2>{selectedCrop.nombre}</h2>
+                <div className="crop-detail-badges">
+                  <span className="crop-detail-tipo">{selectedCrop.tipo}</span>
+                  <span
+                    className="crop-detail-estado"
+                    style={{ backgroundColor: ESTADO_COLORS[selectedCrop.estado] || '#6c757d' }}
+                  >
+                    {ESTADO_LABELS[selectedCrop.estado] || selectedCrop.estado}
+                  </span>
+                </div>
+              </div>
+              <button className="crop-detail-close" onClick={() => setSelectedCrop(null)}>
+                &times;
+              </button>
+            </div>
+
+            {selectedCrop.imagen_url && (
+              <img
+                src={getFullImageUrl(selectedCrop.imagen_url)}
+                alt={selectedCrop.nombre}
+                className="crop-detail-image"
+              />
+            )}
+
+            <div className="crop-detail-body">
+              {selectedCrop.variedad && (
+                <div className="crop-detail-row">
+                  <span className="crop-detail-label">Variedad</span>
+                  <span className="crop-detail-value">{selectedCrop.variedad}</span>
+                </div>
+              )}
+
+              {selectedCrop.area_hectareas && (
+                <div className="crop-detail-row">
+                  <span className="crop-detail-label">Area</span>
+                  <span className="crop-detail-value">{selectedCrop.area_hectareas} ha</span>
+                </div>
+              )}
+
+              {selectedCrop.ubicacion && (
+                <div className="crop-detail-row">
+                  <span className="crop-detail-label">Ubicacion</span>
+                  <span className="crop-detail-value">{selectedCrop.ubicacion}</span>
+                </div>
+              )}
+
+              {selectedCrop.fecha_siembra && (
+                <div className="crop-detail-row">
+                  <span className="crop-detail-label">Siembra</span>
+                  <span className="crop-detail-value">{formatDate(selectedCrop.fecha_siembra)}</span>
+                </div>
+              )}
+
+              {selectedCrop.fecha_cosecha_estimada && (
+                <div className="crop-detail-row">
+                  <span className="crop-detail-label">Cosecha est.</span>
+                  <span className="crop-detail-value">{formatDate(selectedCrop.fecha_cosecha_estimada)}</span>
+                </div>
+              )}
+
+              {selectedCrop.notas && (
+                <div className="crop-detail-notas">
+                  <span className="crop-detail-label">Notas</span>
+                  <p className="crop-detail-notas-text">{selectedCrop.notas}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="crop-detail-actions">
+              <button className="btn-detail-edit" onClick={() => handleEdit(selectedCrop)}>
+                Editar
+              </button>
+              <button className="btn-detail-delete" onClick={handleDeleteFromModal}>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
