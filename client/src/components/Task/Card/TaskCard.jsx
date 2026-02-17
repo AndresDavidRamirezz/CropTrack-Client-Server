@@ -39,14 +39,13 @@ const formatDate = (dateString) => {
   });
 };
 
-const TaskCard = ({ task, crops, onEdit, onDelete }) => {
-  const handleDelete = () => {
-    if (window.confirm(`¿Estas seguro de eliminar la tarea "${task.titulo}"?`)) {
-      onDelete(task.id);
-    }
-  };
+const getFullImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith('http')) return url;
+  return `http://localhost:4000${url}`;
+};
 
-  // Obtener nombre del cultivo
+const TaskCard = ({ task, crops, onSelect }) => {
   const getCropName = () => {
     if (!task.cultivo_id) return null;
     const crop = crops?.find(c => c.id === task.cultivo_id);
@@ -55,89 +54,28 @@ const TaskCard = ({ task, crops, onEdit, onDelete }) => {
 
   const estadoColor = ESTADO_COLORS[task.estado] || '#6c757d';
   const estadoLabel = ESTADO_LABELS[task.estado] || task.estado;
-  const prioridadColor = PRIORIDAD_COLORS[task.prioridad] || '#6c757d';
-  const prioridadLabel = PRIORIDAD_LABELS[task.prioridad] || task.prioridad;
   const cropName = getCropName();
 
   return (
-    <div className="task-card">
-      <div className="task-card-header">
-        <h3 className="task-titulo">{task.titulo}</h3>
-        <span
-          className="task-prioridad-badge"
-          style={{ backgroundColor: prioridadColor }}
-        >
-          {prioridadLabel}
-        </span>
+    <div className="task-card" onClick={() => onSelect(task)}>
+      <div className="task-card-info">
+        <h3 className="task-card-name">{task.titulo}</h3>
+        {cropName && (
+          <span className="task-card-crop">{cropName}</span>
+        )}
+        {task.fecha_limite && (
+          <span className="task-card-date">Limite: {formatDate(task.fecha_limite)}</span>
+        )}
       </div>
-
       <span
-        className="task-estado-badge"
+        className="task-card-estado"
         style={{ backgroundColor: estadoColor }}
       >
         {estadoLabel}
       </span>
-
-      <div className="task-card-body">
-        {cropName && (
-          <div className="task-info-row">
-            <span className="task-label">Cultivo:</span>
-            <span className="task-value">{cropName}</span>
-          </div>
-        )}
-
-        {task.fecha_inicio && (
-          <div className="task-info-row">
-            <span className="task-label">Inicio:</span>
-            <span className="task-value">{formatDate(task.fecha_inicio)}</span>
-          </div>
-        )}
-
-        {task.fecha_limite && (
-          <div className="task-info-row">
-            <span className="task-label">Limite:</span>
-            <span className="task-value task-fecha-limite">{formatDate(task.fecha_limite)}</span>
-          </div>
-        )}
-
-        {task.asignado_a && (
-          <div className="task-info-row">
-            <span className="task-label">Asignado:</span>
-            <span className="task-value task-asignado">{task.asignado_a.substring(0, 8)}...</span>
-          </div>
-        )}
-
-        {task.descripcion && (
-          <div className="task-descripcion">
-            <span className="task-label">Descripcion:</span>
-            <p className="task-descripcion-text">{task.descripcion}</p>
-          </div>
-        )}
-
-        {task.observaciones && (
-          <div className="task-observaciones">
-            <span className="task-label">Observaciones:</span>
-            <p className="task-observaciones-text">{task.observaciones}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="task-card-actions">
-        <button
-          className="btn-task btn-edit"
-          onClick={() => onEdit(task)}
-        >
-          Editar
-        </button>
-        <button
-          className="btn-task btn-delete"
-          onClick={handleDelete}
-        >
-          Eliminar
-        </button>
-      </div>
     </div>
   );
 };
 
+export { ESTADO_COLORS, ESTADO_LABELS, PRIORIDAD_COLORS, PRIORIDAD_LABELS, formatDate, getFullImageUrl };
 export default TaskCard;

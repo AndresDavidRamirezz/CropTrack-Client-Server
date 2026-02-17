@@ -153,105 +153,99 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
       </div>
 
       <form onSubmit={handleSubmit} className="measurement-form">
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="cultivo_id" className="form-label">
-              Cultivo <span className="required">*</span>
-            </label>
-            <select
-              id="cultivo_id"
-              name="cultivo_id"
-              value={formData.cultivo_id}
-              onChange={handleChange}
-              className={`form-input form-select ${errors.cultivo_id ? 'input-error' : ''}`}
-              disabled={loading}
-            >
-              <option value="">Seleccionar cultivo...</option>
-              {crops?.map(crop => (
-                <option key={crop.id} value={crop.id}>
-                  {crop.nombre} - {crop.tipo}
-                </option>
-              ))}
-            </select>
-            {errors.cultivo_id && <span className="error-text">{errors.cultivo_id}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="tipo_medicion" className="form-label">
-              Tipo de Medicion <span className="required">*</span>
-            </label>
-            <select
-              id="tipo_medicion"
-              name="tipo_medicion"
-              value={formData.tipo_medicion}
-              onChange={handleChange}
-              className={`form-input form-select ${errors.tipo_medicion ? 'input-error' : ''}`}
-              disabled={loading}
-            >
-              {TIPOS_MEDICION.map(tipo => (
-                <option key={tipo.value} value={tipo.value}>
-                  {tipo.label}
-                </option>
-              ))}
-            </select>
-            {errors.tipo_medicion && <span className="error-text">{errors.tipo_medicion}</span>}
-          </div>
+        <div className="form-group">
+          <label htmlFor="cultivo_id" className="form-label">
+            Cultivo <span className="required">*</span>
+          </label>
+          <select
+            id="cultivo_id"
+            name="cultivo_id"
+            value={formData.cultivo_id}
+            onChange={handleChange}
+            className={`form-input form-select ${errors.cultivo_id ? 'input-error' : ''}`}
+            disabled={loading}
+          >
+            <option value="">Seleccionar cultivo...</option>
+            {crops?.map(crop => (
+              <option key={crop.id} value={crop.id}>
+                {crop.nombre} - {crop.tipo}
+              </option>
+            ))}
+          </select>
+          {errors.cultivo_id && <span className="error-text">{errors.cultivo_id}</span>}
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="valor" className="form-label">
-              Valor <span className="required">*</span>
-            </label>
-            <input
-              type="number"
-              id="valor"
-              name="valor"
-              value={formData.valor}
-              onChange={handleChange}
-              className={`form-input ${errors.valor ? 'input-error' : ''}`}
-              placeholder="Ej: 25.5"
-              disabled={loading}
-              step="0.01"
-            />
-            {errors.valor && <span className="error-text">{errors.valor}</span>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="unidad" className="form-label">
-              Unidad <span className="required">*</span>
-            </label>
-            <select
-              id="unidad"
-              name="unidad"
-              value={formData.unidad}
-              onChange={handleChange}
-              className={`form-input form-select ${errors.unidad ? 'input-error' : ''}`}
-              disabled={loading}
-            >
-              {UNIDADES.map(unidad => (
-                <option key={unidad.value} value={unidad.value}>
-                  {unidad.label}
-                </option>
-              ))}
-            </select>
-            {errors.unidad && <span className="error-text">{errors.unidad}</span>}
-          </div>
+        <div className="form-group">
+          <label htmlFor="tipo_medicion" className="form-label">
+            Tipo de Medicion <span className="required">*</span>
+          </label>
+          <select
+            id="tipo_medicion"
+            name="tipo_medicion"
+            value={formData.tipo_medicion}
+            onChange={handleChange}
+            className={`form-input form-select ${errors.tipo_medicion ? 'input-error' : ''}`}
+            disabled={loading}
+          >
+            {TIPOS_MEDICION.map(tipo => (
+              <option key={tipo.value} value={tipo.value}>
+                {tipo.label}
+              </option>
+            ))}
+          </select>
+          {errors.tipo_medicion && <span className="error-text">{errors.tipo_medicion}</span>}
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="fecha_medicion" className="form-label">Fecha de Medicion</label>
-            <input
-              type="date"
-              id="fecha_medicion"
-              name="fecha_medicion"
-              value={formData.fecha_medicion}
-              onChange={handleChange}
-              className="form-input"
-              disabled={loading}
-            />
-          </div>
+        <div className="form-group">
+          <label htmlFor="valor" className="form-label">
+            Valor <span className="required">*</span>
+          </label>
+          <input
+            type="number"
+            id="valor"
+            name="valor"
+            value={formData.valor}
+            onChange={handleChange}
+            className={`form-input ${errors.valor ? 'input-error' : ''}`}
+            placeholder="Ej: 25.5"
+            disabled={loading}
+            step="0.01"
+          />
+          {errors.valor && <span className="error-text">{errors.valor}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="unidad" className="form-label">
+            Unidad <span className="required">*</span>
+          </label>
+          <select
+            id="unidad"
+            name="unidad"
+            value={formData.unidad}
+            onChange={handleChange}
+            className={`form-input form-select ${errors.unidad ? 'input-error' : ''}`}
+            disabled={loading}
+          >
+            {UNIDADES.map(unidad => (
+              <option key={unidad.value} value={unidad.value}>
+                {unidad.label}
+              </option>
+            ))}
+          </select>
+          {errors.unidad && <span className="error-text">{errors.unidad}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="fecha_medicion" className="form-label">Fecha de Medicion</label>
+          <input
+            type="date"
+            id="fecha_medicion"
+            name="fecha_medicion"
+            value={formData.fecha_medicion}
+            onChange={handleChange}
+            className="form-input"
+            disabled={loading}
+          />
         </div>
 
         <div className="form-group full-width">

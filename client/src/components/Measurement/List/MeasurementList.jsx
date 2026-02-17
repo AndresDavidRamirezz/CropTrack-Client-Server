@@ -2,7 +2,7 @@ import React from 'react';
 import MeasurementCard from '../Card/MeasurementCard';
 import './MeasurementList.css';
 
-const MeasurementList = ({ measurements, crops, onEdit, onDelete, loading }) => {
+const MeasurementList = ({ measurements, crops, onSelect, loading }) => {
   if (loading) {
     return (
       <div className="measurement-list-loading">
@@ -35,8 +35,7 @@ const MeasurementList = ({ measurements, crops, onEdit, onDelete, loading }) => 
             key={measurement.id}
             measurement={measurement}
             crops={crops}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onSelect={onSelect}
           />
         ))}
       </div>

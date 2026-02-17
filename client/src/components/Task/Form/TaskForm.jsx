@@ -272,108 +272,102 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
           {errors.titulo && <span className="error-text">{errors.titulo}</span>}
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="cultivo_id" className="form-label">Cultivo (opcional)</label>
-            <select
-              id="cultivo_id"
-              name="cultivo_id"
-              value={formData.cultivo_id}
-              onChange={handleChange}
-              className="form-input form-select"
-              disabled={loading}
-            >
-              <option value="">Sin cultivo asociado</option>
-              {crops?.map(crop => (
-                <option key={crop.id} value={crop.id}>
-                  {crop.nombre} - {crop.tipo}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="asignado_a" className="form-label">Asignado a (UUID)</label>
-            <input
-              type="text"
-              id="asignado_a"
-              name="asignado_a"
-              value={formData.asignado_a}
-              onChange={handleChange}
-              className={`form-input ${errors.asignado_a ? 'input-error' : ''}`}
-              placeholder="UUID del usuario asignado"
-              disabled={loading}
-              maxLength={36}
-            />
-            {errors.asignado_a && <span className="error-text">{errors.asignado_a}</span>}
-          </div>
+        <div className="form-group">
+          <label htmlFor="cultivo_id" className="form-label">Cultivo (opcional)</label>
+          <select
+            id="cultivo_id"
+            name="cultivo_id"
+            value={formData.cultivo_id}
+            onChange={handleChange}
+            className="form-input form-select"
+            disabled={loading}
+          >
+            <option value="">Sin cultivo asociado</option>
+            {crops?.map(crop => (
+              <option key={crop.id} value={crop.id}>
+                {crop.nombre} - {crop.tipo}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="prioridad" className="form-label">Prioridad</label>
-            <select
-              id="prioridad"
-              name="prioridad"
-              value={formData.prioridad}
-              onChange={handleChange}
-              className="form-input form-select"
-              disabled={loading}
-            >
-              {PRIORIDADES.map(prioridad => (
-                <option key={prioridad.value} value={prioridad.value}>
-                  {prioridad.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="estado" className="form-label">Estado</label>
-            <select
-              id="estado"
-              name="estado"
-              value={formData.estado}
-              onChange={handleChange}
-              className="form-input form-select"
-              disabled={loading}
-            >
-              {ESTADOS.map(estado => (
-                <option key={estado.value} value={estado.value}>
-                  {estado.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="form-group">
+          <label htmlFor="asignado_a" className="form-label">Asignado a (UUID)</label>
+          <input
+            type="text"
+            id="asignado_a"
+            name="asignado_a"
+            value={formData.asignado_a}
+            onChange={handleChange}
+            className={`form-input ${errors.asignado_a ? 'input-error' : ''}`}
+            placeholder="UUID del usuario asignado"
+            disabled={loading}
+            maxLength={36}
+          />
+          {errors.asignado_a && <span className="error-text">{errors.asignado_a}</span>}
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="fecha_inicio" className="form-label">Fecha de Inicio</label>
-            <input
-              type="date"
-              id="fecha_inicio"
-              name="fecha_inicio"
-              value={formData.fecha_inicio}
-              onChange={handleChange}
-              className="form-input"
-              disabled={loading}
-            />
-          </div>
+        <div className="form-group">
+          <label htmlFor="prioridad" className="form-label">Prioridad</label>
+          <select
+            id="prioridad"
+            name="prioridad"
+            value={formData.prioridad}
+            onChange={handleChange}
+            className="form-input form-select"
+            disabled={loading}
+          >
+            {PRIORIDADES.map(prioridad => (
+              <option key={prioridad.value} value={prioridad.value}>
+                {prioridad.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="fecha_limite" className="form-label">Fecha Limite</label>
-            <input
-              type="date"
-              id="fecha_limite"
-              name="fecha_limite"
-              value={formData.fecha_limite}
-              onChange={handleChange}
-              className={`form-input ${errors.fecha_limite ? 'input-error' : ''}`}
-              disabled={loading}
-            />
-            {errors.fecha_limite && <span className="error-text">{errors.fecha_limite}</span>}
-          </div>
+        <div className="form-group">
+          <label htmlFor="estado" className="form-label">Estado</label>
+          <select
+            id="estado"
+            name="estado"
+            value={formData.estado}
+            onChange={handleChange}
+            className="form-input form-select"
+            disabled={loading}
+          >
+            {ESTADOS.map(estado => (
+              <option key={estado.value} value={estado.value}>
+                {estado.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="fecha_inicio" className="form-label">Fecha de Inicio</label>
+          <input
+            type="date"
+            id="fecha_inicio"
+            name="fecha_inicio"
+            value={formData.fecha_inicio}
+            onChange={handleChange}
+            className="form-input"
+            disabled={loading}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="fecha_limite" className="form-label">Fecha Limite</label>
+          <input
+            type="date"
+            id="fecha_limite"
+            name="fecha_limite"
+            value={formData.fecha_limite}
+            onChange={handleChange}
+            className={`form-input ${errors.fecha_limite ? 'input-error' : ''}`}
+            disabled={loading}
+          />
+          {errors.fecha_limite && <span className="error-text">{errors.fecha_limite}</span>}
         </div>
 
         <div className="form-group full-width">
@@ -391,25 +385,9 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
           {errors.descripcion && <span className="error-text">{errors.descripcion}</span>}
         </div>
 
-        <div className="form-group full-width">
-          <label htmlFor="observaciones" className="form-label">Observaciones</label>
-          <textarea
-            id="observaciones"
-            name="observaciones"
-            value={formData.observaciones}
-            onChange={handleChange}
-            className={`form-input form-textarea ${errors.observaciones ? 'input-error' : ''}`}
-            placeholder="Observaciones adicionales..."
-            disabled={loading}
-            rows={3}
-          />
-          {errors.observaciones && <span className="error-text">{errors.observaciones}</span>}
-        </div>
-
-        {/* Seccion de imagen - solo al editar */}
         {isEditing && (
-          <div className="task-image-section">
-            <label className="form-label">Imagen de la tarea</label>
+          <div className="task-image-section full-width">
+            <label className="form-label">Imagen</label>
             {imageMessage.text && (
               <span className={`task-image-message ${imageMessage.type}`}>
                 {imageMessage.text}
@@ -461,6 +439,21 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
             />
           </div>
         )}
+
+        <div className="form-group full-width">
+          <label htmlFor="observaciones" className="form-label">Observaciones</label>
+          <textarea
+            id="observaciones"
+            name="observaciones"
+            value={formData.observaciones}
+            onChange={handleChange}
+            className={`form-input form-textarea ${errors.observaciones ? 'input-error' : ''}`}
+            placeholder="Observaciones adicionales..."
+            disabled={loading}
+            rows={3}
+          />
+          {errors.observaciones && <span className="error-text">{errors.observaciones}</span>}
+        </div>
 
         <div className="form-actions">
           <button

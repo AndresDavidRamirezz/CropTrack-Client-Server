@@ -1,12 +1,13 @@
 /* components/Measurement/Form/MeasurementForm.css */
 
 .measurement-form-container {
-  background-color: #1e293b !important;
-  border-radius: 16px;
+  background-color: rgba(30, 41, 59, 0.85) !important;
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  padding: 35px;
-  margin-bottom: 30px;
-  border: 2px solid #334155;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 2px solid rgba(51, 65, 85, 0.7);
 }
 
 /* Header del formulario */
@@ -14,105 +15,100 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 3px solid #87D000;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #00B4D8;
 }
 
 .measurement-form-header h2 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.05rem;
   color: #ffffff !important;
   font-weight: 700;
 }
 
-.editing-badge {
+.measurement-form-container .editing-badge {
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
   color: #1a1a1a !important;
-  padding: 8px 18px;
-  border-radius: 25px;
-  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
 }
 
-/* Form layout */
+/* Form layout - grid de 2 columnas */
 .measurement-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 4px;
 }
 
-.form-group {
+.measurement-form-container .form-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1px;
+  margin-bottom: 0;
 }
 
-.form-group.full-width {
+.measurement-form-container .form-group.full-width {
   grid-column: 1 / -1;
 }
 
 /* Labels */
-.form-label {
-  font-size: 0.95rem;
+.measurement-form-container .form-label {
+  font-size: 0.75rem;
   font-weight: 600;
   color: #e2e8f0 !important;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
-.required {
+.measurement-form-container .required {
   color: #ef4444 !important;
-  margin-left: 4px;
+  margin-left: 3px;
   font-weight: 700;
 }
 
 /* INPUTS - ESTILO VISIBLE Y CLARO */
-.form-input {
-  padding: 16px 18px !important;
-  border: 2px solid #475569 !important;
-  border-radius: 10px !important;
-  font-size: 1rem !important;
+.measurement-form-container .form-input {
+  padding: 7px 10px !important;
+  border: 1.5px solid #475569 !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
   color: #0f172a !important;
   background-color: #f8fafc !important;
   transition: all 0.3s ease !important;
   font-weight: 500 !important;
 }
 
-.form-input:focus {
+.measurement-form-container .form-input:focus {
   outline: none !important;
-  border-color: #87D000 !important;
+  border-color: #00B4D8 !important;
   background-color: #ffffff !important;
-  box-shadow: 0 0 0 4px rgba(135, 208, 0, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.3) !important;
 }
 
-.form-input:hover:not(:focus):not(:disabled) {
+.measurement-form-container .form-input:hover:not(:focus):not(:disabled) {
   border-color: #64748b !important;
   background-color: #ffffff !important;
 }
 
-.form-input:disabled {
+.measurement-form-container .form-input:disabled {
   background-color: #334155 !important;
   color: #94a3b8 !important;
   cursor: not-allowed;
   opacity: 0.8;
 }
 
-.form-input::placeholder {
+.measurement-form-container .form-input::placeholder {
   color: #64748b !important;
   font-style: italic;
   font-weight: 400 !important;
 }
 
 /* Select */
-.form-select {
+.measurement-form-container .form-select {
   cursor: pointer;
   appearance: none;
   background-color: #f8fafc !important;
@@ -122,131 +118,131 @@
   padding-right: 50px !important;
 }
 
-.form-select option {
+.measurement-form-container .form-select option {
   padding: 12px;
   background-color: #ffffff !important;
   color: #0f172a !important;
 }
 
 /* Textarea */
-.form-textarea {
+.measurement-form-container .form-textarea {
   resize: vertical;
-  min-height: 130px;
+  min-height: 60px;
   font-family: inherit;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* Error states */
-.input-error {
+.measurement-form-container .input-error {
   border-color: #ef4444 !important;
   background-color: #fef2f2 !important;
 }
 
-.input-error:focus {
+.measurement-form-container .input-error:focus {
   border-color: #ef4444 !important;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
 }
 
-.error-text {
-  font-size: 0.85rem;
+.measurement-form-container .error-text {
+  font-size: 0.73rem;
   color: #fca5a5 !important;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   font-weight: 600;
 }
 
-.error-text::before {
+.measurement-form-container .error-text::before {
   content: '!';
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   background: #ef4444;
   color: white;
   border-radius: 50%;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: bold;
 }
 
 /* Actions */
-.form-actions {
+.measurement-form-container .form-actions {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
-  margin-top: 20px;
-  padding-top: 25px;
-  border-top: 2px solid #334155;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1.5px solid #334155;
 }
 
-.btn-form {
-  padding: 16px 36px;
+.measurement-form-container .btn-form {
+  padding: 8px 20px;
   border: none !important;
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
-.btn-submit {
-  background: linear-gradient(135deg, #87D000 0%, #65a30d 100%) !important;
+.measurement-form-container .btn-submit {
+  background: linear-gradient(135deg, #00B4D8 0%, #0096B4 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 20px rgba(135, 208, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
 }
 
-.btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #65a30d 0%, #4d7c0f 100%) !important;
+.measurement-form-container .btn-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0096B4 0%, #007A94 100%) !important;
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(135, 208, 0, 0.5);
+  box-shadow: 0 8px 25px rgba(0, 180, 216, 0.5);
 }
 
-.btn-cancel {
+.measurement-form-container .btn-cancel {
   background-color: #475569 !important;
   color: #e2e8f0 !important;
   border: 2px solid #64748b !important;
 }
 
-.btn-cancel:hover:not(:disabled) {
+.measurement-form-container .btn-cancel:hover:not(:disabled) {
   background-color: #64748b !important;
   color: #ffffff !important;
 }
 
-.btn-form:disabled {
+.measurement-form-container .btn-form:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
 }
 
-.btn-form:active:not(:disabled) {
+.measurement-form-container .btn-form:active:not(:disabled) {
   transform: translateY(0);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .measurement-form-container {
-    padding: 25px;
+    padding: 12px;
   }
 
-  .form-row {
+  .measurement-form {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 
   .measurement-form-header {
     flex-direction: column;
-    gap: 15px;
+    gap: 8px;
     align-items: flex-start;
   }
 
-  .form-actions {
+  .measurement-form-container .form-actions {
     flex-direction: column-reverse;
   }
 
-  .btn-form {
+  .measurement-form-container .btn-form {
     width: 100%;
     text-align: center;
   }
@@ -254,20 +250,7 @@
 
 @media (max-width: 480px) {
   .measurement-form-container {
-    padding: 20px;
-    border-radius: 12px;
-  }
-
-  .measurement-form-header h2 {
-    font-size: 1.3rem;
-  }
-
-  .form-input {
-    padding: 14px 16px !important;
-  }
-
-  .btn-form {
-    padding: 14px 24px;
-    font-size: 0.95rem;
+    padding: 10px;
+    border-radius: 10px;
   }
 }

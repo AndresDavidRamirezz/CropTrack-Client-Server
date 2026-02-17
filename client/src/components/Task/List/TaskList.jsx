@@ -2,7 +2,7 @@ import React from 'react';
 import TaskCard from '../Card/TaskCard';
 import './TaskList.css';
 
-const TaskList = ({ tasks, crops, onEdit, onDelete, loading }) => {
+const TaskList = ({ tasks, crops, onSelect, loading }) => {
   if (loading) {
     return (
       <div className="task-list-loading">
@@ -35,8 +35,7 @@ const TaskList = ({ tasks, crops, onEdit, onDelete, loading }) => {
             key={task.id}
             task={task}
             crops={crops}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onSelect={onSelect}
           />
         ))}
       </div>

@@ -60,14 +60,7 @@ const formatDate = (dateString) => {
   });
 };
 
-const MeasurementCard = ({ measurement, crops, onEdit, onDelete }) => {
-  const handleDelete = () => {
-    if (window.confirm(`¿Estas seguro de eliminar esta medicion?`)) {
-      onDelete(measurement.id);
-    }
-  };
-
-  // Obtener nombre del cultivo
+const MeasurementCard = ({ measurement, crops, onSelect }) => {
   const getCropName = () => {
     const crop = crops?.find(c => c.id === measurement.cultivo_id);
     return crop ? crop.nombre : 'Cultivo no encontrado';
@@ -78,54 +71,26 @@ const MeasurementCard = ({ measurement, crops, onEdit, onDelete }) => {
   const unidadLabel = UNIDAD_LABELS[measurement.unidad] || measurement.unidad;
 
   return (
-    <div className="measurement-card">
-      <div className="measurement-card-header">
-        <div className="measurement-crop-name">{getCropName()}</div>
-        <span
-          className="measurement-tipo-badge"
-          style={{ backgroundColor: tipoColor }}
-        >
-          {tipoLabel}
-        </span>
+    <div className="measurement-card" onClick={() => onSelect(measurement)}>
+      <div className="measurement-card-value">
+        <span className="measurement-card-number">{measurement.valor}</span>
+        <span className="measurement-card-unit">{unidadLabel}</span>
       </div>
-
-      <div className="measurement-value-container">
-        <span className="measurement-value">{measurement.valor}</span>
-        <span className="measurement-unidad">{unidadLabel}</span>
-      </div>
-
-      <div className="measurement-card-body">
+      <div className="measurement-card-info">
+        <h3 className="measurement-card-name">{getCropName()}</h3>
         {measurement.fecha_medicion && (
-          <div className="measurement-info-row">
-            <span className="measurement-label">Fecha:</span>
-            <span className="measurement-info-value">{formatDate(measurement.fecha_medicion)}</span>
-          </div>
-        )}
-
-        {measurement.observaciones && (
-          <div className="measurement-observaciones">
-            <span className="measurement-label">Observaciones:</span>
-            <p className="measurement-observaciones-text">{measurement.observaciones}</p>
-          </div>
+          <span className="measurement-card-date">{formatDate(measurement.fecha_medicion)}</span>
         )}
       </div>
-
-      <div className="measurement-card-actions">
-        <button
-          className="btn-measurement btn-edit"
-          onClick={() => onEdit(measurement)}
-        >
-          Editar
-        </button>
-        <button
-          className="btn-measurement btn-delete"
-          onClick={handleDelete}
-        >
-          Eliminar
-        </button>
-      </div>
+      <span
+        className="measurement-card-tipo"
+        style={{ backgroundColor: tipoColor }}
+      >
+        {tipoLabel}
+      </span>
     </div>
   );
 };
 
+export { TIPO_COLORS, TIPO_LABELS, UNIDAD_LABELS, formatDate };
 export default MeasurementCard;
