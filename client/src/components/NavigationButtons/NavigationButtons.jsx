@@ -42,11 +42,11 @@ const NavigationButtons = () => {
       color: 'red'
     },
     {
-      id: 'extras',
-      label: 'Extras',
-      path: '/extras',
-      icon: '⚙️',
-      color: 'gray'
+      id: 'reportes',
+      label: 'Reportes',
+      path: '/report',
+      icon: '📄',
+      color: 'teal'
     }
   ];
 

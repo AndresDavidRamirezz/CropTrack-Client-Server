@@ -90,8 +90,8 @@
   background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
 }
 
-.extras-button {
-  background: linear-gradient(135deg, #607D8B 0%, #37474F 100%);
+.reportes-button {
+  background: linear-gradient(135deg, #00897B 0%, #00695C 100%);
 }
 
 /* Efectos hover específicos por color */
@@ -115,8 +115,8 @@
   box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4);
 }
 
-.extras-button:hover {
-  box-shadow: 0 8px 25px rgba(96, 125, 139, 0.4);
+.reportes-button:hover {
+  box-shadow: 0 8px 25px rgba(0, 137, 123, 0.4);
 }
 
 /* Responsive */

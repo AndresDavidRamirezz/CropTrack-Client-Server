@@ -19,7 +19,7 @@ import MeasurementPage from './pages/Measurement/MeasurementPage.jsx';
 import TaskPage from './pages/Task/TaskPage.jsx';
 import WorkerPage from './pages/Worker/WorkerPage.jsx';
 import ProfilePage from './pages/Profile/ProfilePage.jsx';
-import ExtrasPage from './pages/Extras/ExtrasPage.jsx';
+import ReportPage from './pages/Report/ReportPage.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -37,7 +37,7 @@ root.render(
 				<Route path="/tasks" element={ <ProtectedRoute> <TaskPage /> </ProtectedRoute>} />
 				<Route path="/users" element={ <ProtectedRoute> <WorkerPage /> </ProtectedRoute>} />
 				<Route path="/profile" element={ <ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
-				<Route path="/extras" element={ <ProtectedRoute> <ExtrasPage /> </ProtectedRoute>} />
+				<Route path="/report" element={ <ProtectedRoute> <ReportPage /> </ProtectedRoute>} />
 			</Routes>
 			</main>
 			<Footer />
