@@ -2,7 +2,7 @@
 
 .worker-page {
   min-height: calc(100vh - 140px);
-  padding: 30px;
+  padding: 20px 30px;
 }
 
 /* Header */
@@ -10,77 +10,80 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding: 25px 30px;
+  margin-bottom: 20px;
+  padding: 18px 24px;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.header-content h1 {
-  margin: 0 0 5px 0;
+.worker-header-content h1 {
+  margin: 0 0 4px 0;
   font-size: 1.8rem;
   color: #2d3748;
   font-weight: 700;
 }
 
-.header-content p {
+.worker-header-content p {
   margin: 0;
   color: #718096;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
-.btn-toggle-form {
-  padding: 14px 28px;
+.worker-btn-toggle-form {
+  padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: linear-gradient(135deg, #87D000 0%, #76b800 100%);
+  background: linear-gradient(135deg, #AB47BC 0%, #8E24AA 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(135, 208, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(171, 71, 188, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.btn-toggle-form:hover {
-  background: linear-gradient(135deg, #76b800 0%, #669900 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(135, 208, 0, 0.4);
+.worker-btn-toggle-form:hover {
+  background: linear-gradient(135deg, #BA68C8 0%, #AB47BC 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(171, 71, 188, 0.4);
 }
 
-.btn-toggle-form.active {
+.worker-btn-toggle-form.active {
   background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
 }
 
-.btn-toggle-form.active:hover {
+.worker-btn-toggle-form.active:hover {
   background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
-  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
 }
 
-.btn-toggle-form:active {
+.worker-btn-toggle-form:active {
   transform: translateY(0);
 }
 
 /* Error Banner */
-.error-banner {
+.worker-error-banner {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 15px 20px;
+  padding: 12px 16px;
   background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
   border: 1px solid #fc8181;
-  border-radius: 10px;
-  margin-bottom: 25px;
+  border-radius: 8px;
+  margin-bottom: 15px;
   color: #c53030;
   font-weight: 500;
-  animation: slideIn 0.3s ease;
+  font-size: 0.9rem;
+  animation: workerSlideIn 0.3s ease;
 }
 
-@keyframes slideIn {
+@keyframes workerSlideIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -91,27 +94,28 @@
   }
 }
 
-.error-icon {
+.worker-error-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   background: #c53030;
   color: white;
   border-radius: 50%;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: bold;
+  flex-shrink: 0;
 }
 
-.error-banner span:nth-child(2) {
+.worker-error-banner span:nth-child(2) {
   flex: 1;
 }
 
-.error-close {
+.worker-error-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: #c53030;
   cursor: pointer;
   padding: 0 5px;
@@ -119,7 +123,7 @@
   transition: opacity 0.2s;
 }
 
-.error-close:hover {
+.worker-error-close:hover {
   opacity: 0.7;
 }
 
@@ -127,55 +131,249 @@
 .worker-page-content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
+}
+
+/* ===== Modal del formulario (crear/editar) ===== */
+.worker-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.worker-form-modal {
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.worker-form-modal::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Modal de detalle del trabajador ===== */
+.worker-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.worker-detail-modal {
+  background: #1e293b;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 2px solid #334155;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.worker-detail-modal::-webkit-scrollbar {
+  display: none;
+}
+
+.worker-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-bottom: 3px solid #AB47BC;
+  gap: 12px;
+}
+
+.worker-detail-header-info {
+  flex: 1;
+}
+
+.worker-detail-header-info h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.3rem;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.worker-detail-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.worker-detail-username {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.worker-detail-rol {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.worker-detail-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #94a3b8;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.worker-detail-close:hover {
+  color: #ffffff;
+}
+
+.worker-detail-image {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.worker-detail-body {
+  padding: 20px;
+}
+
+.worker-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #334155;
+}
+
+.worker-detail-row:last-child {
+  border-bottom: none;
+}
+
+.worker-detail-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.worker-detail-value {
+  font-size: 0.9rem;
+  color: #f1f5f9;
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.worker-detail-actions {
+  display: flex;
+  gap: 0;
+  border-top: 2px solid #334155;
+}
+
+.worker-detail-actions button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.worker-btn-detail-edit {
+  background-color: #7B1FA2;
+  color: #ffffff;
+  border-right: 1px solid #334155 !important;
+  border-radius: 0 0 0 14px;
+}
+
+.worker-btn-detail-edit:hover {
+  background-color: #AB47BC;
+  color: #ffffff;
+}
+
+.worker-btn-detail-delete {
+  background-color: #991b1b;
+  color: #ffffff;
+  border-radius: 0 0 14px 0;
+}
+
+.worker-btn-detail-delete:hover {
+  background-color: #ef4444;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .worker-page {
-    padding: 20px;
+    padding: 15px;
   }
 
   .worker-page-header {
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-    text-align: center;
+    align-items: center;
+    gap: 12px;
   }
 
-  .header-content h1 {
-    font-size: 1.5rem;
-  }
-
-  .btn-toggle-form {
-    width: 100%;
+  .worker-detail-modal {
+    max-height: 90vh;
   }
 }
 
 @media (max-width: 480px) {
   .worker-page {
-    padding: 15px;
+    padding: 12px;
   }
 
-  .worker-page-header {
-    padding: 15px;
+  .worker-header-content h1 {
+    font-size: 1.2rem;
   }
 
-  .header-content h1 {
-    font-size: 1.3rem;
-  }
-
-  .header-content p {
+  .worker-error-banner {
+    padding: 10px 12px;
     font-size: 0.85rem;
   }
 
-  .btn-toggle-form {
-    padding: 12px 20px;
-    font-size: 0.9rem;
+  .worker-detail-actions {
+    flex-direction: column;
   }
 
-  .error-banner {
-    padding: 12px 15px;
-    font-size: 0.9rem;
+  .worker-btn-detail-edit {
+    border-right: none !important;
+    border-bottom: 1px solid #334155 !important;
+    border-radius: 0;
+  }
+
+  .worker-btn-detail-delete {
+    border-radius: 0 0 14px 14px;
   }
 }

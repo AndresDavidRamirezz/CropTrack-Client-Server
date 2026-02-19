@@ -495,148 +495,152 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Formulario de edicion - solo visible al hacer click en Editar Perfil */}
+      {/* Modal del formulario de edicion */}
       {isEditing && (
-        <div className="profile-form-container editing">
-          <div className="profile-form-header">
-            <h3>Editar Informacion</h3>
-            <span className="editing-indicator">Modo edicion activo</span>
+        <div className="profile-form-overlay" onClick={handleCancel}>
+          <div className="profile-form-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-form-container editing">
+              <div className="profile-form-header">
+                <h3>Editar Informacion</h3>
+                <span className="editing-indicator">Modo edicion activo</span>
+              </div>
+
+              <form onSubmit={handleSubmit} className="profile-form">
+                <div className="profile-row">
+                  <div className="profile-group">
+                    <label htmlFor="nombre" className="profile-label">
+                      Nombre
+                    </label>
+                    <input
+                      type="text"
+                      id="nombre"
+                      name="nombre"
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      className={`profile-input ${errors.nombre ? 'profile-input-error' : ''}`}
+                      disabled={loading}
+                      maxLength={100}
+                    />
+                    {errors.nombre && <span className="profile-error-text">{errors.nombre}</span>}
+                  </div>
+
+                  <div className="profile-group">
+                    <label htmlFor="apellido" className="profile-label">
+                      Apellido
+                    </label>
+                    <input
+                      type="text"
+                      id="apellido"
+                      name="apellido"
+                      value={formData.apellido}
+                      onChange={handleChange}
+                      className={`profile-input ${errors.apellido ? 'profile-input-error' : ''}`}
+                      disabled={loading}
+                      maxLength={100}
+                    />
+                    {errors.apellido && <span className="profile-error-text">{errors.apellido}</span>}
+                  </div>
+                </div>
+
+                <div className="profile-row">
+                  <div className="profile-group">
+                    <label htmlFor="email" className="profile-label">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={`profile-input ${errors.email ? 'profile-input-error' : ''}`}
+                      disabled={loading}
+                      maxLength={100}
+                    />
+                    {errors.email && <span className="profile-error-text">{errors.email}</span>}
+                  </div>
+
+                  <div className="profile-group">
+                    <label htmlFor="telefono" className="profile-label">
+                      Telefono
+                    </label>
+                    <input
+                      type="tel"
+                      id="telefono"
+                      name="telefono"
+                      value={formData.telefono}
+                      onChange={handleChange}
+                      className={`profile-input ${errors.telefono ? 'profile-input-error' : ''}`}
+                      placeholder="Ej: +54 11 1234-5678"
+                      disabled={loading}
+                      maxLength={20}
+                    />
+                    {errors.telefono && <span className="profile-error-text">{errors.telefono}</span>}
+                  </div>
+                </div>
+
+                <div className="profile-divider">
+                  <span>Cambiar Contrasena (opcional)</span>
+                </div>
+
+                <div className="profile-row">
+                  <div className="profile-group">
+                    <label htmlFor="contrasena" className="profile-label">
+                      Nueva Contrasena
+                    </label>
+                    <input
+                      type="password"
+                      id="contrasena"
+                      name="contrasena"
+                      value={formData.contrasena}
+                      onChange={handleChange}
+                      className={`profile-input ${errors.contrasena ? 'profile-input-error' : ''}`}
+                      placeholder="Dejar vacio para no cambiar"
+                      disabled={loading}
+                      maxLength={100}
+                    />
+                    {errors.contrasena && <span className="profile-error-text">{errors.contrasena}</span>}
+                  </div>
+
+                  <div className="profile-group">
+                    <label htmlFor="confirmarContrasena" className="profile-label">
+                      Confirmar Contrasena
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmarContrasena"
+                      name="confirmarContrasena"
+                      value={formData.confirmarContrasena}
+                      onChange={handleChange}
+                      className={`profile-input ${errors.confirmarContrasena ? 'profile-input-error' : ''}`}
+                      placeholder="Repetir nueva contrasena"
+                      disabled={loading}
+                      maxLength={100}
+                    />
+                    {errors.confirmarContrasena && <span className="profile-error-text">{errors.confirmarContrasena}</span>}
+                  </div>
+                </div>
+
+                <div className="profile-actions">
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="profile-btn profile-btn-cancel"
+                    disabled={loading}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="profile-btn profile-btn-submit"
+                    disabled={loading}
+                  >
+                    {loading ? 'Guardando...' : 'Guardar Cambios'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-
-          <form onSubmit={handleSubmit} className="profile-form">
-            <div className="profile-row">
-              <div className="profile-group">
-                <label htmlFor="nombre" className="profile-label">
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  id="nombre"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  className={`profile-input ${errors.nombre ? 'profile-input-error' : ''}`}
-                  disabled={loading}
-                  maxLength={100}
-                />
-                {errors.nombre && <span className="profile-error-text">{errors.nombre}</span>}
-              </div>
-
-              <div className="profile-group">
-                <label htmlFor="apellido" className="profile-label">
-                  Apellido
-                </label>
-                <input
-                  type="text"
-                  id="apellido"
-                  name="apellido"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  className={`profile-input ${errors.apellido ? 'profile-input-error' : ''}`}
-                  disabled={loading}
-                  maxLength={100}
-                />
-                {errors.apellido && <span className="profile-error-text">{errors.apellido}</span>}
-              </div>
-            </div>
-
-            <div className="profile-row">
-              <div className="profile-group">
-                <label htmlFor="email" className="profile-label">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`profile-input ${errors.email ? 'profile-input-error' : ''}`}
-                  disabled={loading}
-                  maxLength={100}
-                />
-                {errors.email && <span className="profile-error-text">{errors.email}</span>}
-              </div>
-
-              <div className="profile-group">
-                <label htmlFor="telefono" className="profile-label">
-                  Telefono
-                </label>
-                <input
-                  type="tel"
-                  id="telefono"
-                  name="telefono"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  className={`profile-input ${errors.telefono ? 'profile-input-error' : ''}`}
-                  placeholder="Ej: +54 11 1234-5678"
-                  disabled={loading}
-                  maxLength={20}
-                />
-                {errors.telefono && <span className="profile-error-text">{errors.telefono}</span>}
-              </div>
-            </div>
-
-            <div className="profile-divider">
-              <span>Cambiar Contrasena (opcional)</span>
-            </div>
-
-            <div className="profile-row">
-              <div className="profile-group">
-                <label htmlFor="contrasena" className="profile-label">
-                  Nueva Contrasena
-                </label>
-                <input
-                  type="password"
-                  id="contrasena"
-                  name="contrasena"
-                  value={formData.contrasena}
-                  onChange={handleChange}
-                  className={`profile-input ${errors.contrasena ? 'profile-input-error' : ''}`}
-                  placeholder="Dejar vacio para no cambiar"
-                  disabled={loading}
-                  maxLength={100}
-                />
-                {errors.contrasena && <span className="profile-error-text">{errors.contrasena}</span>}
-              </div>
-
-              <div className="profile-group">
-                <label htmlFor="confirmarContrasena" className="profile-label">
-                  Confirmar Contrasena
-                </label>
-                <input
-                  type="password"
-                  id="confirmarContrasena"
-                  name="confirmarContrasena"
-                  value={formData.confirmarContrasena}
-                  onChange={handleChange}
-                  className={`profile-input ${errors.confirmarContrasena ? 'profile-input-error' : ''}`}
-                  placeholder="Repetir nueva contrasena"
-                  disabled={loading}
-                  maxLength={100}
-                />
-                {errors.confirmarContrasena && <span className="profile-error-text">{errors.confirmarContrasena}</span>}
-              </div>
-            </div>
-
-            <div className="profile-actions">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="profile-btn profile-btn-cancel"
-                disabled={loading}
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="profile-btn profile-btn-submit"
-                disabled={loading}
-              >
-                {loading ? 'Guardando...' : 'Guardar Cambios'}
-              </button>
-            </div>
-          </form>
         </div>
       )}
 

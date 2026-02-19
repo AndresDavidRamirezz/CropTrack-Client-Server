@@ -16,7 +16,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 3px solid #87D000;
+  border-bottom: 3px solid #AB47BC;
 }
 
 .worker-form-header h2 {
@@ -88,9 +88,9 @@
 
 .form-input:focus {
   outline: none !important;
-  border-color: #87D000 !important;
+  border-color: #AB47BC !important;
   background-color: #ffffff !important;
-  box-shadow: 0 0 0 4px rgba(135, 208, 0, 0.3) !important;
+  box-shadow: 0 0 0 4px rgba(171, 71, 188, 0.3) !important;
 }
 
 .form-input:hover:not(:focus):not(:disabled) {
@@ -185,15 +185,15 @@
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #87D000 0%, #65a30d 100%) !important;
+  background: linear-gradient(135deg, #AB47BC 0%, #8E24AA 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 20px rgba(135, 208, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(171, 71, 188, 0.4);
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #65a30d 0%, #4d7c0f 100%) !important;
+  background: linear-gradient(135deg, #BA68C8 0%, #AB47BC 100%) !important;
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(135, 208, 0, 0.5);
+  box-shadow: 0 8px 25px rgba(171, 71, 188, 0.5);
 }
 
 .btn-cancel {

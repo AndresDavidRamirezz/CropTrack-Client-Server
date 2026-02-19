@@ -2,11 +2,11 @@ import React from 'react';
 import WorkerCard from '../Card/WorkerCard';
 import './WorkerList.css';
 
-const WorkerList = ({ workers, onEdit, onDelete, loading }) => {
+const WorkerList = ({ workers, onSelect, loading }) => {
   if (loading) {
     return (
       <div className="worker-list-loading">
-        <div className="loading-spinner"></div>
+        <div className="worker-loading-spinner"></div>
         <p>Cargando trabajadores...</p>
       </div>
     );
@@ -15,9 +15,9 @@ const WorkerList = ({ workers, onEdit, onDelete, loading }) => {
   if (!workers || workers.length === 0) {
     return (
       <div className="worker-list-empty">
-        <div className="empty-icon">👥</div>
+        <div className="worker-empty-icon">👥</div>
         <h3>No hay trabajadores registrados</h3>
-        <p>Crea tu primer trabajador usando el formulario de arriba.</p>
+        <p>Crea tu primer trabajador usando el boton de arriba.</p>
       </div>
     );
   }
@@ -34,8 +34,7 @@ const WorkerList = ({ workers, onEdit, onDelete, loading }) => {
           <WorkerCard
             key={worker.id}
             worker={worker}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onSelect={onSelect}
           />
         ))}
       </div>
