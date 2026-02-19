@@ -14,6 +14,7 @@ import cropRoutes from './routes/cropRoutes.js';
 import measurementRoutes from './routes/measurementRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import cropWorkerRoutes from './routes/cropWorkerRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 
 const app = express();
@@ -44,6 +45,10 @@ console.log('🚀 Rutas de registro registradas en /api/register');
 // Rutas de login
 app.use('/api/auth', loginRoutes);
 console.log('🚀 Rutas de login registradas en /api/auth');
+
+// Rutas de crop_workers (antes de crops para evitar conflictos con /:id)
+app.use('/api/crops', cropWorkerRoutes);
+console.log('🚀 Rutas de crop_workers registradas en /api/crops/:cropId/workers');
 
 // Rutas de crops
 app.use('/api/crops', cropRoutes);

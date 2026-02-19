@@ -15,6 +15,7 @@ const TaskPage = () => {
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [assignedWorkerName, setAssignedWorkerName] = useState('');
 
   const getUserData = () => {
     try {
@@ -172,8 +173,24 @@ const TaskPage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSelect = (task) => {
+  const handleSelect = async (task) => {
     setSelectedTask(task);
+    setAssignedWorkerName('');
+
+    if (task.asignado_a && task.cultivo_id) {
+      try {
+        const response = await fetch(`${CROPS_API_URL}/${task.cultivo_id}/workers`);
+        const data = await response.json();
+        if (response.ok) {
+          const worker = data.find(w => w.id === task.asignado_a);
+          if (worker) {
+            setAssignedWorkerName(`${worker.nombre} ${worker.apellido}`);
+          }
+        }
+      } catch (err) {
+        console.error('Error al resolver nombre del trabajador:', err);
+      }
+    }
   };
 
   const handleDeleteFromModal = () => {
@@ -304,10 +321,10 @@ const TaskPage = () => {
                 </div>
               )}
 
-              {selectedTask.asignado_a && (
+              {selectedTask.asignado_a && assignedWorkerName && (
                 <div className="task-detail-row">
                   <span className="task-detail-label">Asignado a</span>
-                  <span className="task-detail-value">{selectedTask.asignado_a}</span>
+                  <span className="task-detail-value">{assignedWorkerName}</span>
                 </div>
               )}
 

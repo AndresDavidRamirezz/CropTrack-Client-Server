@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './MeasurementForm.css';
 
+const CROPS_API_URL = 'http://localhost:4000/api/crops';
+
 const TIPOS_MEDICION = [
   { value: '', label: 'Seleccionar tipo...' },
   { value: 'temperatura', label: 'Temperatura' },
@@ -39,6 +41,7 @@ const UNIDADES = [
 
 const initialFormState = {
   cultivo_id: '',
+  usuario_id: '',
   tipo_medicion: '',
   valor: '',
   unidad: '',
@@ -49,6 +52,7 @@ const initialFormState = {
 const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
+  const [cropWorkers, setCropWorkers] = useState([]);
 
   const isEditing = Boolean(initialData);
 
@@ -56,6 +60,7 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
     if (initialData) {
       setFormData({
         cultivo_id: initialData.cultivo_id || '',
+        usuario_id: initialData.usuario_id || '',
         tipo_medicion: initialData.tipo_medicion || '',
         valor: initialData.valor || '',
         unidad: initialData.unidad || '',
@@ -68,12 +73,40 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
     setErrors({});
   }, [initialData]);
 
+  // Cargar workers asociados a la cosecha seleccionada
+  useEffect(() => {
+    if (!formData.cultivo_id) {
+      setCropWorkers([]);
+      return;
+    }
+
+    const fetchCropWorkers = async () => {
+      try {
+        const response = await fetch(`${CROPS_API_URL}/${formData.cultivo_id}/workers`);
+        const data = await response.json();
+        if (response.ok) {
+          setCropWorkers(data);
+        } else {
+          setCropWorkers([]);
+        }
+      } catch (err) {
+        console.error('Error al cargar workers de la cosecha:', err);
+        setCropWorkers([]);
+      }
+    };
+
+    fetchCropWorkers();
+  }, [formData.cultivo_id]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => {
+      const updated = { ...prev, [name]: value };
+      if (name === 'cultivo_id') {
+        updated.usuario_id = '';
+      }
+      return updated;
+    });
 
     if (errors[name]) {
       setErrors(prev => ({
@@ -119,6 +152,7 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
 
     const dataToSubmit = {
       ...formData,
+      usuario_id: formData.usuario_id || null,
       valor: parseFloat(formData.valor),
       fecha_medicion: formData.fecha_medicion || null,
       observaciones: formData.observaciones || null
@@ -173,6 +207,25 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
             ))}
           </select>
           {errors.cultivo_id && <span className="error-text">{errors.cultivo_id}</span>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="usuario_id" className="form-label">Asignado a</label>
+          <select
+            id="usuario_id"
+            name="usuario_id"
+            value={formData.usuario_id}
+            onChange={handleChange}
+            className="form-input form-select"
+            disabled={loading || !formData.cultivo_id}
+          >
+            <option value="">{formData.cultivo_id ? 'Seleccionar trabajador...' : 'Seleccione un cultivo primero'}</option>
+            {cropWorkers.map(w => (
+              <option key={w.id} value={w.id}>
+                {w.nombre} {w.apellido} ({w.rol})
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">

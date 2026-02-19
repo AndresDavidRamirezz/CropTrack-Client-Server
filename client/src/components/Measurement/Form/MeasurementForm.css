@@ -49,6 +49,8 @@
   flex-direction: column;
   gap: 1px;
   margin-bottom: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .measurement-form-container .form-group.full-width {
@@ -72,6 +74,9 @@
 
 /* INPUTS - ESTILO VISIBLE Y CLARO */
 .measurement-form-container .form-input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
   padding: 7px 10px !important;
   border: 1.5px solid #475569 !important;
   border-radius: 6px !important;

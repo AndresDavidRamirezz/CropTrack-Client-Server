@@ -27,7 +27,7 @@ class MeasurementModel {
       SELECT m.*, c.nombre as cultivo_nombre
       FROM measurements m
       LEFT JOIN crops c ON m.cultivo_id = c.id
-      WHERE m.usuario_id = ?
+      WHERE c.usuario_creador_id = ?
       ORDER BY m.fecha_medicion DESC
     `;
     console.log('🔍 [MEASUREMENT-MODEL] findByUser - Query:', query.trim());
@@ -97,7 +97,6 @@ class MeasurementModel {
 
     // Remover campos que no deben actualizarse
     delete updateData.id;
-    delete updateData.usuario_id;
     delete updateData.created_at;
 
     console.log('📦 [MEASUREMENT-MODEL] update - Datos filtrados:', updateData);

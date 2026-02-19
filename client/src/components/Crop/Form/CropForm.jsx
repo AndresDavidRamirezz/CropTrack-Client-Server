@@ -32,7 +32,7 @@ const initialFormState = {
   notas: ''
 };
 
-const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
+const CropForm = ({ onSubmit, initialData, onCancel, loading, workers = [], initialWorkerIds = [] }) => {
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
@@ -40,6 +40,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
   const [imageMessage, setImageMessage] = useState({ type: '', text: '' });
   const [showWebcam, setShowWebcam] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
+  const [selectedWorkerIds, setSelectedWorkerIds] = useState([]);
 
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
@@ -76,7 +77,8 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     setPendingImageFile(null);
     setErrors({});
     setImageMessage({ type: '', text: '' });
-  }, [initialData]);
+    setSelectedWorkerIds(initialWorkerIds || []);
+  }, [initialData, initialWorkerIds]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,6 +93,14 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
         [name]: ''
       }));
     }
+  };
+
+  const toggleWorker = (workerId) => {
+    setSelectedWorkerIds(prev =>
+      prev.includes(workerId)
+        ? prev.filter(id => id !== workerId)
+        : [...prev, workerId]
+    );
   };
 
   const validateForm = () => {
@@ -144,9 +154,9 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     };
 
     if (isEditing) {
-      onSubmit(initialData.id, dataToSubmit, pendingImageFile);
+      onSubmit(initialData.id, dataToSubmit, pendingImageFile, selectedWorkerIds);
     } else {
-      onSubmit(dataToSubmit, pendingImageFile);
+      onSubmit(dataToSubmit, pendingImageFile, selectedWorkerIds);
     }
   };
 
@@ -156,6 +166,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
     setPendingImageFile(null);
     setImagePreview(null);
     setImageMessage({ type: '', text: '' });
+    setSelectedWorkerIds([]);
     if (onCancel) onCancel();
   };
 
@@ -352,6 +363,68 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading }) => {
             {errors.ubicacion && <span className="error-text">{errors.ubicacion}</span>}
           </div>
         </div>
+
+        {workers.length > 0 && (() => {
+          const supervisores = workers.filter(w => w.rol === 'supervisor');
+          const trabajadores = workers.filter(w => w.rol === 'trabajador');
+
+          return (
+            <div className="crop-workers-section">
+              <div className="crop-workers-header">
+                <label className="form-label">Trabajadores asignados</label>
+                <span className="crop-workers-count">
+                  {selectedWorkerIds.length} seleccionado{selectedWorkerIds.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              <div className="crop-workers-columns">
+                {supervisores.length > 0 && (
+                  <div className="crop-workers-column">
+                    <span className="crop-workers-group-title">Supervisores</span>
+                    <div className="crop-workers-list">
+                      {supervisores.map(w => {
+                        const isSelected = selectedWorkerIds.includes(w.id);
+                        return (
+                          <label key={w.id} className={`crop-workers-item ${isSelected ? 'selected' : ''}`}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleWorker(w.id)}
+                              disabled={loading}
+                            />
+                            <span className="crop-workers-name">{w.nombre} {w.apellido}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {trabajadores.length > 0 && (
+                  <div className="crop-workers-column">
+                    <span className="crop-workers-group-title">Trabajadores</span>
+                    <div className="crop-workers-list">
+                      {trabajadores.map(w => {
+                        const isSelected = selectedWorkerIds.includes(w.id);
+                        return (
+                          <label key={w.id} className={`crop-workers-item ${isSelected ? 'selected' : ''}`}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleWorker(w.id)}
+                              disabled={loading}
+                            />
+                            <span className="crop-workers-name">{w.nombre} {w.apellido}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="form-row">
           <div className="form-group">

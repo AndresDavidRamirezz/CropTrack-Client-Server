@@ -315,6 +315,58 @@
   border-left: 3px solid #87D000;
 }
 
+/* Workers en modal de detalle */
+.crop-detail-workers {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px dashed #334155;
+}
+
+.crop-detail-workers .crop-detail-label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.crop-detail-workers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.crop-detail-worker-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: #0f172a;
+  border-radius: 6px;
+  border-left: 3px solid #87D000;
+}
+
+.crop-detail-worker-name {
+  font-size: 0.82rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.crop-detail-worker-rol {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.crop-detail-worker-rol.supervisor {
+  background: #198754;
+  color: #ffffff;
+}
+
+.crop-detail-worker-rol.trabajador {
+  background: #0d6efd;
+  color: #ffffff;
+}
+
 .crop-detail-actions {
   display: flex;
   gap: 0;

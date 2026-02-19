@@ -15,6 +15,7 @@ const MeasurementPage = () => {
   const [editingMeasurement, setEditingMeasurement] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedMeasurement, setSelectedMeasurement] = useState(null);
+  const [registeredByName, setRegisteredByName] = useState('');
 
   const getUserData = () => {
     try {
@@ -92,8 +93,7 @@ const MeasurementPage = () => {
       }
 
       const measurementData = {
-        ...formData,
-        usuario_id
+        ...formData
       };
 
       const response = await fetch(API_URL, {
@@ -189,8 +189,24 @@ const MeasurementPage = () => {
     }
   };
 
-  const handleSelect = (measurement) => {
+  const handleSelect = async (measurement) => {
     setSelectedMeasurement(measurement);
+    setRegisteredByName('');
+
+    if (measurement.usuario_id && measurement.cultivo_id) {
+      try {
+        const response = await fetch(`${CROPS_API_URL}/${measurement.cultivo_id}/workers`);
+        const data = await response.json();
+        if (response.ok) {
+          const worker = data.find(w => w.id === measurement.usuario_id);
+          if (worker) {
+            setRegisteredByName(`${worker.nombre} ${worker.apellido}`);
+          }
+        }
+      } catch (err) {
+        console.error('Error al resolver nombre del trabajador:', err);
+      }
+    }
   };
 
   const handleDeleteFromModal = () => {
@@ -282,6 +298,13 @@ const MeasurementPage = () => {
                 <span className="measurement-detail-label">Cultivo</span>
                 <span className="measurement-detail-value">{getCropName(selectedMeasurement.cultivo_id)}</span>
               </div>
+
+              {selectedMeasurement.usuario_id && registeredByName && (
+                <div className="measurement-detail-row">
+                  <span className="measurement-detail-label">Asignado a</span>
+                  <span className="measurement-detail-value">{registeredByName}</span>
+                </div>
+              )}
 
               <div className="measurement-detail-row">
                 <span className="measurement-detail-label">Tipo</span>

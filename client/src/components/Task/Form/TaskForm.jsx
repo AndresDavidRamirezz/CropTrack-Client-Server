@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './TaskForm.css';
 
 const API_URL = 'http://localhost:4000/api/tasks';
+const CROPS_API_URL = 'http://localhost:4000/api/crops';
 
 const PRIORIDADES = [
   { value: 'baja', label: 'Baja' },
@@ -37,6 +38,7 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
   const [imageMessage, setImageMessage] = useState({ type: '', text: '' });
   const [showWebcam, setShowWebcam] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
+  const [cropWorkers, setCropWorkers] = useState([]);
 
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
@@ -68,12 +70,41 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
     setImageMessage({ type: '', text: '' });
   }, [initialData]);
 
+  // Cargar workers asociados a la cosecha seleccionada
+  useEffect(() => {
+    if (!formData.cultivo_id) {
+      setCropWorkers([]);
+      return;
+    }
+
+    const fetchCropWorkers = async () => {
+      try {
+        const response = await fetch(`${CROPS_API_URL}/${formData.cultivo_id}/workers`);
+        const data = await response.json();
+        if (response.ok) {
+          setCropWorkers(data);
+        } else {
+          setCropWorkers([]);
+        }
+      } catch (err) {
+        console.error('Error al cargar workers de la cosecha:', err);
+        setCropWorkers([]);
+      }
+    };
+
+    fetchCropWorkers();
+  }, [formData.cultivo_id]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => {
+      const updated = { ...prev, [name]: value };
+      // Limpiar asignado_a cuando cambia el cultivo
+      if (name === 'cultivo_id') {
+        updated.asignado_a = '';
+      }
+      return updated;
+    });
 
     if (errors[name]) {
       setErrors(prev => ({
@@ -92,10 +123,6 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
       newErrors.titulo = 'El titulo debe tener al menos 3 caracteres';
     } else if (formData.titulo.length > 150) {
       newErrors.titulo = 'El titulo no puede exceder 150 caracteres';
-    }
-
-    if (formData.asignado_a && formData.asignado_a.length !== 36) {
-      newErrors.asignado_a = 'El ID del asignado debe ser un UUID valido (36 caracteres)';
     }
 
     if (formData.descripcion && formData.descripcion.length > 5000) {
@@ -292,18 +319,22 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="asignado_a" className="form-label">Asignado a (UUID)</label>
-          <input
-            type="text"
+          <label htmlFor="asignado_a" className="form-label">Asignado a</label>
+          <select
             id="asignado_a"
             name="asignado_a"
             value={formData.asignado_a}
             onChange={handleChange}
-            className={`form-input ${errors.asignado_a ? 'input-error' : ''}`}
-            placeholder="UUID del usuario asignado"
-            disabled={loading}
-            maxLength={36}
-          />
+            className={`form-input form-select ${errors.asignado_a ? 'input-error' : ''}`}
+            disabled={loading || !formData.cultivo_id}
+          >
+            <option value="">{formData.cultivo_id ? 'Sin asignar' : 'Seleccione un cultivo primero'}</option>
+            {cropWorkers.map(w => (
+              <option key={w.id} value={w.id}>
+                {w.nombre} {w.apellido} ({w.rol})
+              </option>
+            ))}
+          </select>
           {errors.asignado_a && <span className="error-text">{errors.asignado_a}</span>}
         </div>
 

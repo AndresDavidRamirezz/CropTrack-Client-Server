@@ -93,3 +93,17 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`creado_por`) REFERENCES `users` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `tasks_ibfk_3` FOREIGN KEY (`asignado_a`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ==================== TABLA CROP_WORKERS (junction muchos a muchos) ====================
+CREATE TABLE IF NOT EXISTS `crop_workers` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cultivo_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usuario_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cultivo_usuario` (`cultivo_id`, `usuario_id`),
+  KEY `cultivo_id` (`cultivo_id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `cw_fk_crop` FOREIGN KEY (`cultivo_id`) REFERENCES `crops` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cw_fk_user` FOREIGN KEY (`usuario_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -5,6 +5,7 @@ import { ESTADO_COLORS, ESTADO_LABELS, formatDate, getFullImageUrl } from '../..
 import './CropPage.css';
 
 const API_URL = 'http://localhost:4000/api/crops';
+const USERS_API_URL = 'http://localhost:4000/api/users';
 
 const CropPage = () => {
   const [crops, setCrops] = useState([]);
@@ -13,6 +14,8 @@ const CropPage = () => {
   const [editingCrop, setEditingCrop] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
+  const [workers, setWorkers] = useState([]);
+  const [editingWorkerIds, setEditingWorkerIds] = useState([]);
 
   // Obtener datos del usuario logueado
   const getUserData = () => {
@@ -55,8 +58,49 @@ const CropPage = () => {
     }
   };
 
+  const fetchWorkers = async () => {
+    const { empresa } = getUserData();
+    if (!empresa) return;
+
+    try {
+      const response = await fetch(`${USERS_API_URL}/empresa/${encodeURIComponent(empresa)}`);
+      const data = await response.json();
+      if (response.ok) {
+        setWorkers(data);
+      }
+    } catch (err) {
+      console.error('Error al cargar trabajadores:', err);
+    }
+  };
+
+  const fetchCropWorkers = async (cropId) => {
+    try {
+      const response = await fetch(`${API_URL}/${cropId}/workers`);
+      const data = await response.json();
+      if (response.ok) {
+        return data.map(w => w.id);
+      }
+    } catch (err) {
+      console.error('Error al cargar workers de cosecha:', err);
+    }
+    return [];
+  };
+
+  const saveCropWorkers = async (cropId, workerIds) => {
+    try {
+      await fetch(`${API_URL}/${cropId}/workers`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workerIds })
+      });
+    } catch (err) {
+      console.error('Error al guardar workers de cosecha:', err);
+    }
+  };
+
   useEffect(() => {
     fetchCrops();
+    fetchWorkers();
   }, []);
 
   // Subir imagen a una cosecha por ID
@@ -80,7 +124,7 @@ const CropPage = () => {
   };
 
   // Crear nueva cosecha
-  const handleCreate = async (formData, imageFile) => {
+  const handleCreate = async (formData, imageFile, selectedWorkerIds) => {
     setLoading(true);
     setError(null);
 
@@ -106,9 +150,11 @@ const CropPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Si hay imagen seleccionada, subirla con el ID de la nueva cosecha
         if (imageFile && data.id) {
           await uploadImageToCrop(data.id, imageFile);
+        }
+        if (selectedWorkerIds && selectedWorkerIds.length > 0 && data.id) {
+          await saveCropWorkers(data.id, selectedWorkerIds);
         }
         await fetchCrops();
         setShowForm(false);
@@ -123,7 +169,7 @@ const CropPage = () => {
   };
 
   // Actualizar cosecha existente
-  const handleUpdate = async (id, formData, imageFile) => {
+  const handleUpdate = async (id, formData, imageFile, selectedWorkerIds) => {
     setLoading(true);
     setError(null);
 
@@ -137,9 +183,11 @@ const CropPage = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Si hay imagen nueva seleccionada, subirla
         if (imageFile) {
           await uploadImageToCrop(id, imageFile);
+        }
+        if (selectedWorkerIds) {
+          await saveCropWorkers(id, selectedWorkerIds);
         }
         await fetchCrops();
         setEditingCrop(null);
@@ -168,6 +216,7 @@ const CropPage = () => {
 
       if (response.ok) {
         setSelectedCrop(null);
+        setSelectedCropWorkers([]);
         await fetchCrops();
       } else {
         throw new Error(data.error || 'Error al eliminar la cosecha');
@@ -180,17 +229,30 @@ const CropPage = () => {
   };
 
   // Activar modo edicion desde el modal
-  const handleEdit = (crop) => {
+  const handleEdit = async (crop) => {
     setSelectedCrop(null);
+    setError(null);
+    const workerIds = await fetchCropWorkers(crop.id);
+    setEditingWorkerIds(workerIds);
     setEditingCrop(crop);
     setShowForm(true);
-    setError(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const [selectedCropWorkers, setSelectedCropWorkers] = useState([]);
+
   // Seleccionar cultivo para ver detalle (modal solo lectura)
-  const handleSelect = (crop) => {
+  const handleSelect = async (crop) => {
     setSelectedCrop(crop);
+    setSelectedCropWorkers([]);
+    try {
+      const response = await fetch(`${API_URL}/${crop.id}/workers`);
+      const data = await response.json();
+      if (response.ok) {
+        setSelectedCropWorkers(data);
+      }
+    } catch (err) {
+      console.error('Error al cargar workers del cultivo:', err);
+    }
   };
 
   // Eliminar desde modal
@@ -203,6 +265,7 @@ const CropPage = () => {
   // Cancelar edicion / crear
   const handleCancel = () => {
     setEditingCrop(null);
+    setEditingWorkerIds([]);
     setShowForm(false);
     setError(null);
   };
@@ -214,6 +277,7 @@ const CropPage = () => {
     } else {
       setShowForm(true);
       setEditingCrop(null);
+      setEditingWorkerIds([]);
     }
   };
 
@@ -254,6 +318,8 @@ const CropPage = () => {
               onSubmit={editingCrop ? handleUpdate : handleCreate}
               onCancel={handleCancel}
               loading={loading}
+              workers={workers}
+              initialWorkerIds={editingWorkerIds}
             />
           </div>
         </div>
@@ -329,6 +395,22 @@ const CropPage = () => {
                 <div className="crop-detail-notas">
                   <span className="crop-detail-label">Notas</span>
                   <p className="crop-detail-notas-text">{selectedCrop.notas}</p>
+                </div>
+              )}
+
+              {selectedCropWorkers.length > 0 && (
+                <div className="crop-detail-workers">
+                  <span className="crop-detail-label">Trabajadores asignados</span>
+                  <div className="crop-detail-workers-list">
+                    {selectedCropWorkers.map(w => (
+                      <div key={w.id} className="crop-detail-worker-item">
+                        <span className="crop-detail-worker-name">{w.nombre} {w.apellido}</span>
+                        <span className={`crop-detail-worker-rol ${w.rol}`}>
+                          {w.rol === 'supervisor' ? 'Supervisor' : 'Trabajador'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
