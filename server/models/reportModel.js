@@ -42,11 +42,13 @@ class ReportModel {
         u.nombre,
         u.apellido,
         u.rol,
+        u.email,
+        u.telefono,
         u.imagen_url
-      FROM tasks t
-      INNER JOIN users u ON t.asignado_a = u.id
-      WHERE t.cultivo_id = ?
-      ORDER BY u.apellido, u.nombre
+      FROM crop_workers cw
+      INNER JOIN users u ON cw.usuario_id = u.id
+      WHERE cw.cultivo_id = ?
+      ORDER BY u.rol, u.apellido, u.nombre
     `;
     console.log('🔍 [REPORT-MODEL] findWorkersByCrop - Query:', query.trim());
 

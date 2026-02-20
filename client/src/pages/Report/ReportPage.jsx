@@ -11,22 +11,29 @@ const ReportPage = () => {
   const [generatingId, setGeneratingId] = useState(null);
   const [preview, setPreview] = useState(null); // { url, cropName }
 
+  console.log('🔵 [REPORT-PAGE] Render - crops:', crops.length, '- loading:', loading, '- error:', error, '- generatingId:', generatingId, '- preview:', preview ? preview.cropName : null);
+
   const getUserData = () => {
     try {
       const userData = JSON.parse(localStorage.getItem('userData'));
-      return {
+      const result = {
         usuario_creador_id: userData?.id,
         empresa: userData?.empresa
       };
+      console.log('🔵 [REPORT-PAGE] getUserData:', result);
+      return result;
     } catch (err) {
+      console.error('❌ [REPORT-PAGE] getUserData - Error parseando localStorage:', err);
       return { usuario_creador_id: null, empresa: null };
     }
   };
 
   const fetchCrops = async () => {
+    console.log('🔵 [REPORT-PAGE] fetchCrops - Inicio');
     const { usuario_creador_id } = getUserData();
 
     if (!usuario_creador_id) {
+      console.warn('⚠️ [REPORT-PAGE] fetchCrops - usuario_creador_id no encontrado');
       setError('No se pudo identificar al usuario');
       return;
     }
@@ -35,22 +42,30 @@ const ReportPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/crops/user/${usuario_creador_id}`);
+      const url = `${API_URL}/crops/user/${usuario_creador_id}`;
+      console.log('🔵 [REPORT-PAGE] fetchCrops - Fetching:', url);
+      const response = await fetch(url);
+      console.log('🔵 [REPORT-PAGE] fetchCrops - Response status:', response.status);
       const data = await response.json();
 
       if (response.ok) {
+        console.log('✅ [REPORT-PAGE] fetchCrops - Cosechas cargadas:', data.length);
         setCrops(data);
       } else {
+        console.error('❌ [REPORT-PAGE] fetchCrops - Error en respuesta:', data);
         throw new Error(data.error || 'Error al cargar las cosechas');
       }
     } catch (err) {
+      console.error('❌ [REPORT-PAGE] fetchCrops - Catch error:', err.message);
       setError(err.message || 'Error al cargar las cosechas');
     } finally {
       setLoading(false);
+      console.log('🔵 [REPORT-PAGE] fetchCrops - Fin');
     }
   };
 
   useEffect(() => {
+    console.log('🔵 [REPORT-PAGE] useEffect - Montaje inicial, llamando fetchCrops');
     fetchCrops();
   }, []);
 
@@ -58,48 +73,71 @@ const ReportPage = () => {
   useEffect(() => {
     return () => {
       if (preview?.url) {
+        console.log('🔵 [REPORT-PAGE] useEffect cleanup - Revocando blob URL');
         window.URL.revokeObjectURL(preview.url);
       }
     };
   }, [preview]);
 
   const handleGenerateReport = async (cropId, cropName) => {
+    console.log('🟡 [REPORT-PAGE] handleGenerateReport - cropId:', cropId, '- cropName:', cropName);
     setGeneratingId(cropId);
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/reports/${cropId}`);
+      const url = `${API_URL}/reports/${cropId}`;
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Fetching PDF:', url);
+      const startTime = Date.now();
+      const response = await fetch(url);
+      const elapsed = Date.now() - startTime;
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Response status:', response.status, '- Tiempo:', elapsed, 'ms');
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ [REPORT-PAGE] handleGenerateReport - Error respuesta:', errorData);
         throw new Error(errorData.error || 'Error al generar el reporte');
       }
 
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Convirtiendo a blob...');
       const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Blob size:', (blob.size / 1024).toFixed(2), 'KB - type:', blob.type);
+      const blobUrl = window.URL.createObjectURL(blob);
+      console.log('✅ [REPORT-PAGE] handleGenerateReport - Blob URL creada:', blobUrl);
 
       // Abrir previsualizacion en vez de descargar directamente
-      setPreview({ url, cropName });
+      setPreview({ url: blobUrl, cropName });
+      console.log('✅ [REPORT-PAGE] handleGenerateReport - Preview abierto para:', cropName);
     } catch (err) {
+      console.error('❌ [REPORT-PAGE] handleGenerateReport - Catch error:', err.message);
       setError(err.message || 'Error al generar el reporte');
     } finally {
       setGeneratingId(null);
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Fin');
     }
   };
 
   const handleDownload = () => {
-    if (!preview) return;
+    if (!preview) {
+      console.warn('⚠️ [REPORT-PAGE] handleDownload - No hay preview activo');
+      return;
+    }
+
+    const filename = `reporte-${preview.cropName.replace(/\s+/g, '_')}.pdf`;
+    console.log('🔵 [REPORT-PAGE] handleDownload - Descargando:', filename);
 
     const link = document.createElement('a');
     link.href = preview.url;
-    link.download = `reporte-${preview.cropName.replace(/\s+/g, '_')}.pdf`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    console.log('✅ [REPORT-PAGE] handleDownload - Descarga iniciada');
   };
 
   const handleClosePreview = () => {
+    console.log('🔵 [REPORT-PAGE] handleClosePreview - Cerrando preview');
     if (preview?.url) {
+      console.log('🔵 [REPORT-PAGE] handleClosePreview - Revocando blob URL');
       window.URL.revokeObjectURL(preview.url);
     }
     setPreview(null);
@@ -138,7 +176,18 @@ const ReportPage = () => {
       ) : (
         <div className="report-page-grid">
           {crops.map((crop) => (
-            <div key={crop.id} className="report-crop-card">
+            <div
+              key={crop.id}
+              className={`report-crop-card ${generatingId === crop.id ? 'generating' : ''}`}
+              onClick={() => !generatingId && handleGenerateReport(crop.id, crop.nombre)}
+            >
+              {generatingId === crop.id && (
+                <div className="report-crop-card-overlay">
+                  <div className="report-btn-spinner"></div>
+                  <span>Generando reporte...</span>
+                </div>
+              )}
+
               <div className="report-crop-card-thumb">
                 {crop.imagen_url ? (
                   <img src={getFullImageUrl(crop.imagen_url)} alt={crop.nombre} />
@@ -169,20 +218,9 @@ const ReportPage = () => {
                 </span>
               </div>
 
-              <button
-                className="report-crop-card-btn"
-                onClick={() => handleGenerateReport(crop.id, crop.nombre)}
-                disabled={generatingId === crop.id}
-              >
-                {generatingId === crop.id ? (
-                  <>
-                    <span className="report-btn-spinner"></span>
-                    Generando...
-                  </>
-                ) : (
-                  <>📄 Generar Reporte</>
-                )}
-              </button>
+              <div className="report-crop-card-footer">
+                📄 Click para generar reporte
+              </div>
             </div>
           ))}
         </div>

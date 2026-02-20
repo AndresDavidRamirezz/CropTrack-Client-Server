@@ -163,12 +163,38 @@
   flex-direction: column;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  position: relative;
 }
 
 .report-crop-card:hover {
   border-color: #87D000;
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.report-crop-card.generating {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Overlay de generando */
+.report-crop-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 /* Thumbnail */
@@ -254,34 +280,21 @@
   margin-top: 4px;
 }
 
-/* Generate Report Button */
-.report-crop-card-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 14px;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: linear-gradient(135deg, #00897B 0%, #00695C 100%);
-  color: #ffffff;
-  border-top: 2px solid #334155;
-}
-
-.report-crop-card-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #00A99D 0%, #00897B 100%);
-}
-
-.report-crop-card-btn:disabled {
-  background: linear-gradient(135deg, #475569 0%, #334155 100%);
+/* Card Footer */
+.report-crop-card-footer {
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: #94a3b8;
-  cursor: not-allowed;
+  border-top: 1px solid #334155;
+  background: rgba(15, 23, 42, 0.5);
+  transition: all 0.3s ease;
+}
+
+.report-crop-card:hover .report-crop-card-footer {
+  color: #87D000;
+  background: rgba(135, 208, 0, 0.08);
 }
 
 /* Button Spinner */
