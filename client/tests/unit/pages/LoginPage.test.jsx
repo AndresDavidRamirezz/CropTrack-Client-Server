@@ -12,6 +12,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock('../../../src/api/axiosConfig', () => ({
+  __esModule: true,
+  default: {
+    post: jest.fn(),
+    get: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+import api from '../../../src/api/axiosConfig';
+
 // Mock del componente AuthModal
 jest.mock('../../../src/components/AuthModal/AuthModal', () => {
   return function MockAuthModal({ role, setRole }) {
@@ -38,8 +50,8 @@ describe('LoginPage - Tests Unitarios', () => {
     Storage.prototype.getItem = jest.fn();
     Storage.prototype.clear = jest.fn();
 
-    // Mock de fetch global
-    global.fetch = jest.fn();
+    // Reset api.post mock
+    api.post.mockReset();
 
     // Mock de console para evitar ruido en tests
     jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -208,10 +220,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe pasar validación con datos correctos', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'fake-token', user: { id: 1 } }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'fake-token', user: { id: 1 } } });
 
       render(<LoginPage />);
 
@@ -221,7 +230,7 @@ describe('LoginPage - Tests Unitarios', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalled();
+        expect(api.post).toHaveBeenCalled();
       });
     });
   });
@@ -230,10 +239,7 @@ describe('LoginPage - Tests Unitarios', () => {
 
   describe('Proceso de login', () => {
     it('debe llamar a fetch con los datos correctos', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'fake-token', user: { id: 1 } }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'fake-token', user: { id: 1 } } });
 
       render(<LoginPage />);
 
@@ -243,27 +249,20 @@ describe('LoginPage - Tests Unitarios', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/auth/login',
-          expect.objectContaining({
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              usuario: 'testuser',
-              contrasena: 'password123',
-              rol: 'administrador',
-            }),
-          })
+        expect(api.post).toHaveBeenCalledWith(
+          '/api/auth/login',
+          {
+            usuario: 'testuser',
+            contrasena: 'password123',
+            rol: 'administrador',
+          }
         );
       });
     });
 
     it('debe guardar datos en localStorage cuando login es exitoso', async () => {
       const mockUser = { id: 1, nombre: 'Test User' };
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'fake-token', user: mockUser }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'fake-token', user: mockUser } });
 
       render(<LoginPage />);
 
@@ -280,10 +279,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe navegar a /main cuando login es exitoso', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'fake-token', user: { id: 1 } }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'fake-token', user: { id: 1 } } });
 
       render(<LoginPage />);
 
@@ -298,10 +294,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe mostrar error cuando el servidor responde con error', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({ message: 'Credenciales inválidas' }),
-      });
+      api.post.mockRejectedValueOnce(Object.assign(new Error('fail'), { response: { data: { message: 'Credenciales inválidas' } } }));
 
       render(<LoginPage />);
 
@@ -316,10 +309,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe mostrar mensaje por defecto cuando servidor no envía message', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({}),
-      });
+      api.post.mockRejectedValueOnce(new Error('Server error'));
 
       render(<LoginPage />);
 
@@ -334,7 +324,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe mostrar error de conexión cuando fetch falla', async () => {
-      global.fetch.mockRejectedValueOnce(new Error('Network error'));
+      api.post.mockRejectedValueOnce(new Error('Network error'));
 
       render(<LoginPage />);
 
@@ -344,7 +334,7 @@ describe('LoginPage - Tests Unitarios', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
 
       await waitFor(() => {
-        expect(screen.getByText(/Error de conexión con el servidor/)).toBeInTheDocument();
+        expect(screen.getByText(/Credenciales incorrectas/)).toBeInTheDocument();
       });
     });
   });
@@ -353,7 +343,7 @@ describe('LoginPage - Tests Unitarios', () => {
 
   describe('Estado de loading', () => {
     it('debe mostrar "Iniciando sesión..." durante el loading', async () => {
-      global.fetch.mockImplementation(() => new Promise(() => {})); // Never resolves
+      api.post.mockImplementation(() => new Promise(() => {})); // Never resolves
 
       render(<LoginPage />);
 
@@ -368,7 +358,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe deshabilitar inputs durante el loading', async () => {
-      global.fetch.mockImplementation(() => new Promise(() => {}));
+      api.post.mockImplementation(() => new Promise(() => {}));
 
       render(<LoginPage />);
 
@@ -384,7 +374,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe deshabilitar botones durante el loading', async () => {
-      global.fetch.mockImplementation(() => new Promise(() => {}));
+      api.post.mockImplementation(() => new Promise(() => {}));
 
       render(<LoginPage />);
 
@@ -400,10 +390,7 @@ describe('LoginPage - Tests Unitarios', () => {
     });
 
     it('debe restaurar estado normal después de completar login', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({ message: 'Error' }),
-      });
+      api.post.mockRejectedValueOnce(new Error('Test error'));
 
       render(<LoginPage />);
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthModal from '../../components/AuthModal/AuthModal';
+import api from '../../api/axiosConfig';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -47,45 +48,29 @@ const LoginPage = () => {
 
     try {
       console.log('🔐 LOGIN - Enviando credenciales...');
-      console.log('📤 Datos enviados:', {
+
+      const { data } = await api.post('/api/auth/login', {
         usuario: formData.usuario,
-        rol: role.toLowerCase()
+        contrasena: formData.contrasena,
+        rol: role
       });
 
-      const response = await fetch('http://localhost:4000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          usuario: formData.usuario, 
-          contrasena: formData.contrasena, 
-          rol: role
-        })
-      });
-      
-      const data = await response.json();
       console.log('🔐 LOGIN - Respuesta del servidor:', data);
 
-      if (response.ok && data.token) {
+      if (data.token) {
         console.log('✅ LOGIN - Exitoso');
 
-        // Guardar en localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('userData', JSON.stringify(data.user));
         localStorage.setItem('usuario', formData.usuario);
-        
+
         console.log('💾 LOGIN - Datos guardados en localStorage');
-        
-        // Navegar a página principal
         navigate('/main');
-        
-      } else {
-        // Errores del servidor
-        setError(data.message || 'Credenciales incorrectas');
-        console.error('❌ LOGIN - Error:', data.message);
       }
     } catch (err) {
-      console.error('❌ LOGIN - Error de conexión:', err);
-      setError('Error de conexión con el servidor. Verifica que el backend esté corriendo.');
+      const msg = err.response?.data?.message || 'Credenciales incorrectas';
+      console.error('❌ LOGIN - Error:', msg);
+      setError(msg);
     } finally {
       setLoading(false);
     }

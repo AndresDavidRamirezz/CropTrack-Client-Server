@@ -322,6 +322,7 @@ describe('LoginController - Unit Tests', () => {
           email: mockUser.email,
           empresa: mockUser.empresa,
           telefono: mockUser.telefono,
+          imagen_url: null,
           rol: mockUser.rol,
           ultimo_acceso: mockUser.ultimo_acceso,
           created_at: mockUser.created_at

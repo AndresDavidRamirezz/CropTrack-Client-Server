@@ -11,6 +11,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock('../../../src/api/axiosConfig', () => ({
+  __esModule: true,
+  default: {
+    post: jest.fn(),
+    get: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+import api from '../../../src/api/axiosConfig';
+
 // Helper para renderizar con Router
 const renderWithRouter = (component) => {
   return render(<BrowserRouter>{component}</BrowserRouter>);
@@ -21,7 +33,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    global.fetch = jest.fn();
+    api.post.mockReset();
     jest.spyOn(console, 'log').mockImplementation(() => {});
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -246,10 +258,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
     };
 
     it('debe llamar a fetch con los datos correctos', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'Éxito' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
       renderWithRouter(<RegisterPage />);
       llenarFormulario();
@@ -257,21 +266,15 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/register/register-admin',
-          expect.objectContaining({
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          })
+        expect(api.post).toHaveBeenCalledWith(
+          '/api/register/register-admin',
+          expect.objectContaining({ usuario: 'admin_test' })
         );
       });
     });
 
     it('debe incluir rol "administrador" en el body', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'Éxito' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
       renderWithRouter(<RegisterPage />);
       llenarFormulario();
@@ -279,19 +282,15 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
       await waitFor(() => {
-        const callBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-        expect(callBody.rol).toBe('administrador');
+        expect(api.post.mock.calls[0][1].rol).toBe('administrador');
       });
     });
 
     it('debe convertir email a minúsculas', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'Éxito' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
       renderWithRouter(<RegisterPage />);
-      
+
       fireEvent.change(screen.getByLabelText(/Usuario/), { target: { value: 'admin' } });
       fireEvent.change(screen.getByLabelText(/^Contraseña/), { target: { value: 'password123' } });
       fireEvent.change(screen.getByLabelText(/Confirmar Contraseña/), { target: { value: 'password123' } });
@@ -303,16 +302,12 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
       await waitFor(() => {
-        const callBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-        expect(callBody.email).toBe('juan@test.com');
+        expect(api.post.mock.calls[0][1].email).toBe('juan@test.com');
       });
     });
 
     it('debe mostrar mensaje de éxito al registrar correctamente', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'Administrador registrado correctamente' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'Administrador registrado correctamente' } });
 
       renderWithRouter(<RegisterPage />);
       llenarFormulario();
@@ -325,10 +320,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
     });
 
     it('debe mostrar error del servidor', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({ message: 'Usuario ya existe' }),
-      });
+      api.post.mockRejectedValueOnce(Object.assign(new Error('fail'), { response: { data: { message: 'Usuario ya existe' } } }));
 
       renderWithRouter(<RegisterPage />);
       llenarFormulario();
@@ -341,7 +333,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
     });
 
     it('debe mostrar error de conexión', async () => {
-      global.fetch.mockRejectedValueOnce(new Error('Network error'));
+      api.post.mockRejectedValueOnce(new Error('Network error'));
 
       renderWithRouter(<RegisterPage />);
       llenarFormulario();
@@ -349,7 +341,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
       await waitFor(() => {
-        expect(screen.getByText(/Error de conexión/i)).toBeInTheDocument();
+        expect(screen.getByText(/Error al registrar el administrador/i)).toBeInTheDocument();
       });
     });
   });
@@ -465,10 +457,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
         fireEvent.change(screen.getByLabelText(/Email/), { target: { value: 'juan@test.com' } });
         fireEvent.change(screen.getByLabelText(/Empresa/), { target: { value: 'Test Corp' } });
 
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ message: 'Éxito' }),
-        });
+        api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
         // Segundo submit - debe limpiar error anterior
         fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
@@ -479,13 +468,10 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       });
 
       it('debe limpiar mensaje de success al hacer nuevo submit', async () => {
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ message: 'Éxito' }),
-        });
+        api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
         renderWithRouter(<RegisterPage />);
-        
+
         // Llenar y enviar formulario
         fireEvent.change(screen.getByLabelText(/Usuario/), { target: { value: 'admin1' } });
         fireEvent.change(screen.getByLabelText(/^Contraseña/), { target: { value: 'password123' } });
@@ -505,10 +491,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
         jest.advanceTimersByTime(2000);
 
         // Nuevo submit para verificar que se limpió success
-        global.fetch.mockResolvedValueOnce({
-          ok: false,
-          json: async () => ({ message: 'Error nuevo' }),
-        });
+        api.post.mockRejectedValueOnce(Object.assign(new Error('fail'), { response: { data: { message: 'Error nuevo' } } }));
 
         fireEvent.change(screen.getByLabelText(/Usuario/), { target: { value: 'admin2' } });
         fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
@@ -524,11 +507,8 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
     describe('Navegación después de registro exitoso', () => {
       it('debe navegar a /login después de 2 segundos de registro exitoso', async () => {
         jest.useRealTimers(); // Importante: usar timers reales para este test
-        
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ message: 'Administrador registrado correctamente' }),
-        });
+
+        api.post.mockResolvedValueOnce({ data: { message: 'Administrador registrado correctamente' } });
 
         renderWithRouter(<RegisterPage />);
         
@@ -558,10 +538,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       });
 
       it('debe limpiar el formulario después de registro exitoso', async () => {
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ message: 'Éxito' }),
-        });
+        api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
         renderWithRouter(<RegisterPage />);
         
@@ -602,10 +579,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
     
     describe('Edge cases para cobertura completa', () => {
       it('debe manejar respuesta del servidor sin mensaje de error específico', async () => {
-        global.fetch.mockResolvedValueOnce({
-          ok: false,
-          json: async () => ({ error: 'Error genérico' }),
-        });
+        api.post.mockRejectedValueOnce(Object.assign(new Error('fail'), { response: { data: { error: 'Error genérico' } } }));
 
         renderWithRouter(<RegisterPage />);
         
@@ -625,10 +599,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       });
 
       it('debe manejar respuesta del servidor sin mensaje ni error', async () => {
-        global.fetch.mockResolvedValueOnce({
-          ok: false,
-          json: async () => ({}),
-        });
+        api.post.mockRejectedValueOnce(new Error('fail'));
 
         renderWithRouter(<RegisterPage />);
         
@@ -648,12 +619,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       });
 
       it('debe deshabilitar inputs mientras está submitting', async () => {
-        global.fetch.mockImplementationOnce(() => 
-          new Promise(resolve => setTimeout(() => resolve({
-            ok: true,
-            json: async () => ({ message: 'Éxito' })
-          }), 100))
-        );
+        api.post.mockImplementationOnce(() => new Promise(resolve => setTimeout(() => resolve({ data: { message: 'Éxito' } }), 100)));
 
         renderWithRouter(<RegisterPage />);
         
@@ -675,12 +641,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
       });
 
       it('debe cambiar texto del botón a "Registrando..." durante submit', async () => {
-        global.fetch.mockImplementationOnce(() => 
-          new Promise(resolve => setTimeout(() => resolve({
-            ok: true,
-            json: async () => ({ message: 'Éxito' })
-          }), 100))
-        );
+        api.post.mockImplementationOnce(() => new Promise(resolve => setTimeout(() => resolve({ data: { message: 'Éxito' } }), 100)));
 
         renderWithRouter(<RegisterPage />);
         
@@ -704,13 +665,10 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
     
     describe('Manejo de teléfono vacío como null', () => {
       it('debe enviar telefono como null cuando está vacío', async () => {
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ message: 'Éxito' }),
-        });
+        api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
         renderWithRouter(<RegisterPage />);
-        
+
         fireEvent.change(screen.getByLabelText(/Usuario/), { target: { value: 'admin' } });
         fireEvent.change(screen.getByLabelText(/^Contraseña/), { target: { value: 'pass123' } });
         fireEvent.change(screen.getByLabelText(/Confirmar Contraseña/), { target: { value: 'pass123' } });
@@ -723,19 +681,15 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
         fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
         await waitFor(() => {
-          const callBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-          expect(callBody.telefono).toBeNull();
+          expect(api.post.mock.calls[0][1].telefono).toBeNull();
         });
       });
 
       it('debe enviar telefono como null cuando solo tiene espacios', async () => {
-        global.fetch.mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ message: 'Éxito' }),
-        });
+        api.post.mockResolvedValueOnce({ data: { message: 'Éxito' } });
 
         renderWithRouter(<RegisterPage />);
-        
+
         fireEvent.change(screen.getByLabelText(/Usuario/), { target: { value: 'admin' } });
         fireEvent.change(screen.getByLabelText(/^Contraseña/), { target: { value: 'pass123' } });
         fireEvent.change(screen.getByLabelText(/Confirmar Contraseña/), { target: { value: 'pass123' } });
@@ -748,8 +702,7 @@ describe('RegisterPage - Tests Completos (100% Cobertura)', () => {
         fireEvent.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
         await waitFor(() => {
-          const callBody = JSON.parse(global.fetch.mock.calls[0][1].body);
-          expect(callBody.telefono).toBeNull();
+          expect(api.post.mock.calls[0][1].telefono).toBeNull();
         });
       });
     });

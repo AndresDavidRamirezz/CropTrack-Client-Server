@@ -177,7 +177,7 @@ const uploadImage = (req, res) => {
         console.error('❌ [CROP-CONTROLLER] Error al obtener imagen actual:', err);
       }
 
-      const newImageUrl = multerService.getFileUrl('crops', req.file.filename);
+      const newImageUrl = req.file.path;
 
       CropModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
         if (err) {
@@ -190,11 +190,9 @@ const uploadImage = (req, res) => {
         }
 
         if (oldImageUrl) {
-          try {
-            multerService.deleteFile(oldImageUrl);
-          } catch (deleteErr) {
+          multerService.deleteFile(oldImageUrl).catch(deleteErr => {
             console.warn('⚠️ [CROP-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
-          }
+          });
         }
 
         console.log('✅ [CROP-CONTROLLER] Imagen actualizada:', newImageUrl);
@@ -235,11 +233,9 @@ const deleteImage = (req, res) => {
           return res.status(500).json({ error: 'Error al eliminar la imagen' });
         }
 
-        try {
-          multerService.deleteFile(imageUrl);
-        } catch (deleteErr) {
+        multerService.deleteFile(imageUrl).catch(deleteErr => {
           console.warn('⚠️ [CROP-CONTROLLER] No se pudo eliminar archivo:', deleteErr);
-        }
+        });
 
         console.log('✅ [CROP-CONTROLLER] Imagen eliminada para cultivo:', id);
         res.status(200).json({ message: 'Imagen eliminada correctamente' });

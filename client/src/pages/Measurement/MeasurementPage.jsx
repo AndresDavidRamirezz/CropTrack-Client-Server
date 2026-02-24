@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import MeasurementForm from '../../components/Measurement/Form/MeasurementForm';
 import MeasurementList from '../../components/Measurement/List/MeasurementList';
 import { TIPO_COLORS, TIPO_LABELS, UNIDAD_LABELS, formatDate } from '../../components/Measurement/Card/MeasurementCard';
+import api from '../../api/axiosConfig';
 import './MeasurementPage.css';
-
-const API_URL = 'http://localhost:4000/api/measurements';
-const CROPS_API_URL = 'http://localhost:4000/api/crops';
 
 const MeasurementPage = () => {
   const [measurements, setMeasurements] = useState([]);
@@ -39,11 +37,8 @@ const MeasurementPage = () => {
     if (!usuario_id) return;
 
     try {
-      const response = await fetch(`${CROPS_API_URL}/user/${usuario_id}`);
-      const data = await response.json();
-      if (response.ok) {
-        setCrops(data);
-      }
+      const { data } = await api.get(`/api/crops/user/${usuario_id}`);
+      setCrops(data);
     } catch (err) {
       // Error silencioso al cargar cultivos
     }
@@ -61,16 +56,10 @@ const MeasurementPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/user/${usuario_id}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setMeasurements(data);
-      } else {
-        throw new Error(data.error || 'Error al cargar las mediciones');
-      }
+      const { data } = await api.get(`/api/measurements/user/${usuario_id}`);
+      setMeasurements(data);
     } catch (err) {
-      setError(err.message || 'Error al cargar las mediciones');
+      setError(err.response?.data?.error || err.message || 'Error al cargar las mediciones');
     } finally {
       setLoading(false);
     }
@@ -96,22 +85,11 @@ const MeasurementPage = () => {
         ...formData
       };
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(measurementData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchMeasurements();
-        setShowForm(false);
-      } else {
-        throw new Error(data.error || data.message || 'Error al crear la medicion');
-      }
+      await api.post('/api/measurements', measurementData);
+      await fetchMeasurements();
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al crear la medicion');
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Error al crear la medicion');
     } finally {
       setLoading(false);
     }
@@ -122,23 +100,12 @@ const MeasurementPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchMeasurements();
-        setEditingMeasurement(null);
-        setShowForm(false);
-      } else {
-        throw new Error(data.error || data.message || 'Error al actualizar la medicion');
-      }
+      await api.put(`/api/measurements/${id}`, formData);
+      await fetchMeasurements();
+      setEditingMeasurement(null);
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al actualizar la medicion');
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Error al actualizar la medicion');
     } finally {
       setLoading(false);
     }
@@ -149,19 +116,10 @@ const MeasurementPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE'
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchMeasurements();
-      } else {
-        throw new Error(data.error || 'Error al eliminar la medicion');
-      }
+      await api.delete(`/api/measurements/${id}`);
+      await fetchMeasurements();
     } catch (err) {
-      setError(err.message || 'Error al eliminar la medicion');
+      setError(err.response?.data?.error || err.message || 'Error al eliminar la medicion');
     } finally {
       setLoading(false);
     }
@@ -195,13 +153,10 @@ const MeasurementPage = () => {
 
     if (measurement.usuario_id && measurement.cultivo_id) {
       try {
-        const response = await fetch(`${CROPS_API_URL}/${measurement.cultivo_id}/workers`);
-        const data = await response.json();
-        if (response.ok) {
-          const worker = data.find(w => w.id === measurement.usuario_id);
-          if (worker) {
-            setRegisteredByName(`${worker.nombre} ${worker.apellido}`);
-          }
+        const { data } = await api.get(`/api/crops/${measurement.cultivo_id}/workers`);
+        const worker = data.find(w => w.id === measurement.usuario_id);
+        if (worker) {
+          setRegisteredByName(`${worker.nombre} ${worker.apellido}`);
         }
       } catch (err) {
         console.error('Error al resolver nombre del trabajador:', err);

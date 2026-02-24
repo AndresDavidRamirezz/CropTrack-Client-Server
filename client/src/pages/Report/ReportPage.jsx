@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ESTADO_COLORS, ESTADO_LABELS, formatDate, getFullImageUrl } from '../../components/Crop/Card/CropCard';
+import api from '../../api/axiosConfig';
 import './ReportPage.css';
-
-const API_URL = 'http://localhost:4000/api';
 
 const ReportPage = () => {
   const [crops, setCrops] = useState([]);
@@ -42,22 +41,13 @@ const ReportPage = () => {
     setError(null);
 
     try {
-      const url = `${API_URL}/crops/user/${usuario_creador_id}`;
-      console.log('🔵 [REPORT-PAGE] fetchCrops - Fetching:', url);
-      const response = await fetch(url);
-      console.log('🔵 [REPORT-PAGE] fetchCrops - Response status:', response.status);
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('✅ [REPORT-PAGE] fetchCrops - Cosechas cargadas:', data.length);
-        setCrops(data);
-      } else {
-        console.error('❌ [REPORT-PAGE] fetchCrops - Error en respuesta:', data);
-        throw new Error(data.error || 'Error al cargar las cosechas');
-      }
+      console.log('🔵 [REPORT-PAGE] fetchCrops - Fetching para usuario:', usuario_creador_id);
+      const { data } = await api.get(`/api/crops/user/${usuario_creador_id}`);
+      console.log('✅ [REPORT-PAGE] fetchCrops - Cosechas cargadas:', data.length);
+      setCrops(data);
     } catch (err) {
       console.error('❌ [REPORT-PAGE] fetchCrops - Catch error:', err.message);
-      setError(err.message || 'Error al cargar las cosechas');
+      setError(err.response?.data?.error || err.message || 'Error al cargar las cosechas');
     } finally {
       setLoading(false);
       console.log('🔵 [REPORT-PAGE] fetchCrops - Fin');
@@ -85,22 +75,14 @@ const ReportPage = () => {
     setError(null);
 
     try {
-      const url = `${API_URL}/reports/${cropId}`;
-      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Fetching PDF:', url);
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Fetching PDF para cropId:', cropId);
       const startTime = Date.now();
-      const response = await fetch(url);
+      const response = await api.get(`/api/reports/${cropId}`, { responseType: 'blob' });
       const elapsed = Date.now() - startTime;
-      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Response status:', response.status, '- Tiempo:', elapsed, 'ms');
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Tiempo:', elapsed, 'ms');
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('❌ [REPORT-PAGE] handleGenerateReport - Error respuesta:', errorData);
-        throw new Error(errorData.error || 'Error al generar el reporte');
-      }
-
-      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Convirtiendo a blob...');
-      const blob = await response.blob();
-      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Blob size:', (blob.size / 1024).toFixed(2), 'KB - type:', blob.type);
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      console.log('🔵 [REPORT-PAGE] handleGenerateReport - Blob size:', (blob.size / 1024).toFixed(2), 'KB');
       const blobUrl = window.URL.createObjectURL(blob);
       console.log('✅ [REPORT-PAGE] handleGenerateReport - Blob URL creada:', blobUrl);
 
@@ -109,7 +91,7 @@ const ReportPage = () => {
       console.log('✅ [REPORT-PAGE] handleGenerateReport - Preview abierto para:', cropName);
     } catch (err) {
       console.error('❌ [REPORT-PAGE] handleGenerateReport - Catch error:', err.message);
-      setError(err.message || 'Error al generar el reporte');
+      setError(err.response?.data?.error || err.message || 'Error al generar el reporte');
     } finally {
       setGeneratingId(null);
       console.log('🔵 [REPORT-PAGE] handleGenerateReport - Fin');

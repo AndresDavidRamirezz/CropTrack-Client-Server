@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import api from '../../api/axiosConfig';
 import './ProfilePage.css';
-
-const API_URL = 'http://localhost:4000/api/users';
 
 const ROL_COLORS = {
   administrador: '#dc3545',
@@ -74,24 +73,19 @@ const ProfilePage = () => {
     setLoading(true);
     try {
       console.log('🟡 [PROFILE-PAGE] Obteniendo datos del servidor para:', userData.id);
-      const response = await fetch(`${API_URL}/${userData.id}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('✅ [PROFILE-PAGE] Datos obtenidos:', data);
-        // Actualizar localStorage y estado
-        const updatedUserData = { ...userData, ...data };
-        localStorage.setItem('userData', JSON.stringify(updatedUserData));
-        setUserData(updatedUserData);
-        setFormData({
-          nombre: data.nombre || '',
-          apellido: data.apellido || '',
-          email: data.email || '',
-          telefono: data.telefono || '',
-          contrasena: '',
-          confirmarContrasena: ''
-        });
-      }
+      const { data } = await api.get(`/api/users/${userData.id}`);
+      console.log('✅ [PROFILE-PAGE] Datos obtenidos:', data);
+      const updatedUserData = { ...userData, ...data };
+      localStorage.setItem('userData', JSON.stringify(updatedUserData));
+      setUserData(updatedUserData);
+      setFormData({
+        nombre: data.nombre || '',
+        apellido: data.apellido || '',
+        email: data.email || '',
+        telefono: data.telefono || '',
+        contrasena: '',
+        confirmarContrasena: ''
+      });
     } catch (err) {
       console.error('❌ [PROFILE-PAGE] Error obteniendo datos:', err);
     } finally {
@@ -176,44 +170,32 @@ const ProfilePage = () => {
 
       console.log('🟡 [PROFILE-PAGE] Actualizando perfil:', dataToSubmit);
 
-      const response = await fetch(`${API_URL}/${userData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSubmit)
-      });
+      const { data } = await api.put(`/api/users/${userData.id}`, dataToSubmit);
+      console.log('📥 [PROFILE-PAGE] Response:', data);
+      console.log('✅ [PROFILE-PAGE] Perfil actualizado');
 
-      const data = await response.json();
-      console.log('📥 [PROFILE-PAGE] Response:', response.status, data);
+      const updatedUserData = {
+        ...userData,
+        nombre: formData.nombre.trim(),
+        apellido: formData.apellido.trim(),
+        email: formData.email.toLowerCase().trim(),
+        telefono: formData.telefono.trim() || null
+      };
+      localStorage.setItem('userData', JSON.stringify(updatedUserData));
+      setUserData(updatedUserData);
 
-      if (response.ok) {
-        console.log('✅ [PROFILE-PAGE] Perfil actualizado');
+      setFormData(prev => ({
+        ...prev,
+        contrasena: '',
+        confirmarContrasena: ''
+      }));
 
-        // Actualizar localStorage con los nuevos datos
-        const updatedUserData = {
-          ...userData,
-          nombre: formData.nombre.trim(),
-          apellido: formData.apellido.trim(),
-          email: formData.email.toLowerCase().trim(),
-          telefono: formData.telefono.trim() || null
-        };
-        localStorage.setItem('userData', JSON.stringify(updatedUserData));
-        setUserData(updatedUserData);
-
-        // Limpiar campos de contrasena
-        setFormData(prev => ({
-          ...prev,
-          contrasena: '',
-          confirmarContrasena: ''
-        }));
-
-        setMessage({ type: 'success', text: 'Perfil actualizado correctamente' });
-        setIsEditing(false);
-      } else {
-        throw new Error(data.message || data.error || 'Error al actualizar el perfil');
-      }
+      setMessage({ type: 'success', text: 'Perfil actualizado correctamente' });
+      setIsEditing(false);
     } catch (err) {
+      const msg = err.response?.data?.message || err.response?.data?.error || err.message || 'Error al actualizar el perfil';
       console.error('❌ [PROFILE-PAGE] Error actualizando perfil:', err);
-      setMessage({ type: 'error', text: err.message || 'Error al actualizar el perfil' });
+      setMessage({ type: 'error', text: msg });
     } finally {
       setLoading(false);
     }
@@ -244,7 +226,7 @@ const ProfilePage = () => {
   const getAvatarUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    return `http://localhost:4000${url}`;
+    return `${process.env.REACT_APP_API_URL || 'http://localhost:4000'}${url}`;
   };
 
   // Subir un archivo (File o Blob) como avatar al servidor
@@ -255,25 +237,15 @@ const ProfilePage = () => {
     try {
       const formData = new FormData();
       formData.append('image', file);
-
-      const response = await fetch(`${API_URL}/${userData.id}/image`, {
-        method: 'PUT',
-        body: formData
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        const updatedUserData = { ...userData, imagen_url: data.imagen_url };
-        localStorage.setItem('userData', JSON.stringify(updatedUserData));
-        setUserData(updatedUserData);
-        setMessage({ type: 'success', text: 'Avatar actualizado correctamente' });
-      } else {
-        throw new Error(data.error || 'Error al subir la imagen');
-      }
+      const { data } = await api.put(`/api/users/${userData.id}/image`, formData);
+      const updatedUserData = { ...userData, imagen_url: data.imagen_url };
+      localStorage.setItem('userData', JSON.stringify(updatedUserData));
+      setUserData(updatedUserData);
+      setMessage({ type: 'success', text: 'Avatar actualizado correctamente' });
     } catch (err) {
+      const msg = err.response?.data?.error || err.message || 'Error al subir la imagen';
       console.error('❌ [PROFILE-PAGE] Error subiendo avatar:', err);
-      setMessage({ type: 'error', text: err.message || 'Error al subir la imagen' });
+      setMessage({ type: 'error', text: msg });
     } finally {
       setAvatarLoading(false);
     }

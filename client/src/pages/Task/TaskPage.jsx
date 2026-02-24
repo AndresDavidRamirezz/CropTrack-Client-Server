@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import TaskForm from '../../components/Task/Form/TaskForm';
 import TaskList from '../../components/Task/List/TaskList';
 import { ESTADO_COLORS, ESTADO_LABELS, PRIORIDAD_COLORS, PRIORIDAD_LABELS, formatDate, getFullImageUrl } from '../../components/Task/Card/TaskCard';
+import api from '../../api/axiosConfig';
 import './TaskPage.css';
-
-const API_URL = 'http://localhost:4000/api/tasks';
-const CROPS_API_URL = 'http://localhost:4000/api/crops';
 
 const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
@@ -34,11 +32,8 @@ const TaskPage = () => {
     if (!usuario_id) return;
 
     try {
-      const response = await fetch(`${CROPS_API_URL}/user/${usuario_id}`);
-      const data = await response.json();
-      if (response.ok) {
-        setCrops(data);
-      }
+      const { data } = await api.get(`/api/crops/user/${usuario_id}`);
+      setCrops(data);
     } catch (err) {
       console.error('Error al cargar cultivos:', err);
     }
@@ -56,16 +51,10 @@ const TaskPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/user/${usuario_id}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setTasks(data);
-      } else {
-        throw new Error(data.error || 'Error al cargar las tareas');
-      }
+      const { data } = await api.get(`/api/tasks/user/${usuario_id}`);
+      setTasks(data);
     } catch (err) {
-      setError(err.message || 'Error al cargar las tareas');
+      setError(err.response?.data?.error || err.message || 'Error al cargar las tareas');
     } finally {
       setLoading(false);
     }
@@ -93,22 +82,11 @@ const TaskPage = () => {
         creado_por: usuario_id
       };
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(taskData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchTasks();
-        setShowForm(false);
-      } else {
-        throw new Error(data.error || data.message || 'Error al crear la tarea');
-      }
+      await api.post('/api/tasks', taskData);
+      await fetchTasks();
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al crear la tarea');
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Error al crear la tarea');
     } finally {
       setLoading(false);
     }
@@ -119,23 +97,12 @@ const TaskPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchTasks();
-        setEditingTask(null);
-        setShowForm(false);
-      } else {
-        throw new Error(data.error || data.message || 'Error al actualizar la tarea');
-      }
+      await api.put(`/api/tasks/${id}`, formData);
+      await fetchTasks();
+      setEditingTask(null);
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al actualizar la tarea');
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Error al actualizar la tarea');
     } finally {
       setLoading(false);
     }
@@ -146,20 +113,11 @@ const TaskPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE'
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSelectedTask(null);
-        await fetchTasks();
-      } else {
-        throw new Error(data.error || 'Error al eliminar la tarea');
-      }
+      await api.delete(`/api/tasks/${id}`);
+      setSelectedTask(null);
+      await fetchTasks();
     } catch (err) {
-      setError(err.message || 'Error al eliminar la tarea');
+      setError(err.response?.data?.error || err.message || 'Error al eliminar la tarea');
     } finally {
       setLoading(false);
     }
@@ -179,13 +137,10 @@ const TaskPage = () => {
 
     if (task.asignado_a && task.cultivo_id) {
       try {
-        const response = await fetch(`${CROPS_API_URL}/${task.cultivo_id}/workers`);
-        const data = await response.json();
-        if (response.ok) {
-          const worker = data.find(w => w.id === task.asignado_a);
-          if (worker) {
-            setAssignedWorkerName(`${worker.nombre} ${worker.apellido}`);
-          }
+        const { data } = await api.get(`/api/crops/${task.cultivo_id}/workers`);
+        const worker = data.find(w => w.id === task.asignado_a);
+        if (worker) {
+          setAssignedWorkerName(`${worker.nombre} ${worker.apellido}`);
         }
       } catch (err) {
         console.error('Error al resolver nombre del trabajador:', err);

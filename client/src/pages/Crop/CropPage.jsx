@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import CropForm from '../../components/Crop/Form/CropForm';
 import CropList from '../../components/Crop/List/CropList';
 import { ESTADO_COLORS, ESTADO_LABELS, formatDate, getFullImageUrl } from '../../components/Crop/Card/CropCard';
+import api from '../../api/axiosConfig';
 import './CropPage.css';
-
-const API_URL = 'http://localhost:4000/api/crops';
-const USERS_API_URL = 'http://localhost:4000/api/users';
 
 const CropPage = () => {
   const [crops, setCrops] = useState([]);
@@ -43,16 +41,10 @@ const CropPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/user/${usuario_creador_id}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setCrops(data);
-      } else {
-        throw new Error(data.error || 'Error al cargar las cosechas');
-      }
+      const { data } = await api.get(`/api/crops/user/${usuario_creador_id}`);
+      setCrops(data);
     } catch (err) {
-      setError(err.message || 'Error al cargar las cosechas');
+      setError(err.response?.data?.error || err.message || 'Error al cargar las cosechas');
     } finally {
       setLoading(false);
     }
@@ -63,11 +55,8 @@ const CropPage = () => {
     if (!empresa) return;
 
     try {
-      const response = await fetch(`${USERS_API_URL}/empresa/${encodeURIComponent(empresa)}`);
-      const data = await response.json();
-      if (response.ok) {
-        setWorkers(data);
-      }
+      const { data } = await api.get(`/api/users/empresa/${encodeURIComponent(empresa)}`);
+      setWorkers(data);
     } catch (err) {
       console.error('Error al cargar trabajadores:', err);
     }
@@ -75,11 +64,8 @@ const CropPage = () => {
 
   const fetchCropWorkers = async (cropId) => {
     try {
-      const response = await fetch(`${API_URL}/${cropId}/workers`);
-      const data = await response.json();
-      if (response.ok) {
-        return data.map(w => w.id);
-      }
+      const { data } = await api.get(`/api/crops/${cropId}/workers`);
+      return data.map(w => w.id);
     } catch (err) {
       console.error('Error al cargar workers de cosecha:', err);
     }
@@ -88,11 +74,7 @@ const CropPage = () => {
 
   const saveCropWorkers = async (cropId, workerIds) => {
     try {
-      await fetch(`${API_URL}/${cropId}/workers`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workerIds })
-      });
+      await api.put(`/api/crops/${cropId}/workers`, { workerIds });
     } catch (err) {
       console.error('Error al guardar workers de cosecha:', err);
     }
@@ -106,18 +88,9 @@ const CropPage = () => {
   // Subir imagen a una cosecha por ID
   const uploadImageToCrop = async (cropId, imageFile) => {
     try {
-      const data = new FormData();
-      data.append('image', imageFile);
-
-      const response = await fetch(`${API_URL}/${cropId}/image`, {
-        method: 'PUT',
-        body: data
-      });
-
-      if (!response.ok) {
-        const result = await response.json();
-        console.error('Error al subir imagen:', result.error);
-      }
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      await api.put(`/api/crops/${cropId}/image`, formData);
     } catch (err) {
       console.error('Error al subir imagen:', err);
     }
@@ -141,28 +114,18 @@ const CropPage = () => {
         usuario_creador_id
       };
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cropData)
-      });
+      const { data } = await api.post('/api/crops', cropData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        if (imageFile && data.id) {
-          await uploadImageToCrop(data.id, imageFile);
-        }
-        if (selectedWorkerIds && selectedWorkerIds.length > 0 && data.id) {
-          await saveCropWorkers(data.id, selectedWorkerIds);
-        }
-        await fetchCrops();
-        setShowForm(false);
-      } else {
-        throw new Error(data.error || 'Error al crear la cosecha');
+      if (imageFile && data.id) {
+        await uploadImageToCrop(data.id, imageFile);
       }
+      if (selectedWorkerIds && selectedWorkerIds.length > 0 && data.id) {
+        await saveCropWorkers(data.id, selectedWorkerIds);
+      }
+      await fetchCrops();
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al crear la cosecha');
+      setError(err.response?.data?.error || err.message || 'Error al crear la cosecha');
     } finally {
       setLoading(false);
     }
@@ -174,29 +137,19 @@ const CropPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+      await api.put(`/api/crops/${id}`, formData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        if (imageFile) {
-          await uploadImageToCrop(id, imageFile);
-        }
-        if (selectedWorkerIds) {
-          await saveCropWorkers(id, selectedWorkerIds);
-        }
-        await fetchCrops();
-        setEditingCrop(null);
-        setShowForm(false);
-      } else {
-        throw new Error(data.error || 'Error al actualizar la cosecha');
+      if (imageFile) {
+        await uploadImageToCrop(id, imageFile);
       }
+      if (selectedWorkerIds) {
+        await saveCropWorkers(id, selectedWorkerIds);
+      }
+      await fetchCrops();
+      setEditingCrop(null);
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al actualizar la cosecha');
+      setError(err.response?.data?.error || err.message || 'Error al actualizar la cosecha');
     } finally {
       setLoading(false);
     }
@@ -208,21 +161,12 @@ const CropPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE'
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSelectedCrop(null);
-        setSelectedCropWorkers([]);
-        await fetchCrops();
-      } else {
-        throw new Error(data.error || 'Error al eliminar la cosecha');
-      }
+      await api.delete(`/api/crops/${id}`);
+      setSelectedCrop(null);
+      setSelectedCropWorkers([]);
+      await fetchCrops();
     } catch (err) {
-      setError(err.message || 'Error al eliminar la cosecha');
+      setError(err.response?.data?.error || err.message || 'Error al eliminar la cosecha');
     } finally {
       setLoading(false);
     }
@@ -245,11 +189,8 @@ const CropPage = () => {
     setSelectedCrop(crop);
     setSelectedCropWorkers([]);
     try {
-      const response = await fetch(`${API_URL}/${crop.id}/workers`);
-      const data = await response.json();
-      if (response.ok) {
-        setSelectedCropWorkers(data);
-      }
+      const { data } = await api.get(`/api/crops/${crop.id}/workers`);
+      setSelectedCropWorkers(data);
     } catch (err) {
       console.error('Error al cargar workers del cultivo:', err);
     }

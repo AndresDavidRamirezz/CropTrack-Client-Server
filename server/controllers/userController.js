@@ -342,8 +342,8 @@ const uploadImage = (req, res) => {
         console.error('❌ [USER-CONTROLLER] Error al obtener imagen actual:', err);
       }
 
-      // 2. Construir nueva URL
-      const newImageUrl = multerService.getFileUrl('users', req.file.filename);
+      // 2. URL devuelta por Cloudinary
+      const newImageUrl = req.file.path;
 
       // 3. Actualizar base de datos
       UserModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
@@ -356,13 +356,11 @@ const uploadImage = (req, res) => {
           return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        // 4. Borrar archivo viejo
+        // 4. Borrar imagen vieja de Cloudinary
         if (oldImageUrl) {
-          try {
-            multerService.deleteFile(oldImageUrl);
-          } catch (deleteErr) {
+          multerService.deleteFile(oldImageUrl).catch(deleteErr => {
             console.warn('⚠️ [USER-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
-          }
+          });
         }
 
         console.log('✅ [USER-CONTROLLER] Imagen actualizada:', newImageUrl);
@@ -403,11 +401,9 @@ const deleteImage = (req, res) => {
           return res.status(500).json({ error: 'Error al eliminar la imagen' });
         }
 
-        try {
-          multerService.deleteFile(imageUrl);
-        } catch (deleteErr) {
+        multerService.deleteFile(imageUrl).catch(deleteErr => {
           console.warn('⚠️ [USER-CONTROLLER] No se pudo eliminar archivo:', deleteErr);
-        }
+        });
 
         console.log('✅ [USER-CONTROLLER] Imagen eliminada para usuario:', id);
         res.status(200).json({ message: 'Imagen eliminada correctamente' });

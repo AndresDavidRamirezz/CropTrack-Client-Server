@@ -17,6 +17,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock('../../src/api/axiosConfig', () => ({
+  __esModule: true,
+  default: {
+    post: jest.fn(),
+    get: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+import api from '../../src/api/axiosConfig';
+
 // ==================== HELPERS ====================
 
 const renderRegisterPage = () => {
@@ -59,12 +71,9 @@ const fillForm = async (user, data = validFormData) => {
 // ==================== SUITE DE TESTS ====================
 
 describe('Integration: RegisterPage - Flujo de registro', () => {
-  let mockFetch;
-
   beforeEach(() => {
-    // Mock fetch
-    mockFetch = jest.fn();
-    global.fetch = mockFetch;
+    // Reset axios mocks
+    api.post.mockReset();
 
     // Reset navigate
     mockNavigate.mockClear();
@@ -136,10 +145,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
   describe('Envío del formulario', () => {
     test('El formulario envía los datos correctamente a la API', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'Administrador registrado correctamente' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'Administrador registrado correctamente' } });
 
       renderRegisterPage();
 
@@ -151,22 +157,18 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
 
       // Verificar llamada a API
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(1);
-        expect(mockFetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/register/register-admin',
+        expect(api.post).toHaveBeenCalledTimes(1);
+        expect(api.post).toHaveBeenCalledWith(
+          '/api/register/register-admin',
           {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              usuario: 'admin_test',
-              contrasena: 'Password123!',
-              nombre: 'Juan',
-              apellido: 'Perez',
-              email: 'juan.perez@test.com',
-              nombre_empresa: 'Mi Empresa',
-              telefono: '+54 381 123-4567',
-              rol: 'administrador',
-            }),
+            usuario: 'admin_test',
+            contrasena: 'Password123!',
+            nombre: 'Juan',
+            apellido: 'Perez',
+            email: 'juan.perez@test.com',
+            nombre_empresa: 'Mi Empresa',
+            telefono: '+54 381 123-4567',
+            rol: 'administrador',
           }
         );
       });
@@ -174,10 +176,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
 
     test('El email se envía en minúsculas', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'OK' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'OK' } });
 
       renderRegisterPage();
 
@@ -190,21 +189,16 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
       await user.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(api.post).toHaveBeenCalledWith(
           expect.any(String),
-          expect.objectContaining({
-            body: expect.stringContaining('"email":"juan.perez@test.com"'),
-          })
+          expect.objectContaining({ email: 'juan.perez@test.com' })
         );
       });
     });
 
     test('Teléfono vacío se envía como null', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'OK' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'OK' } });
 
       renderRegisterPage();
 
@@ -217,11 +211,9 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
       await user.click(screen.getByRole('button', { name: /Registrar Administrador/i }));
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
+        expect(api.post).toHaveBeenCalledWith(
           expect.any(String),
-          expect.objectContaining({
-            body: expect.stringContaining('"telefono":null'),
-          })
+          expect.objectContaining({ telefono: null })
         );
       });
     });
@@ -232,10 +224,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
   describe('Registro exitoso', () => {
     test('Muestra mensaje de éxito después de registro correcto', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'Administrador registrado correctamente' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'Administrador registrado correctamente' } });
 
       renderRegisterPage();
 
@@ -249,10 +238,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
 
     test('El formulario se limpia después del registro exitoso', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'OK' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'OK' } });
 
       renderRegisterPage();
 
@@ -270,10 +256,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ message: 'OK' }),
-      });
+      api.post.mockResolvedValueOnce({ data: { message: 'OK' } });
 
       renderRegisterPage();
 
@@ -315,12 +298,11 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+      api.post.mockResolvedValueOnce({
+        data: {
           message: 'Administrador registrado correctamente',
           user: { id: '123', usuario: 'admin_test' },
-        }),
+        },
       });
 
       renderRegisterPage();
@@ -341,7 +323,7 @@ describe('Integration: RegisterPage - Flujo de registro', () => {
 
       // 5. Verificar llamada a API
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(1);
+        expect(api.post).toHaveBeenCalledTimes(1);
       });
 
       // 6. Verificar mensaje de éxito

@@ -1,16 +1,10 @@
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinaryConfig.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
-
-// Tipos MIME permitidos
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
-// Filtro de archivos
 const fileFilter = (req, file, cb) => {
   if (ALLOWED_TYPES.includes(file.mimetype)) {
     cb(null, true);
@@ -19,51 +13,42 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Crea una instancia de multer configurada para una subcarpeta especifica
+// Crea una instancia de multer configurada para una subcarpeta en Cloudinary
 const createUpload = (subfolder) => {
-  const dir = path.join(UPLOADS_DIR, subfolder);
-
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      const filename = `${req.params.id}-${Date.now()}${ext}`;
-      cb(null, filename);
+  const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: `croptrack/${subfolder}`,
+      allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+      resource_type: 'image'
     }
   });
 
   return multer({ storage, fileFilter, limits: { fileSize: MAX_SIZE } });
 };
 
-// Retorna la URL relativa del archivo guardado
-const getFileUrl = (subfolder, filename) => {
-  return `/uploads/${subfolder}/${filename}`;
-};
+// Elimina una imagen de Cloudinary dado su URL completa
+const deleteFile = async (imageUrl) => {
+  if (!imageUrl) return;
 
-// Elimina un archivo del disco dada su URL relativa
-const deleteFile = (fileUrl) => {
-  if (!fileUrl || !fileUrl.startsWith('/uploads/')) return;
+  // Extrae el public_id de la URL de Cloudinary
+  // Formato: https://res.cloudinary.com/{cloud}/image/upload/v{version}/{public_id}.{ext}
+  const match = imageUrl.match(/\/upload\/(?:v\d+\/)?(.+)\.[^.]+$/);
+  if (!match) return;
 
-  const relativePath = fileUrl.replace('/uploads/', '');
-  const filePath = path.join(UPLOADS_DIR, relativePath);
+  const publicId = match[1];
 
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-    console.log('🗑️ [MULTER-SERVICE] Archivo eliminado:', filePath);
+  try {
+    await cloudinary.uploader.destroy(publicId);
+    console.log('🗑️ [MULTER-SERVICE] Imagen eliminada de Cloudinary:', publicId);
+  } catch (err) {
+    console.warn('⚠️ [MULTER-SERVICE] Error al eliminar imagen de Cloudinary:', err.message);
   }
 };
 
 const multerService = {
   createUpload,
-  getFileUrl,
-  deleteFile,
-  UPLOADS_DIR
+  deleteFile
 };
 
 export default multerService;

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import WorkerForm from '../../components/Worker/Form/WorkerForm';
 import WorkerList from '../../components/Worker/List/WorkerList';
 import { ROL_COLORS, ROL_LABELS, getFullImageUrl, formatDate } from '../../components/Worker/Card/WorkerCard';
+import api from '../../api/axiosConfig';
 import './WorkerPage.css';
-
-const API_URL = 'http://localhost:4000/api/users';
 
 const WorkerPage = () => {
   const [workers, setWorkers] = useState([]);
@@ -38,16 +37,10 @@ const WorkerPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/empresa/${encodeURIComponent(empresa)}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setWorkers(data);
-      } else {
-        throw new Error(data.error || 'Error al cargar los trabajadores');
-      }
+      const { data } = await api.get(`/api/users/empresa/${encodeURIComponent(empresa)}`);
+      setWorkers(data);
     } catch (err) {
-      setError(err.message || 'Error al cargar los trabajadores');
+      setError(err.response?.data?.error || err.message || 'Error al cargar los trabajadores');
     } finally {
       setLoading(false);
     }
@@ -73,22 +66,11 @@ const WorkerPage = () => {
         empresa
       };
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(workerData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchWorkers();
-        setShowForm(false);
-      } else {
-        throw new Error(data.message || data.error || 'Error al crear el trabajador');
-      }
+      await api.post('/api/users', workerData);
+      await fetchWorkers();
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al crear el trabajador');
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || 'Error al crear el trabajador');
     } finally {
       setLoading(false);
     }
@@ -99,23 +81,12 @@ const WorkerPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchWorkers();
-        setEditingWorker(null);
-        setShowForm(false);
-      } else {
-        throw new Error(data.message || data.error || 'Error al actualizar el trabajador');
-      }
+      await api.put(`/api/users/${id}`, formData);
+      await fetchWorkers();
+      setEditingWorker(null);
+      setShowForm(false);
     } catch (err) {
-      setError(err.message || 'Error al actualizar el trabajador');
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || 'Error al actualizar el trabajador');
     } finally {
       setLoading(false);
     }
@@ -126,20 +97,11 @@ const WorkerPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE'
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSelectedWorker(null);
-        await fetchWorkers();
-      } else {
-        throw new Error(data.message || data.error || 'Error al eliminar el trabajador');
-      }
+      await api.delete(`/api/users/${id}`);
+      setSelectedWorker(null);
+      await fetchWorkers();
     } catch (err) {
-      setError(err.message || 'Error al eliminar el trabajador');
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || 'Error al eliminar el trabajador');
     } finally {
       setLoading(false);
     }

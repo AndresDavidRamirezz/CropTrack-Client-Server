@@ -1,6 +1,7 @@
 // pages/Register/RegisterPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api/axiosConfig';
 import './RegisterPage.css';
 
 const RegisterPage = () => {
@@ -215,49 +216,32 @@ const RegisterPage = () => {
     });
 
     try {
-      // ✅ Ruta correcta: /api/register/register-admin
-      const response = await fetch('http://localhost:4000/api/register/register-admin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData)
-      });
-      
-      console.log('📡 Respuesta recibida. Status:', response.status);
-      
-      const data = await response.json();
+      const { data } = await api.post('/api/register/register-admin', jsonData);
       console.log('📦 Datos de respuesta:', data);
-      
-      if (response.ok) {
-        console.log('✅ Registro exitoso');
-        setSuccess('Administrador registrado correctamente. Redirigiendo al login...');
-        
-        // Limpiar el formulario
-        setForm({
-          usuario: '',
-          contrasena: '',
-          confirmar_contrasena: '',
-          nombre: '',
-          apellido: '',
-          email: '',
-          nombre_empresa: '',
-          telefono: ''
-        });
-        setTouched({});
-        setErrors({});
-        
-        setTimeout(() => {
-          console.log('🔄 Redirigiendo a login...');
-          navigate('/login');
-        }, 2000);
-      } else {
-        console.log('⚠️ Error del servidor:', data);
-        setError(data.message || data.error || 'Error al registrar el administrador');
-      }
+      console.log('✅ Registro exitoso');
+
+      setSuccess('Administrador registrado correctamente. Redirigiendo al login...');
+      setForm({
+        usuario: '',
+        contrasena: '',
+        confirmar_contrasena: '',
+        nombre: '',
+        apellido: '',
+        email: '',
+        nombre_empresa: '',
+        telefono: ''
+      });
+      setTouched({});
+      setErrors({});
+
+      setTimeout(() => {
+        console.log('🔄 Redirigiendo a login...');
+        navigate('/login');
+      }, 2000);
     } catch (err) {
-      console.error('❌ Error de conexión:', err);
-      setError(`Error de conexión con el servidor: ${err.message}`);
+      const msg = err.response?.data?.message || err.response?.data?.error || 'Error al registrar el administrador';
+      console.error('❌ Error:', msg);
+      setError(msg);
     } finally {
       setIsSubmitting(false);
     }

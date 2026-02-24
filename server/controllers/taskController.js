@@ -235,7 +235,7 @@ const uploadImage = (req, res) => {
         console.error('❌ [TASK-CONTROLLER] Error al obtener imagen actual:', err);
       }
 
-      const newImageUrl = multerService.getFileUrl('tasks', req.file.filename);
+      const newImageUrl = req.file.path;
 
       TaskModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
         if (err) {
@@ -248,11 +248,9 @@ const uploadImage = (req, res) => {
         }
 
         if (oldImageUrl) {
-          try {
-            multerService.deleteFile(oldImageUrl);
-          } catch (deleteErr) {
+          multerService.deleteFile(oldImageUrl).catch(deleteErr => {
             console.warn('⚠️ [TASK-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
-          }
+          });
         }
 
         console.log('✅ [TASK-CONTROLLER] Imagen actualizada:', newImageUrl);
@@ -293,11 +291,9 @@ const deleteImage = (req, res) => {
           return res.status(500).json({ error: 'Error al eliminar la imagen' });
         }
 
-        try {
-          multerService.deleteFile(imageUrl);
-        } catch (deleteErr) {
+        multerService.deleteFile(imageUrl).catch(deleteErr => {
           console.warn('⚠️ [TASK-CONTROLLER] No se pudo eliminar archivo:', deleteErr);
-        }
+        });
 
         console.log('✅ [TASK-CONTROLLER] Imagen eliminada para tarea:', id);
         res.status(200).json({ message: 'Imagen eliminada correctamente' });

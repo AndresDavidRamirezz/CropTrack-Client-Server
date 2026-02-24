@@ -1,13 +1,16 @@
 // ==================== CONFIGURACIÓN DE BASE DE DATOS PARA TESTS ====================
 import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+import path from 'path';
 
-// Configuración hardcodeada para tests (evita problemas con import.meta.url)
+dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
+
 const dbConfig = {
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'proyectofinal2024',
-  database: 'croptrack_test',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'croptrack_test',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

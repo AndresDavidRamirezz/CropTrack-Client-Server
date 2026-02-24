@@ -17,6 +17,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock('../../src/api/axiosConfig', () => ({
+  __esModule: true,
+  default: {
+    post: jest.fn(),
+    get: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
+
+import api from '../../src/api/axiosConfig';
+
 // ==================== HELPERS ====================
 
 const renderLoginPage = () => {
@@ -30,13 +42,11 @@ const renderLoginPage = () => {
 // ==================== SUITE DE TESTS ====================
 
 describe('Integration: LoginPage + AuthModal', () => {
-  let mockFetch;
   let mockLocalStorage;
 
   beforeEach(() => {
-    // Mock fetch
-    mockFetch = jest.fn();
-    global.fetch = mockFetch;
+    // Reset axios mocks
+    api.post.mockReset();
 
     // Mock localStorage
     mockLocalStorage = {
@@ -118,10 +128,7 @@ describe('Integration: LoginPage + AuthModal', () => {
 
     test('El rol seleccionado se envía correctamente en el submit', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'test-token', user: { id: '1' } }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'test-token', user: { id: '1' } } });
 
       renderLoginPage();
 
@@ -137,15 +144,13 @@ describe('Integration: LoginPage + AuthModal', () => {
 
       // Verificar que el rol supervisor se envió en la petición
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/auth/login',
-          expect.objectContaining({
-            body: JSON.stringify({
-              usuario: 'usuario_test',
-              contrasena: 'password123',
-              rol: 'supervisor',
-            }),
-          })
+        expect(api.post).toHaveBeenCalledWith(
+          '/api/auth/login',
+          {
+            usuario: 'usuario_test',
+            contrasena: 'password123',
+            rol: 'supervisor',
+          }
         );
       });
     });
@@ -170,10 +175,7 @@ describe('Integration: LoginPage + AuthModal', () => {
 
     test('El formulario envía los datos correctamente al hacer submit', async () => {
       const user = userEvent.setup();
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'jwt-token', user: { id: '1', usuario: 'admin' } }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'jwt-token', user: { id: '1', usuario: 'admin' } } });
 
       renderLoginPage();
 
@@ -186,17 +188,13 @@ describe('Integration: LoginPage + AuthModal', () => {
 
       // Verificar llamada a API con datos correctos
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledTimes(1);
-        expect(mockFetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/auth/login',
+        expect(api.post).toHaveBeenCalledTimes(1);
+        expect(api.post).toHaveBeenCalledWith(
+          '/api/auth/login',
           {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              usuario: 'admin_user',
-              contrasena: 'secure123',
-              rol: 'administrador',
-            }),
+            usuario: 'admin_user',
+            contrasena: 'secure123',
+            rol: 'administrador',
           }
         );
       });
@@ -206,10 +204,7 @@ describe('Integration: LoginPage + AuthModal', () => {
       const user = userEvent.setup();
       const mockUserData = { id: '123', usuario: 'test_user', rol: 'administrador' };
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'my-jwt-token', user: mockUserData }),
-      });
+      api.post.mockResolvedValueOnce({ data: { token: 'my-jwt-token', user: mockUserData } });
 
       renderLoginPage();
 
@@ -238,12 +233,11 @@ describe('Integration: LoginPage + AuthModal', () => {
     test('Usuario selecciona rol, llena formulario y completa login', async () => {
       const user = userEvent.setup();
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+      api.post.mockResolvedValueOnce({
+        data: {
           token: 'token-trabajador',
           user: { id: '456', usuario: 'worker', rol: 'trabajador' },
-        }),
+        },
       });
 
       renderLoginPage();
@@ -263,15 +257,13 @@ describe('Integration: LoginPage + AuthModal', () => {
       // 4. Verificar integración completa
       await waitFor(() => {
         // API llamada con rol correcto
-        expect(mockFetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/auth/login',
-          expect.objectContaining({
-            body: JSON.stringify({
-              usuario: 'worker_user',
-              contrasena: 'worker_pass',
-              rol: 'trabajador',
-            }),
-          })
+        expect(api.post).toHaveBeenCalledWith(
+          '/api/auth/login',
+          {
+            usuario: 'worker_user',
+            contrasena: 'worker_pass',
+            rol: 'trabajador',
+          }
         );
       });
 

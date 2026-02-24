@@ -3,6 +3,10 @@ import express from 'express';
 import cors from 'cors';
 import myConnection from 'express-myconnection';
 import mysql from 'mysql2';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
 
 // Rutas
 import registerRoutes from '../../routes/registerRoutes.js';
@@ -11,13 +15,13 @@ import loginRoutes from '../../routes/loginRoutes.js';
 // Pool de conexiones global para poder cerrarlo después
 let pool = null;
 
-// Configuración de base de datos de TEST (hardcodeada para evitar import.meta.url)
+// Configuración de base de datos de TEST (desde .env.test)
 const dbOptions = {
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'proyectofinal2024',
-  database: 'croptrack_test'
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'croptrack_test'
 };
 
 // Crear app de Express para tests
