@@ -139,4 +139,71 @@ const generateCropReport = (req, res) => {
   });
 };
 
-export { generateCropReport };
+// GET REPORT DATA - Retorna la estructura de datos del reporte como JSON
+const getCropReportData = (req, res) => {
+  const { cropId } = req.params;
+  console.log('🟡 [REPORT-CONTROLLER] getCropReportData - Inicio');
+  console.log('🆔 [REPORT-CONTROLLER] cropId recibido:', cropId);
+
+  if (!cropId) {
+    return res.status(400).json({ error: 'ID de cosecha requerido' });
+  }
+
+  req.getConnection((err, conn) => {
+    if (err) {
+      console.error('❌ [REPORT-CONTROLLER] Error de conexion BD:', err.code, err.message);
+      return res.status(500).json({ error: 'Error de conexion con la base de datos' });
+    }
+
+    ReportModel.findCropWithCreator(conn, cropId, (err, cropData) => {
+      if (err) return res.status(500).json({ error: 'Error al obtener datos de la cosecha' });
+      if (!cropData) return res.status(404).json({ error: 'Cosecha no encontrada' });
+
+      ReportModel.findWorkersByCrop(conn, cropId, (err, workers) => {
+        if (err) return res.status(500).json({ error: 'Error al obtener trabajadores' });
+
+        ReportModel.findTasksByCrop(conn, cropId, (err, tasks) => {
+          if (err) return res.status(500).json({ error: 'Error al obtener tareas' });
+
+          ReportModel.findMeasurementsByCrop(conn, cropId, (err, measurements) => {
+            if (err) return res.status(500).json({ error: 'Error al obtener mediciones' });
+
+            const reportData = {
+              generado_en: new Date().toISOString(),
+              cosecha: {
+                id: cropData.id,
+                nombre: cropData.nombre,
+                tipo: cropData.tipo,
+                variedad: cropData.variedad,
+                area_hectareas: cropData.area_hectareas,
+                ubicacion: cropData.ubicacion,
+                fecha_siembra: cropData.fecha_siembra,
+                fecha_cosecha_estimada: cropData.fecha_cosecha_estimada,
+                fecha_cosecha_real: cropData.fecha_cosecha_real,
+                estado: cropData.estado,
+                notas: cropData.notas,
+                imagen_url: cropData.imagen_url
+              },
+              administrador: {
+                nombre: cropData.admin_nombre,
+                apellido: cropData.admin_apellido,
+                email: cropData.admin_email,
+                empresa: cropData.admin_empresa,
+                telefono: cropData.admin_telefono,
+                imagen_url: cropData.admin_imagen_url
+              },
+              trabajadores: workers || [],
+              tareas: tasks || [],
+              mediciones: measurements || []
+            };
+
+            console.log('✅ [REPORT-CONTROLLER] getCropReportData - Enviando JSON');
+            res.status(200).json(reportData);
+          });
+        });
+      });
+    });
+  });
+};
+
+export { generateCropReport, getCropReportData };

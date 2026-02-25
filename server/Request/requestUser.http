@@ -1,74 +1,141 @@
+### ============================================================
+### USERS - SUPERVISORES Y TRABAJADORES
+### Ejecutar después de requestRegister.http
+### Los IDs generados se usan en requestCrops.http,
+### requestMeasurements.http y requestTasks.http
+### ============================================================
+
+@baseUrl = https://croptrack-client-server.onrender.com
+@empresa = Agro San Martín S.A.
+
+### ============================================================
+### BLOQUE A - CREAR SUPERVISORES (3)
+### ============================================================
+
 ###
-# POST - Crear nuevo trabajador
-POST http://localhost:4000/api/users
+# Supervisor 1 - Roberto Sánchez (zona Maíz - Lote Norte)
+# Respuesta: { "userId": "...", "usuario": "sup_roberto" }
+# @name crearSup1
+POST {{baseUrl}}/api/users
 Content-Type: application/json
 
 {
-  "usuario": "trabajador1",
-  "contrasena": "123456",
-  "nombre": "Juan",
-  "apellido": "Perez",
-  "email": "juan.perez@ejemplo.com",
-  "empresa": "Finca El Sol",
-  "telefono": "123456789",
-  "rol": "trabajador"
-}
-
-###
-# POST - Crear nuevo supervisor
-POST http://localhost:4000/api/users
-Content-Type: application/json
-
-{
-  "usuario": "supervisor1",
-  "contrasena": "123456",
-  "nombre": "Maria",
-  "apellido": "Garcia",
-  "email": "maria.garcia@ejemplo.com",
-  "empresa": "Finca El Sol",
-  "telefono": "987654321",
+  "usuario": "sup_roberto",
+  "contrasena": "Super2025!",
+  "nombre": "Roberto",
+  "apellido": "Sánchez",
+  "email": "roberto.sanchez@agrosanmartin.com",
+  "empresa": "{{empresa}}",
+  "telefono": "2615401234",
   "rol": "supervisor"
 }
 
 ###
-# GET - Listar workers de una empresa
-GET http://localhost:4000/api/users/empresa/Finca%20El%20Sol
-
-###
-# GET - Obtener un usuario por ID
-GET http://localhost:4000/api/users/ID_DEL_USUARIO
-
-###
-# PUT - Actualizar datos de usuario (nombre, apellido, email, telefono)
-PUT http://localhost:4000/api/users/ID_DEL_USUARIO
+# Supervisor 2 - Ana González (zona Soja - Lote Sur)
+# Respuesta: { "userId": "...", "usuario": "sup_ana" }
+# @name crearSup2
+POST {{baseUrl}}/api/users
 Content-Type: application/json
 
 {
-  "nombre": "Juan Carlos",
-  "apellido": "Perez Lopez",
-  "email": "juancarlos.perez@ejemplo.com",
-  "telefono": "111222333"
+  "usuario": "sup_ana",
+  "contrasena": "Super2025!",
+  "nombre": "Ana",
+  "apellido": "González",
+  "email": "ana.gonzalez@agrosanmartin.com",
+  "empresa": "{{empresa}}",
+  "telefono": "2615402345",
+  "rol": "supervisor"
 }
 
 ###
-# PUT - Actualizar solo telefono
-PUT http://localhost:4000/api/users/ID_DEL_USUARIO
+# Supervisor 3 - Diego Ramírez (zona Trigo - Lote Este)
+# Respuesta: { "userId": "...", "usuario": "sup_diego" }
+# @name crearSup3
+POST {{baseUrl}}/api/users
 Content-Type: application/json
 
 {
-  "telefono": "999888777"
+  "usuario": "sup_diego",
+  "contrasena": "Super2025!",
+  "nombre": "Diego",
+  "apellido": "Ramírez",
+  "email": "diego.ramirez@agrosanmartin.com",
+  "empresa": "{{empresa}}",
+  "telefono": "2615403456",
+  "rol": "supervisor"
 }
 
+### ============================================================
+### BLOQUE B - CREAR TRABAJADORES (3)
+### ============================================================
+
 ###
-# PUT - Cambiar contrasena
-PUT http://localhost:4000/api/users/ID_DEL_USUARIO
+# Trabajador 1 - Lucas Fernández (asignado a Maíz y Trigo)
+# Respuesta: { "userId": "...", "usuario": "trab_lucas" }
+# @name crearTrab1
+POST {{baseUrl}}/api/users
 Content-Type: application/json
 
 {
-  "contrasena": "nuevaContrasena123"
+  "usuario": "trab_lucas",
+  "contrasena": "Trab2025!",
+  "nombre": "Lucas",
+  "apellido": "Fernández",
+  "email": "lucas.fernandez@agrosanmartin.com",
+  "empresa": "{{empresa}}",
+  "telefono": "2615504567",
+  "rol": "trabajador"
 }
 
 ###
-# DELETE - Eliminar un worker
-DELETE http://localhost:4000/api/users/ID_DEL_USUARIO
+# Trabajador 2 - Valentina Torres (asignada a Maíz y Soja)
+# Respuesta: { "userId": "...", "usuario": "trab_valentina" }
+# @name crearTrab2
+POST {{baseUrl}}/api/users
+Content-Type: application/json
 
+{
+  "usuario": "trab_valentina",
+  "contrasena": "Trab2025!",
+  "nombre": "Valentina",
+  "apellido": "Torres",
+  "email": "valentina.torres@agrosanmartin.com",
+  "empresa": "{{empresa}}",
+  "telefono": "2615505678",
+  "rol": "trabajador"
+}
+
+###
+# Trabajador 3 - Matías Morales (asignado a Soja y Trigo)
+# Respuesta: { "userId": "...", "usuario": "trab_matias" }
+# @name crearTrab3
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+
+{
+  "usuario": "trab_matias",
+  "contrasena": "Trab2025!",
+  "nombre": "Matías",
+  "apellido": "Morales",
+  "email": "matias.morales@agrosanmartin.com",
+  "empresa": "{{empresa}}",
+  "telefono": "2615506789",
+  "rol": "trabajador"
+}
+
+### ============================================================
+### BLOQUE C - CONSULTAS
+### ============================================================
+
+###
+# GET - Listar todos los usuarios de Agro San Martín S.A.
+GET {{baseUrl}}/api/users/empresa/Agro%20San%20Mart%C3%ADn%20S.A.
+
+###
+# GET - Obtener Supervisor 1 por ID (capturado del mismo archivo)
+GET {{baseUrl}}/api/users/81cdfd83-5aae-47d9-ac5f-7a21a5732c24
+
+###
+# GET - Obtener Trabajador 1 por ID
+GET {{baseUrl}}/api/users/c9f07f62-d9ff-472e-8c70-2f5046fd4653

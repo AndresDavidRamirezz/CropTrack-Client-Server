@@ -1,7 +1,10 @@
 import { Router } from 'express';
-import { generateCropReport } from '../controllers/reportController.js';
+import { generateCropReport, getCropReportData } from '../controllers/reportController.js';
 
 const router = Router();
+
+// GET /api/reports/:cropId/data - Retorna datos del reporte como JSON
+router.get('/:cropId/data', getCropReportData);
 
 // GET /api/reports/:cropId - Generar reporte PDF de una cosecha
 router.get('/:cropId', (req, res, next) => {

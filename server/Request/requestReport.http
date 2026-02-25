@@ -1,0 +1,48 @@
+### ============================================================
+### REPORTS - GENERACIÓN DE PDF POR COSECHA
+### Ejecutar después de cargar todos los datos:
+### requestRegister → requestUser → requestCrops →
+### requestMeasurements → requestTasks
+### ⚠️ Pegar los IDs de las cosechas obtenidos de requestCrops.http
+### ============================================================
+
+@baseUrl = https://croptrack-client-server.onrender.com
+
+# ⚠️ Copiar desde respuestas de requestCrops.http → crearCrop1/2/3
+@crop1Id = 60166b3d-7ed6-4cb9-9a65-bdd543a0a498
+@crop2Id = 1f87956b-bbb4-4a35-9fde-831ffc04b38d
+@crop3Id = 79ffa030-f1cd-46a0-bb28-f93d0b92d830
+
+###
+# PDF - Maíz Híbrido DK-7088 (en_crecimiento)
+# Incluye: 6 mediciones + 5 tareas (3 completadas, 1 en_proceso, 1 pendiente)
+# + 3 workers asignados (sup_roberto, trab_lucas, trab_valentina)
+GET {{baseUrl}}/api/reports/{{crop1Id}}
+
+###
+# PDF - Soja de Primera RR (en_crecimiento)
+# Incluye: 5 mediciones + 4 tareas (2 completadas, 1 en_proceso, 1 pendiente)
+# + 3 workers asignados (sup_ana, trab_valentina, trab_matias)
+GET {{baseUrl}}/api/reports/{{crop2Id}}
+
+###
+# PDF - Trigo Pan Klein Titanio (cosechado)
+# Incluye: 6 mediciones + 5 tareas (todas completadas)
+# + 3 workers asignados (sup_diego, trab_matias, trab_lucas)
+GET {{baseUrl}}/api/reports/{{crop3Id}}
+
+### ============================================================
+### DATA JSON - ESTRUCTURA DE DATOS DEL REPORTE (sin PDF)
+### ============================================================
+
+###
+# JSON - Maíz Híbrido DK-7088
+GET {{baseUrl}}/api/reports/{{crop1Id}}/data
+
+###
+# JSON - Soja de Primera RR
+GET {{baseUrl}}/api/reports/{{crop2Id}}/data
+
+###
+# JSON - Trigo Pan Klein Titanio
+GET {{baseUrl}}/api/reports/{{crop3Id}}/data

@@ -1,13 +1,25 @@
+### ============================================================
+### REGISTER - ADMINISTRADOR
+### Ejecutar primero. Copiar el userId de la respuesta
+### y pegarlo en requestUser.http y requestCrops.http
+### ============================================================
+
+@baseUrl = https://croptrack-client-server.onrender.com
+
 ###
-POST https://croptrack-client-server.onrender.com/api/register/register-admin
+# PASO 1: Registrar administrador de Agro San Martín S.A.
+# Respuesta esperada: { "userId": "...", "usuario": "admin_carlos" }
+# ⚠️ Copiar el userId para usarlo en los demás archivos
+# @name crearAdmin
+POST {{baseUrl}}/api/register/register-admin
 Content-Type: application/json
 
 {
-  "nombre": "Nombre Admin uno",
-  "apellido": "Apellido admin uno",
-  "usuario": "admin_1",
-  "email": "admin-1@email.com",
-  "contrasena": "adminpass-1",
-	"rol": "administrador",
-  "nombre_empresa": "Empresa Uno"
+  "nombre": "Carlos",
+  "apellido": "Martínez",
+  "usuario": "admin_carlos",
+  "email": "carlos.martinez@agrosanmartin.com",
+  "contrasena": "Admin2025!",
+  "rol": "administrador",
+  "nombre_empresa": "Agro San Martín S.A."
 }
