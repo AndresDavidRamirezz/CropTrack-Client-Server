@@ -1,5 +1,5 @@
 ###
-POST http://localhost:4000/api/register/register-admin
+POST https://croptrack-client-server.onrender.com/api/register/register-admin
 Content-Type: application/json
 
 {
