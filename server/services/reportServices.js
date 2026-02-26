@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
+const LOGO_PATH = path.join(__dirname, '..', '..', 'client', 'src', 'assets', 'Logo.png');
 
 // ─────────────────────────────────────────────────────────────
 // CHARTJS-NODE-CANVAS — instancia global
@@ -261,14 +262,40 @@ const reportService = {
     console.log('   🔹 [REPORT-SERVICE] _addHeader - Inicio');
     const { administrador, cosecha } = reportData;
 
-    // Barra decorativa superior — dibujamos desde (MARGIN, MARGIN)
-    // porque doc.y aún está en MARGIN (el top margin)
-    doc.rect(MARGIN, MARGIN, CONTENT_WIDTH, 6).fill(COLORS.primary);
-    doc.rect(MARGIN, MARGIN + 6, CONTENT_WIDTH, 2).fill(COLORS.primaryLight);
+    // ── Bloque de marca: Logo + "CropTrack" ───────────────
+    // Logo a la izquierda desde el top margin, "CropTrack" a su derecha
+    // verticalmente centrado. La barra verde va DEBAJO de este bloque.
+    const brandY = MARGIN;
+    const logoSize = 44;
+    const titleFontSize = 26;
+    let logoDrawn = false;
 
-    // Después de dibujar rectángulos tenemos que setear doc.y manualmente
-    doc.y = MARGIN + 20;
+    if (fs.existsSync(LOGO_PATH)) {
+      try {
+        doc.image(LOGO_PATH, MARGIN, brandY, { fit: [logoSize, logoSize] });
+        logoDrawn = true;
+        console.log('   🖼️ [REPORT-SERVICE] _addHeader - Logo insertado');
+      } catch (e) {
+        console.warn('   ⚠️ [REPORT-SERVICE] _addHeader - Logo no pudo insertarse:', e.message);
+      }
+    } else {
+      console.warn('   ⚠️ [REPORT-SERVICE] _addHeader - Logo no encontrado en:', LOGO_PATH);
+    }
 
+    const titleX = logoDrawn ? MARGIN + logoSize + 10 : MARGIN;
+    const titleW = logoDrawn ? CONTENT_WIDTH - logoSize - 10 : CONTENT_WIDTH;
+    const titleY = brandY + Math.max(0, (logoSize - titleFontSize) / 2);
+
+    doc.fontSize(titleFontSize).fillColor(COLORS.primary).font('Helvetica-Bold')
+      .text('CropTrack', titleX, titleY, { width: titleW, align: logoDrawn ? 'left' : 'center' });
+
+    // ── Barra decorativa DEBAJO del bloque logo+CropTrack ──
+    const barY = brandY + logoSize + 6;
+    doc.rect(MARGIN, barY, CONTENT_WIDTH, 6).fill(COLORS.primary);
+    doc.rect(MARGIN, barY + 6, CONTENT_WIDTH, 2).fill(COLORS.primaryLight);
+    doc.y = barY + 8 + 10;
+
+    // ── Contenido original del header (sin cambios) ────────
     doc.fontSize(24).fillColor(COLORS.primary).font('Helvetica-Bold')
       .text(administrador.empresa.toUpperCase(), MARGIN, doc.y, { align: 'center' });
 
@@ -283,9 +310,6 @@ const reportService = {
 
     doc.moveDown(0.6);
 
-    // Info en dos columnas: admin a la izquierda, fecha a la derecha.
-    // Truco: guardamos infoY, escribimos izquierda, luego usamos
-    // el mismo infoY para escribir la derecha con align: 'right'.
     doc.fontSize(8.5).fillColor(COLORS.gray).font('Helvetica');
     const infoY = doc.y;
 
@@ -295,12 +319,9 @@ const reportService = {
       doc.text(`Telefono: ${administrador.telefono}`, MARGIN, doc.y);
     }
 
-    // Escribir a la derecha: pasamos MARGIN como x pero con align: 'right'
-    // PDFKit usa x + width para calcular la posición derecha
     doc.fontSize(8.5).fillColor(COLORS.gray).font('Helvetica')
       .text(`Generado: ${this._formatDate(reportData.generado_en)}`, MARGIN, infoY, { align: 'right' });
 
-    // Garantizamos que el cursor quede debajo de ambas columnas
     doc.y = Math.max(doc.y, infoY + 35);
     doc.moveDown(0.5);
 
@@ -483,7 +504,9 @@ const reportService = {
       const tareasGrupo = grupos[estado];
       if (!tareasGrupo || tareasGrupo.length === 0) return;
 
-      this._checkPageBreak(doc, 60);
+      // 80pt = subtítulo(~15) + moveDown(~5) + header(20) + 2 filas(36)
+      // Evita que el subtítulo de grupo quede solo al final de una página.
+      this._checkPageBreak(doc, 80);
 
       const color = COLORS.estados[estado] || COLORS.gray;
       doc.fontSize(11).fillColor(color).font('Helvetica-Bold')
@@ -555,7 +578,8 @@ const reportService = {
       const medicionesGrupo = grupos[tipo];
       if (!medicionesGrupo || medicionesGrupo.length === 0) return;
 
-      this._checkPageBreak(doc, 60);
+      // Idem tareas: 80pt para subtítulo + header + 2 filas mínimo.
+      this._checkPageBreak(doc, 80);
 
       const unidad = medicionesGrupo[0].unidad || '';
 
@@ -696,7 +720,9 @@ const reportService = {
     }
 
     // FASE 3: insertar en el PDF (síncrono a partir de aquí)
-    this._addSectionTitle(doc, 'Analisis de Tareas');
+    // minContentBelow = 250: si no hay espacio para el título + al menos
+    // un gráfico (220pt), el título salta a la página siguiente.
+    this._addSectionTitle(doc, 'Analisis de Tareas', 250);
 
     if (doughnutBuffer) {
       this._checkPageBreak(doc, 240);
@@ -746,7 +772,8 @@ const reportService = {
     }
 
     // FASE 2: insertar en el PDF
-    this._addSectionTitle(doc, 'Graficos de Mediciones');
+    // minContentBelow = 250: idem Analisis de Tareas
+    this._addSectionTitle(doc, 'Graficos de Mediciones', 250);
 
     for (const { tipo, buffer } of chartBuffers) {
       this._checkPageBreak(doc, 250);
@@ -946,7 +973,7 @@ const reportService = {
         .fillColor(COLORS.gray)
         .font('Helvetica')
         .text(
-          `CropTrack - ${reportData.administrador.empresa} | Pagina ${i + 1} de ${totalPages}`,
+          `${reportData.administrador.empresa} | Pagina ${i + 1} de ${totalPages}`,
           MARGIN,
           FOOTER_Y + 5,
           {
@@ -966,8 +993,11 @@ const reportService = {
   // UTILIDADES
   // ─────────────────────────────────────────────────────────
 
-  _addSectionTitle(doc, title) {
-    this._checkPageBreak(doc, 40);
+  // minContentBelow: espacio mínimo que debe haber para el contenido
+  // que sigue al título. Si no entra el título + ese mínimo, salta
+  // de página antes de dibujar el título (evita títulos huérfanos).
+  _addSectionTitle(doc, title, minContentBelow = 60) {
+    this._checkPageBreak(doc, 40 + minContentBelow);
 
     const y = doc.y;
     doc.rect(MARGIN, y, 5, 20).fill(COLORS.primary);
