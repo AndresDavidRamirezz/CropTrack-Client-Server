@@ -157,6 +157,8 @@ const deleteCrop = (req, res) => {
 };
 
 // UPLOAD IMAGE - Subir/actualizar imagen de cultivo
+// Cloudinary usa public_id fijo = id del cultivo con overwrite:true,
+// por lo que sobreescribe automáticamente sin necesidad de borrar la anterior.
 const uploadImage = (req, res) => {
   const { id } = req.params;
 
@@ -172,34 +174,22 @@ const uploadImage = (req, res) => {
       return res.status(500).json({ error: 'Error de conexion con la base de datos' });
     }
 
-    CropModel.getImageUrl(conn, id, (err, oldImageUrl) => {
+    const newImageUrl = req.file.path;
+
+    CropModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
       if (err) {
-        console.error('❌ [CROP-CONTROLLER] Error al obtener imagen actual:', err);
+        console.error('❌ [CROP-CONTROLLER] Error al actualizar imagen en BD:', err);
+        return res.status(500).json({ error: 'Error al actualizar la imagen' });
       }
 
-      const newImageUrl = req.file.path;
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Cultivo no encontrado' });
+      }
 
-      CropModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
-        if (err) {
-          console.error('❌ [CROP-CONTROLLER] Error al actualizar imagen en BD:', err);
-          return res.status(500).json({ error: 'Error al actualizar la imagen' });
-        }
-
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ error: 'Cultivo no encontrado' });
-        }
-
-        if (oldImageUrl) {
-          multerService.deleteFile(oldImageUrl).catch(deleteErr => {
-            console.warn('⚠️ [CROP-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
-          });
-        }
-
-        console.log('✅ [CROP-CONTROLLER] Imagen actualizada:', newImageUrl);
-        res.status(200).json({
-          message: 'Imagen actualizada correctamente',
-          imagen_url: newImageUrl
-        });
+      console.log('✅ [CROP-CONTROLLER] Imagen actualizada:', newImageUrl);
+      res.status(200).json({
+        message: 'Imagen actualizada correctamente',
+        imagen_url: newImageUrl
       });
     });
   });

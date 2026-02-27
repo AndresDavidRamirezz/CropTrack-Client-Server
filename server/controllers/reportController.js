@@ -116,7 +116,8 @@ const generateCropReport = (req, res) => {
                 return res.status(500).json({ error: 'Error al generar el reporte PDF' });
               }
 
-              const filename = `reporte-${cropData.nombre.replace(/\s+/g, '_')}-${Date.now()}.pdf`;
+              const safeName = cropData.nombre.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+              const filename = `reporte-${safeName}-${cropId}.pdf`;
 
               console.log('✅ [REPORT-CONTROLLER] PDF generado exitosamente');
               console.log('📊 [REPORT-CONTROLLER] Detalles:', {

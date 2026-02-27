@@ -215,6 +215,8 @@ const deleteTask = (req, res) => {
 };
 
 // UPLOAD IMAGE - Subir/actualizar imagen de tarea
+// Cloudinary usa public_id fijo = id de la tarea con overwrite:true,
+// por lo que sobreescribe automáticamente sin necesidad de borrar la anterior.
 const uploadImage = (req, res) => {
   const { id } = req.params;
 
@@ -230,34 +232,22 @@ const uploadImage = (req, res) => {
       return res.status(500).json({ error: 'Error de conexion con la base de datos' });
     }
 
-    TaskModel.getImageUrl(conn, id, (err, oldImageUrl) => {
+    const newImageUrl = req.file.path;
+
+    TaskModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
       if (err) {
-        console.error('❌ [TASK-CONTROLLER] Error al obtener imagen actual:', err);
+        console.error('❌ [TASK-CONTROLLER] Error al actualizar imagen en BD:', err);
+        return res.status(500).json({ error: 'Error al actualizar la imagen' });
       }
 
-      const newImageUrl = req.file.path;
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Tarea no encontrada' });
+      }
 
-      TaskModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
-        if (err) {
-          console.error('❌ [TASK-CONTROLLER] Error al actualizar imagen en BD:', err);
-          return res.status(500).json({ error: 'Error al actualizar la imagen' });
-        }
-
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ error: 'Tarea no encontrada' });
-        }
-
-        if (oldImageUrl) {
-          multerService.deleteFile(oldImageUrl).catch(deleteErr => {
-            console.warn('⚠️ [TASK-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
-          });
-        }
-
-        console.log('✅ [TASK-CONTROLLER] Imagen actualizada:', newImageUrl);
-        res.status(200).json({
-          message: 'Imagen actualizada correctamente',
-          imagen_url: newImageUrl
-        });
+      console.log('✅ [TASK-CONTROLLER] Imagen actualizada:', newImageUrl);
+      res.status(200).json({
+        message: 'Imagen actualizada correctamente',
+        imagen_url: newImageUrl
       });
     });
   });

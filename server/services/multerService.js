@@ -14,14 +14,18 @@ const fileFilter = (req, file, cb) => {
 };
 
 // Crea una instancia de multer configurada para una subcarpeta en Cloudinary
+// El public_id se toma del parámetro :id de la ruta, así cada entidad tiene
+// exactamente un slot en Cloudinary que se sobreescribe al actualizar.
 const createUpload = (subfolder) => {
   const storage = new CloudinaryStorage({
     cloudinary,
-    params: {
+    params: async (req) => ({
       folder: `croptrack/${subfolder}`,
+      public_id: req.params.id,
+      overwrite: true,
       allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
       resource_type: 'image'
-    }
+    })
   });
 
   return multer({ storage, fileFilter, limits: { fileSize: MAX_SIZE } });

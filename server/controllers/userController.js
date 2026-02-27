@@ -321,6 +321,8 @@ const deleteUser = (req, res) => {
 };
 
 // UPLOAD IMAGE - Subir/actualizar imagen de usuario
+// Cloudinary usa public_id fijo = id del usuario con overwrite:true,
+// por lo que sobreescribe automáticamente sin necesidad de borrar la anterior.
 const uploadImage = (req, res) => {
   const { id } = req.params;
 
@@ -336,38 +338,22 @@ const uploadImage = (req, res) => {
       return res.status(500).json({ error: 'Error de conexion con la base de datos' });
     }
 
-    // 1. Obtener imagen actual para borrar el archivo viejo
-    UserModel.getImageUrl(conn, id, (err, oldImageUrl) => {
+    const newImageUrl = req.file.path;
+
+    UserModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
       if (err) {
-        console.error('❌ [USER-CONTROLLER] Error al obtener imagen actual:', err);
+        console.error('❌ [USER-CONTROLLER] Error al actualizar imagen en BD:', err);
+        return res.status(500).json({ error: 'Error al actualizar la imagen' });
       }
 
-      // 2. URL devuelta por Cloudinary
-      const newImageUrl = req.file.path;
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
 
-      // 3. Actualizar base de datos
-      UserModel.updateImageUrl(conn, id, newImageUrl, (err, result) => {
-        if (err) {
-          console.error('❌ [USER-CONTROLLER] Error al actualizar imagen en BD:', err);
-          return res.status(500).json({ error: 'Error al actualizar la imagen' });
-        }
-
-        if (result.affectedRows === 0) {
-          return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-
-        // 4. Borrar imagen vieja de Cloudinary
-        if (oldImageUrl) {
-          multerService.deleteFile(oldImageUrl).catch(deleteErr => {
-            console.warn('⚠️ [USER-CONTROLLER] No se pudo eliminar imagen anterior:', deleteErr);
-          });
-        }
-
-        console.log('✅ [USER-CONTROLLER] Imagen actualizada:', newImageUrl);
-        res.status(200).json({
-          message: 'Imagen actualizada correctamente',
-          imagen_url: newImageUrl
-        });
+      console.log('✅ [USER-CONTROLLER] Imagen actualizada:', newImageUrl);
+      res.status(200).json({
+        message: 'Imagen actualizada correctamente',
+        imagen_url: newImageUrl
       });
     });
   });
