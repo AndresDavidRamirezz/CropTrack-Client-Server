@@ -74,8 +74,9 @@ app.use((req, res) => {
 
 // Error handler global
 app.use((err, req, res, next) => {
-  console.error('❌ Error:', err.stack);
-  res.status(500).json({ 
+  const errorDetail = err?.stack || err?.message || JSON.stringify(err);
+  console.error('❌ Error global:', errorDetail, '\nError completo:', err);
+  res.status(500).json({
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });

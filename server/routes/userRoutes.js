@@ -48,14 +48,10 @@ router.use((err, req, res, next) => {
   if (err.message && err.message.includes('Tipo de archivo no permitido')) {
     return res.status(400).json({ error: err.message });
   }
-  // Errores de Cloudinary (objeto con http_code en lugar de Error estándar)
-  if (err && (err.http_code || err.error?.http_code)) {
-    const code = err.http_code || err.error?.http_code;
-    const msg = err.message || err.error?.message || 'Error al conectar con el servicio de imágenes';
-    console.error('❌ [USER-ROUTES] Error de Cloudinary:', code, msg);
-    return res.status(500).json({ error: `Error de Cloudinary (${code}): ${msg}` });
-  }
-  next(err);
+  // Capturar cualquier otro error (Cloudinary, red, etc.) y loguearlo en detalle
+  const errorDetail = err?.stack || err?.message || JSON.stringify(err);
+  console.error('❌ [USER-ROUTES] Error en upload de imagen:', errorDetail, '\nError completo:', err);
+  return res.status(500).json({ error: 'Error al subir la imagen. Revisá los logs del servidor.' });
 });
 
 export default router;
