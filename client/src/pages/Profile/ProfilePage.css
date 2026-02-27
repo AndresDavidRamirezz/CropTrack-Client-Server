@@ -870,3 +870,11 @@
     font-size: 0.9rem;
   }
 }
+
+/* ── Desktop: márgenes laterales del 10% ── */
+@media (min-width: 769px) {
+  .profile-page {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}

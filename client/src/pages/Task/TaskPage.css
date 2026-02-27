@@ -412,3 +412,11 @@
     border-radius: 0 0 14px 14px;
   }
 }
+
+/* ── Desktop: márgenes laterales del 10% ── */
+@media (min-width: 769px) {
+  .task-page {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
