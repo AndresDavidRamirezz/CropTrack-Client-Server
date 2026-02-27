@@ -87,7 +87,7 @@ const ReportPage = () => {
       console.log('✅ [REPORT-PAGE] handleGenerateReport - Blob URL creada:', blobUrl);
 
       // Abrir previsualizacion en vez de descargar directamente
-      setPreview({ url: blobUrl, cropName });
+      setPreview({ url: blobUrl, cropName, cropId });
       console.log('✅ [REPORT-PAGE] handleGenerateReport - Preview abierto para:', cropName);
     } catch (err) {
       console.error('❌ [REPORT-PAGE] handleGenerateReport - Catch error:', err.message);
@@ -104,7 +104,8 @@ const ReportPage = () => {
       return;
     }
 
-    const filename = `reporte-${preview.cropName.replace(/\s+/g, '_')}.pdf`;
+    const safeName = preview.cropName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '');
+    const filename = `reporte-${safeName}-${preview.cropId}.pdf`;
     console.log('🔵 [REPORT-PAGE] handleDownload - Descargando:', filename);
 
     const link = document.createElement('a');

@@ -149,7 +149,7 @@ const reportService = {
         margins: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN },
         bufferPages: true,  // Necesario para switchToPage() en el footer
         info: {
-          Title: `Reporte - ${reportData.cosecha.nombre}`,
+          Title: `reporte-${reportData.cosecha.nombre.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '')}-${reportData.cosecha.id}`,
           Author: `${reportData.administrador.nombre} ${reportData.administrador.apellido}`,
           Subject: 'Reporte de Cosecha - CropTrack'
         }
