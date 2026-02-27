@@ -1,0 +1,1356 @@
+# CROP 1 - PLAN ANUAL MAÍZ HÍBRIDO DK-7088
+# Tareas y mediciones adicionales para completar la campaña Oct 2025 → May 2026
+# Ejecutar después de requestRegister → requestUser → requestCrops → requestTasks → requestMeasurements
+#
+# Trabajadores asignados al cultivo:
+#   sup_roberto  → sup1Id
+#   trab_lucas   → trab1Id
+#   trab_valentina → trab2Id
+
+@baseUrl = https://croptrack-client-server.onrender.com
+@empresa = Agro San Martín S.A.
+
+@crop1Id = 60166b3d-7ed6-4cb9-9a65-bdd543a0a498
+@adminId = 5cc33d3a-d546-429b-b0be-7a938e7f04d0
+@sup1Id  = 5995c397-18fe-4e85-9030-256bc573a089
+@trab1Id = c9f07f62-d9ff-472e-8c70-2f5046fd4653
+@trab2Id = 5a52b76c-3042-47c1-9d3c-4c12a87e3512
+
+### ============================================================
+### BLOQUE A - TAREAS: EMERGENCIA Y ESTADIOS INICIALES (Oct-Nov 2025)
+### ============================================================
+
+###
+# A1 - Monitoreo de emergencia y stand de plantas (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Monitoreo de emergencia y stand de plantas",
+  "descripcion": "Conteo de plantas emergidas en 5 puntos representativos por hectárea para verificar el stand de implantación logrado y detectar fallas de implantación.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-10-10",
+  "fecha_limite": "2025-10-14",
+  "observaciones": "Stand logrado: 81.500 pl/ha (102% del objetivo de 80.000). Emergencia uniforme en el 94% del lote. Zona A3 con 3% menos por encharcamiento superficial leve."
+}
+
+###
+# A2 - Raleo en zonas con doble emergencia (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Raleo manual en zonas de doble emergencia",
+  "descripcion": "Eliminación manual de plántulas dobles en surcos con exceso de densidad en sectores A1 y A2. Afecta aproximadamente el 4% del área total.",
+  "prioridad": "baja",
+  "estado": "completada",
+  "fecha_inicio": "2025-10-13",
+  "fecha_limite": "2025-10-15",
+  "observaciones": "Raleo ejecutado en 1.8 ha. Densidad corregida a 80.300 pl/ha en zonas intervenidas. Sin daño a plantas vecinas."
+}
+
+###
+# A3 - Primera fertilización nitrogenada en V3 (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Primera fertilización nitrogenada en V3 (UAN 32%)",
+  "descripcion": "Aplicación de nitrógeno en cobertura superficial en estadio V3. Uso de UAN 32% con boquillas de baja deriva y aditivo anti-volatilización. Dosis fraccionada: primer tercio del plan.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-11-05",
+  "fecha_limite": "2025-11-07",
+  "observaciones": "Aplicados 35 kg N/ha (UAN 32% a 110 L/ha). Condiciones: temperatura < 22°C, viento < 10 km/h, sin lluvia en 48h post-aplicación. Sin volatilización visible."
+}
+
+###
+# A4 - Monitoreo de malezas post-emergentes (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Relevamiento y control de malezas post-emergentes",
+  "descripcion": "Recorrida sistemática del lote para evaluar presencia de malezas escapadas al tratamiento preemergente. Umbral de acción: > 3 plantas/m² en gramíneas, > 2 plantas/m² en latifoliadas.",
+  "prioridad": "media",
+  "estado": "completada",
+  "fecha_inicio": "2025-11-08",
+  "fecha_limite": "2025-11-10",
+  "observaciones": "Detección de Digitaria sanguinalis en 15% del lote (densidad promedio 4 pl/m²). Aplicación de post-emergente selectivo: Nicosulfurón 60 g/ha. Sin latifoliadas significativas."
+}
+
+###
+# A5 - Riego de auxilio en V4 (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Riego de auxilio - Estadio V4 (sistema por goteo)",
+  "descripcion": "Activación del sistema de riego por goteo ante déficit hídrico detectado en suelo. Objetivo: llevar humedad de 52% a 68% de capacidad de campo en el perfil 0-40 cm.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-11-12",
+  "fecha_limite": "2025-11-15",
+  "observaciones": "Lámina aplicada: 28 mm distribuidos en 3 jornadas. Humedad post-riego: 67% CC. Sistema funcionó al 98% de su capacidad. Gotero del sector A3 reemplazado por obstrucción."
+}
+
+### ============================================================
+### BLOQUE B - TAREAS: CRECIMIENTO VEGETATIVO AVANZADO (Nov-Dic 2025)
+### ============================================================
+
+###
+# B1 - Segunda fertilización nitrogenada en V8 (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Segunda fertilización nitrogenada en V8 (Urea 46%)",
+  "descripcion": "Aplicación del segundo tercio del plan de nitrógeno en cobertura. Urea granulada al voleo con incorporación inmediata por lluvia pronosticada. Estadio crítico para la diferenciación del número de granos.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-11-25",
+  "fecha_limite": "2025-11-27",
+  "observaciones": "Aplicados 28 kg N/ha (Urea 46% a 61 kg/ha). Lluvia de 18 mm registrada 6h después. Incorporación eficiente. Sin síntomas de quemado foliar."
+}
+
+###
+# B2 - Control de pulgón del maíz (COMPLETADA - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Control de pulgón del maíz (Rhopalosiphum maidis)",
+  "descripcion": "Tratamiento insecticida ante detección de colonias de pulgón en hojas del tercio superior en estadio V10. Umbral superado: > 200 pulgones/planta en 30% de plantas muestreadas.",
+  "prioridad": "urgente",
+  "estado": "completada",
+  "fecha_inicio": "2025-12-05",
+  "fecha_limite": "2025-12-08",
+  "observaciones": "Imidacloprid 0.35 L/ha + aceite mineral 0.5%. Aplicación con pulverizadora de 28 m de barra. Control evaluado a los 7 días: 95% reducción de colonias. Sin reinfestación en 21 días."
+}
+
+###
+# B3 - Monitoreo de cogollero segunda generación (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Monitoreo de cogollero segunda generación (V12)",
+  "descripcion": "Evaluación de daño y recuento de larvas de Spodoptera frugiperda en estadio V12. Segunda generación esperada para diciembre. Umbral: > 20% plantas con daño activo.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-12-18",
+  "fecha_limite": "2025-12-20",
+  "observaciones": "Daño presente en 18% de plantas (por debajo del umbral). Larvas en estadio L2-L3. Se decide no aplicar dado el bajo nivel de infestación y el costo de la intervención. Monitoreo continúa semanal."
+}
+
+###
+# B4 - Riego de sostenimiento en período vegetativo seco (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Riego de sostenimiento - Período seco diciembre",
+  "descripcion": "Activación de riego ante período seco de 15 días sin precipitaciones registradas. Objetivo: mantener humedad en 60-65% CC para no comprometer el crecimiento foliar previo a floración.",
+  "prioridad": "media",
+  "estado": "completada",
+  "fecha_inicio": "2025-12-20",
+  "fecha_limite": "2025-12-23",
+  "observaciones": "Lámina aplicada: 22 mm en 2 jornadas. Sin presencia de estrés foliar visible (marchitamiento temporal). Humedad post-riego: 64% CC."
+}
+
+### ============================================================
+### BLOQUE C - TAREAS: FLORACIÓN Y POLINIZACIÓN (Ene 2026)
+### ============================================================
+
+###
+# C1 - Monitoreo de inicio de espigado VT (EN PROCESO)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Monitoreo de inicio de espigado - Estadio VT",
+  "descripcion": "Seguimiento diario del porcentaje de plantas con espiga visible. Registro de fecha de 50% de espigado (VT50) como referencia para sincronía de polinización. Clave para ajuste del riego en período crítico.",
+  "prioridad": "alta",
+  "estado": "en_proceso",
+  "fecha_inicio": "2026-01-05",
+  "fecha_limite": "2026-01-12",
+  "observaciones": "Al 08/01: 65% de plantas con espiga emergida. VT50 estimado para 10/01. Temperatura promedio de los últimos 7 días: 32°C. Se incrementa frecuencia de riego."
+}
+
+###
+# C2 - Evaluación de sincronía de polinización R1 (EN PROCESO)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Evaluación de sincronía de polinización en R1",
+  "descripcion": "Evaluación de la sincronía entre emisión de polen (espiga) y receptividad de estigmas (panoja) en 50 plantas por parcela. Umbral crítico: ASI (Anthesis-Silking Interval) no mayor a 3 días.",
+  "prioridad": "alta",
+  "estado": "en_proceso",
+  "fecha_inicio": "2026-01-15",
+  "fecha_limite": "2026-01-20",
+  "observaciones": "ASI promedio medido hasta la fecha: 1.8 días (muy favorable). Tasa de polinización estimada: 97%. Sin aborto de estigmas por calor. Continúa el relevamiento hasta R1 completo."
+}
+
+###
+# C3 - Riego crítico en floración R1 (EN PROCESO - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Riego crítico en floración - Período R1",
+  "descripcion": "Mantenimiento de humedad óptima (70-75% CC) durante el período más crítico del cultivo: floración y primeras etapas de llenado de grano. Déficit hídrico en este período puede reducir el rendimiento hasta un 50%.",
+  "prioridad": "urgente",
+  "estado": "en_proceso",
+  "fecha_inicio": "2026-01-18",
+  "fecha_limite": "2026-01-30",
+  "observaciones": "Lámina aplicada hasta la fecha: 35 mm en 5 riegos. Temperatura máxima registrada el 20/01: 38°C. Riego preventivo nocturno aplicado ese día (12 mm) para reducir estrés térmico. Sin aborto de granos visible."
+}
+
+### ============================================================
+### BLOQUE D - TAREAS: LLENADO DE GRANO (Feb-Mar 2026)
+### ============================================================
+
+###
+# D1 - Fungicida preventivo roya del maíz en R2-R3 (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Fungicida preventivo contra roya común del maíz (R2-R3)",
+  "descripcion": "Aplicación preventiva de fungicida triazol + estrobilurina para protección del aparato foliar durante el llenado de grano. Las hojas superiores (hoja bandera y sub-bandera) son clave para el llenado.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-02-05",
+  "fecha_limite": "2026-02-10",
+  "observaciones": "Pendiente. Planificado: Trifloxistrobina 100 g/ha + Tebuconazol 200 g/ha en mezcla. Monitorear presencia de pústulas de Puccinia sorghi antes de aplicar. Considerar condición foliar y humedad relativa > 70% como riesgo."
+}
+
+###
+# D2 - Fertilización foliar con micronutrientes Zn y B (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Fertilización foliar con zinc y boro en R2-R3",
+  "descripcion": "Aplicación foliar de micronutrientes para corregir deficiencias subclínicas detectadas en análisis foliar. Zinc clave en enzimas de la fotosíntesis; boro en integridad de membranas celulares durante el llenado.",
+  "prioridad": "media",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-02-08",
+  "fecha_limite": "2026-02-12",
+  "observaciones": "Pendiente. Dosis planificada: Zn-EDTA 400 g/ha + Boro etanolamina 300 g/ha en 150 L de agua. Aplicar en horas de menor temperatura (antes de las 10h o después de las 18h)."
+}
+
+###
+# D3 - Control de barrenador del tallo Diatraea saccharalis (PENDIENTE - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Control de barrenador del tallo (Diatraea saccharalis) R3",
+  "descripcion": "Monitoreo y tratamiento ante el barrenador del tallo. Las larvas perforan el tallo en estadios reproductivos causando acame y pérdida directa de rendimiento. Umbral: > 15% de plantas con síntomas activos.",
+  "prioridad": "urgente",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-02-15",
+  "fecha_limite": "2026-02-25",
+  "observaciones": "Pendiente. Monitorear síntomas: aserrín en nudo del tallo, hojas con perforaciones lineales. En caso de superar umbral: Clorpirifos 1 L/ha o Spinetoram 0.5 L/ha. Posible uso de liberación de Trichogramma spp."
+}
+
+###
+# D4 - Evaluación de rendimiento - conteo de espigas y granos (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Evaluación de rendimiento: conteo de espigas y granos en R4",
+  "descripcion": "Estimación de rendimiento en estadio R4 (grano pastoso) mediante conteo de: espigas por m², hileras por espiga y granos por hilera. Complementar con peso estimado de grano (P1000 en madurez).",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-02-25",
+  "fecha_limite": "2026-03-05",
+  "observaciones": "Pendiente. Muestrear 10 sitios representativos de 3 m² cada uno. Fórmula: Rend. = (espigas/m²) × (granos/espiga) × P1000 / 1.000.000. Objetivo: confirmar o ajustar estimación del 15/01 (8.2 t/ha)."
+}
+
+###
+# D5 - Riego complementario en R4-R5 (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Riego complementario de sostenimiento en R4-R5",
+  "descripcion": "Riegos de sostenimiento para mantener turgencia durante el llenado de almidón en el grano. El déficit hídrico en R4-R5 reduce el peso de grano sin afectar el número. Objetivo: humedad > 55% CC.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-02-20",
+  "fecha_limite": "2026-03-10",
+  "observaciones": "Pendiente. Lámina estimada: 20-30 mm en función de las precipitaciones registradas. Suspender el riego cuando humedad del suelo supere 70% CC o cuando el grano alcance punto negro."
+}
+
+### ============================================================
+### BLOQUE E - TAREAS: PRE-COSECHA (Mar-Abr 2026)
+### ============================================================
+
+###
+# E1 - Monitoreo de madurez fisiológica R6 (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Monitoreo de madurez fisiológica - Punto negro (R6)",
+  "descripcion": "Evaluación diaria del porcentaje de granos con punto negro (black layer) en la base del grano, indicador de la madurez fisiológica. A partir de este momento el grano no acumula más materia seca.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-03-15",
+  "fecha_limite": "2026-03-25",
+  "observaciones": "Pendiente. Muestrear 30 espigas al azar. Seccionar el grano basalmente y observar formación de capa negra. Se espera R6 completo para la última semana de marzo. Humedad de cosecha objetivo: < 22%."
+}
+
+###
+# E2 - Muestreo de humedad de grano pre-cosecha (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Muestreo de humedad de grano - Determinación de fecha de cosecha",
+  "descripcion": "Serie de determinaciones de humedad de grano con medidor portátil Motomco 919 para definir la fecha óptima de cosecha. Objetivo: cosechar con 22-24% de humedad para maximizar rendimiento y minimizar pérdidas.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-03-25",
+  "fecha_limite": "2026-04-05",
+  "observaciones": "Pendiente. Muestrear 5 puntos del lote, 3 espigas por punto. Registrar evolución diaria de descenso de humedad (promedio histórico: 0.4% por día en condiciones normales de marzo)."
+}
+
+###
+# E3 - Calibración y ajuste de cosechadora John Deere S670 (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Calibración y ajuste técnico de cosechadora JD S670",
+  "descripcion": "Revisión mecánica completa, ajuste del cabezal maicero de 6 surcos, calibración del monitor de rendimiento y configuración del mapa de cosecha. Verificar pérdidas < 1.5% antes de iniciar.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-04-01",
+  "fecha_limite": "2026-04-05",
+  "observaciones": "Pendiente. Revisar: velocidad de trilla, separación de cóncavo, velocidad de ventilador y zarandas. Test de pérdidas en 100 m de recorrido antes del inicio formal. Cambio de aceite y filtros programado."
+}
+
+### ============================================================
+### BLOQUE F - TAREAS: COSECHA Y POST-COSECHA (Abr-May 2026)
+### ============================================================
+
+###
+# F1 - Cosecha mecanizada Frente 1: Sectores A1-A2 (PENDIENTE - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Cosecha mecanizada Frente 1 - Sectores A1 y A2 (22.5 ha)",
+  "descripcion": "Inicio de cosecha por los sectores con mayor madurez (A1-A2, 22.5 ha). Cosechadora JD S670 con cabezal maicero de 6 surcos. Monitoreo en tiempo real de rendimiento con pantalla GreenStar 3.",
+  "prioridad": "urgente",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-04-06",
+  "fecha_limite": "2026-04-09",
+  "observaciones": "Pendiente. Velocidad de avance objetivo: 6-7 km/h. Transporte con 3 camiones tolva de 28 tn. Destino: planta de secado COOP Mendoza. Registrar rendimiento por zona para armado del mapa de productividad."
+}
+
+###
+# F2 - Cosecha mecanizada Frente 2: Sectores A3-A4 (PENDIENTE - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Cosecha mecanizada Frente 2 - Sectores A3 y A4 (23 ha)",
+  "descripcion": "Continuación de cosecha en sectores A3 y A4 (23 ha restantes). Sector A3 con historial de encharcamiento: prever mayor variabilidad de rendimiento. Registrar coordenadas de zonas de bajo rendimiento para análisis posterior.",
+  "prioridad": "urgente",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-04-10",
+  "fecha_limite": "2026-04-13",
+  "observaciones": "Pendiente. Priorizar zona A4 si A3 presenta problemas de transitabilidad. Verificar humedad de grano antes de iniciar; no cosechar con humedad < 13% para evitar daño mecánico de grano."
+}
+
+###
+# F3 - Secado y acondicionamiento del grano en planta (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Secado y acondicionamiento del grano - Planta COOP Mendoza",
+  "descripcion": "Supervisión del proceso de secado de grano en secadora continua de la cooperativa. Monitoreo de temperatura de aire, tiempo de residencia y humedad final. Objetivo: grano a 13.5% de humedad para almacenamiento seguro.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-04-14",
+  "fecha_limite": "2026-04-20",
+  "observaciones": "Pendiente. Coordinar turnos en secadora con al menos 7 días de anticipación. Prever merma del 7-8% por secado (de ~22% a 13.5%). Solicitar análisis de proteína, almidón y aflatoxinas a laboratorio."
+}
+
+###
+# F4 - Transporte y entrega definitiva a acopio (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Transporte y entrega definitiva a acopio COOP Mendoza",
+  "descripcion": "Coordinación de la logística final: transporte desde acopio transitorio a celda definitiva, pesada en balanza certificada, determinación de calidad comercial y emisión de carta de porte y remito de entrega.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-04-20",
+  "fecha_limite": "2026-04-25",
+  "observaciones": "Pendiente. Gestionar carta de porte digital AFIP previamente. Verificar disponibilidad de celda en acopio. Acordar precio forward o fijar precio a la cosecha según contexto de mercado."
+}
+
+###
+# G1 - Relevamiento agronómico del lote post-cosecha (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Relevamiento agronómico del lote post-cosecha",
+  "descripcion": "Evaluación del estado del lote tras la cosecha: pérdidas de cosecha en chacra (granos en suelo), cobertura de rastrojo, presencia de voluntarias, nivel de compactación superficial e informe de la campaña.",
+  "prioridad": "baja",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-05-05",
+  "fecha_limite": "2026-05-10",
+  "observaciones": "Pendiente. Registrar: pérdidas en chacra (granos/m²), altura de rastrojo, % de cobertura, presencia de plantas voluntarias. Elaborar informe de cierre de campaña para auditoría agrícola y planificación del cultivo siguiente."
+}
+
+### ============================================================
+### BLOQUE H - MEDICIONES ADICIONALES: TEMPERATURA AMBIENTE (°C)
+### ============================================================
+
+###
+# H1 - Temperatura V3 - inicio primera fertilización
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 24.5,
+  "unidad": "°C",
+  "fecha_medicion": "2025-11-05T08:00:00",
+  "observaciones": "Temperatura matutina en estadio V3. Condiciones favorables para la absorción de nitrógeno. Sin estrés térmico."
+}
+
+###
+# H2 - Temperatura V8 - inicio segunda fertilización
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 27.3,
+  "unidad": "°C",
+  "fecha_medicion": "2025-11-25T09:00:00",
+  "observaciones": "Calor creciente en estadio V8. Temperatura por debajo del límite crítico (35°C). Buen ritmo de acumulación de materia seca."
+}
+
+###
+# H3 - Temperatura V12 - pre-floración
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 29.1,
+  "unidad": "°C",
+  "fecha_medicion": "2025-12-20T14:00:00",
+  "observaciones": "Temperatura elevada en V12. Se incrementó frecuencia de riegos. Sin síntomas de estrés hídrico foliar visible."
+}
+
+###
+# H4 - Temperatura VT - inicio espigado
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 31.2,
+  "unidad": "°C",
+  "fecha_medicion": "2026-01-05T13:00:00",
+  "observaciones": "Temperatura alta en VT. Se activó riego preventivo. Pronóstico de ola de calor para los próximos 5 días."
+}
+
+###
+# H5 - Temperatura R1 - pico de calor en floración
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 33.8,
+  "unidad": "°C",
+  "fecha_medicion": "2026-01-20T15:00:00",
+  "observaciones": "Pico de calor crítico durante floración R1. Temperatura máxima diaria: 38.5°C. Riego nocturno aplicado para reducir temperatura de canopeo. Sin aborto masivo de granos detectado."
+}
+
+###
+# H6 - Temperatura R3 - llenado inicial de grano
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 30.5,
+  "unidad": "°C",
+  "fecha_medicion": "2026-02-10T12:00:00",
+  "observaciones": "Temperatura en descenso respecto a enero. Condiciones favorables para el llenado de almidón en el grano. IAF aún alto (> 3 m2/m2)."
+}
+
+###
+# H7 - Temperatura R5 - llenado avanzado
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 26.2,
+  "unidad": "°C",
+  "fecha_medicion": "2026-03-01T10:00:00",
+  "observaciones": "Temperatura favorable en R5. Senescencia foliar natural iniciando en hojas basales. El cultivo acumula materia seca a ritmo normal."
+}
+
+###
+# H8 - Temperatura R6 - madurez fisiológica
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 21.8,
+  "unidad": "°C",
+  "fecha_medicion": "2026-03-25T08:00:00",
+  "observaciones": "Temperatura descendiendo en otoño. Condiciones óptimas para el secado natural del grano post-madurez fisiológica. Descenso de humedad de grano esperado: 0.4-0.5% por día."
+}
+
+### ============================================================
+### BLOQUE I - MEDICIONES ADICIONALES: HUMEDAD DE SUELO (%)
+### ============================================================
+
+###
+# I1 - Humedad V3 - post-primer riego de auxilio
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 65.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-11-05T07:00:00",
+  "observaciones": "Humedad recuperada post-riego de auxilio V4. Perfil 0-40 cm en condición favorable. Sistema radicular en expansión activa."
+}
+
+###
+# I2 - Humedad V8 - fin noviembre
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 59.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-11-25T07:30:00",
+  "observaciones": "Descenso gradual por consumo del cultivo. Sin lluvia en 10 días. Se evalúa programar riego de sostenimiento para la primera semana de diciembre."
+}
+
+###
+# I3 - Humedad V12 - fin diciembre
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 56.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-12-22T07:00:00",
+  "observaciones": "Humedad estabilizada post-riego de sostenimiento. El cultivo consume aproximadamente 7-8 mm/día en este estadio. Demanda hídrica diaria máxima de la campaña."
+}
+
+###
+# I4 - Humedad VT - inicio floración (crítico)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 62.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-01-05T07:00:00",
+  "observaciones": "Humedad en el límite aceptable previo a floración. Riego programado para las próximas 24h. La situación hídrica en VT-R1 define el número de granos por planta."
+}
+
+###
+# I5 - Humedad R1 - floración bajo estrés
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 48.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-01-20T06:30:00",
+  "observaciones": "Caída crítica de humedad durante el pico de calor. Se activaron todos los sectores de riego. Nivel por debajo del umbral de estrés (50% CC). Riesgo de abscisión de estigmas en plantas más avanzadas."
+}
+
+###
+# I6 - Humedad R1 - post-riego emergencia
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 70.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-01-23T07:00:00",
+  "observaciones": "Recuperación exitosa post-riego de emergencia. Se aplicaron 42 mm en 4 días. Cultivo recuperado. Sin síntomas visibles de daño por estrés hídrico prolongado."
+}
+
+###
+# I7 - Humedad R3 - inicio llenado de grano
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 66.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-02-10T07:30:00",
+  "observaciones": "Buena condición hídrica en R3. Lluvia de 30mm el 7/02 contribuyó a la recarga. Llenado de grano en marcha sin restricciones. Próximo riego planificado para el 20/02."
+}
+
+###
+# I8 - Humedad R5 - llenado avanzado
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 57.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-03-01T07:00:00",
+  "observaciones": "Humedad descendiendo hacia el final del ciclo. Demanda hídrica del cultivo decrece con la senescencia foliar. Último riego de la campaña programado para mediados de marzo."
+}
+
+### ============================================================
+### BLOQUE J - MEDICIONES: ALTURA DE PLANTA (cm)
+### ============================================================
+
+###
+# J1 - Altura en V3
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "altura_planta",
+  "valor": 35.0,
+  "unidad": "cm",
+  "fecha_medicion": "2025-11-05T09:00:00",
+  "observaciones": "Altura promedio en estadio V3 (3 hojas liguladas). Medición en 20 plantas al azar. Crecimiento uniforme. Sin diferencias entre sectores del lote."
+}
+
+###
+# J2 - Altura en V8
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "altura_planta",
+  "valor": 88.0,
+  "unidad": "cm",
+  "fecha_medicion": "2025-11-25T09:30:00",
+  "observaciones": "Altura promedio en V8. Crecimiento de ~2.5 cm/día en las últimas 2 semanas. Dentro del rango esperado para el híbrido DK-7088. Tallo sano y firme."
+}
+
+###
+# J3 - Altura en V12
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "altura_planta",
+  "valor": 145.0,
+  "unidad": "cm",
+  "fecha_medicion": "2025-12-10T09:00:00",
+  "observaciones": "Altura en V12. Fase de elongación máxima del entrenudo. Se observa diferenciación del ápice. Las plantas del sector A3 miden en promedio 8 cm menos por el déficit hídrico puntual de noviembre."
+}
+
+###
+# J4 - Altura en V14 (pre-espigado)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "altura_planta",
+  "valor": 188.0,
+  "unidad": "cm",
+  "fecha_medicion": "2025-12-22T09:00:00",
+  "observaciones": "Plantas casi en altura máxima. Espiga aún encerrada en el cogollo. Crecimiento de entrenudos del tallo casi finalizado. Medición incluye hasta la hoja bandera."
+}
+
+###
+# J5 - Altura en VT (máximo)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "altura_planta",
+  "valor": 242.0,
+  "unidad": "cm",
+  "fecha_medicion": "2026-01-08T09:00:00",
+  "observaciones": "Altura máxima del ciclo alcanzada en VT. Espigas emergidas en 80% de las plantas. La variedad DK-7088 RR2 alcanzó altura dentro del rango indicado por el manual técnico (230-250 cm)."
+}
+
+###
+# J6 - Altura en R3 (post-floración)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "altura_planta",
+  "valor": 241.0,
+  "unidad": "cm",
+  "fecha_medicion": "2026-02-01T09:00:00",
+  "observaciones": "Altura estabilizada. Sin cambios significativos desde VT. Las hojas basales (hoja 1 a 4) ya senescentes. Las 8 hojas superiores aún verdes y activas fotosintéticamente."
+}
+
+### ============================================================
+### BLOQUE K - MEDICIONES: PRECIPITACIÓN MENSUAL (mm)
+### ============================================================
+
+###
+# K1 - Precipitación octubre 2025
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "precipitacion_mensual",
+  "valor": 92.0,
+  "unidad": "mm",
+  "fecha_medicion": "2025-10-31T18:00:00",
+  "observaciones": "Precipitación total mensual: 92 mm. Por debajo del promedio histórico de 120 mm para octubre. La diferencia fue compensada con 2 riegos de auxilio. Distribución: 3 eventos principales (35mm, 28mm, 29mm)."
+}
+
+###
+# K2 - Precipitación noviembre 2025
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "precipitacion_mensual",
+  "valor": 118.0,
+  "unidad": "mm",
+  "fecha_medicion": "2025-11-30T18:00:00",
+  "observaciones": "Precipitación total mensual: 118 mm. Muy próximo al promedio histórico (120 mm). Bien distribuida en 5 eventos. Favoreció la incorporación de urea en V8. Sin excesos ni déficits."
+}
+
+###
+# K3 - Precipitación diciembre 2025
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "precipitacion_mensual",
+  "valor": 68.0,
+  "unidad": "mm",
+  "fecha_medicion": "2025-12-31T18:00:00",
+  "observaciones": "Diciembre seco: 68 mm vs 130 mm histórico. Período seco de 18 días entre el 2 y el 20 de diciembre. Se activó el sistema de riego para compensar. Impacto moderado en crecimiento foliar."
+}
+
+###
+# K4 - Precipitación enero 2026
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "precipitacion_mensual",
+  "valor": 143.0,
+  "unidad": "mm",
+  "fecha_medicion": "2026-01-31T18:00:00",
+  "observaciones": "Enero con alta pluviosidad: 143 mm (promedio histórico 140 mm). Gran tormenta el 25/01 aportó 78 mm. Compensó el déficit del sistema de riego en floración. Suelo en capacidad de campo al fin del mes."
+}
+
+###
+# K5 - Precipitación febrero 2026
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "precipitacion_mensual",
+  "valor": 98.0,
+  "unidad": "mm",
+  "fecha_medicion": "2026-02-28T18:00:00",
+  "observaciones": "Precipitación febrero: 98 mm (promedio 110 mm). Déficit leve de 12 mm compensado con riego complementario R4-R5. Buenas condiciones para el llenado de grano. Sin tormentas severas."
+}
+
+###
+# K6 - Precipitación marzo 2026
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "precipitacion_mensual",
+  "valor": 72.0,
+  "unidad": "mm",
+  "fecha_medicion": "2026-03-31T18:00:00",
+  "observaciones": "Marzo seco (72 mm vs 90 mm histórico). Condición favorable para el secado natural del grano post-madurez fisiológica. Cultivo en senescencia avanzada; la demanda hídrica es mínima."
+}
+
+### ============================================================
+### BLOQUE L - MEDICIONES: TEMPERATURA DE SUELO (°C)
+### ============================================================
+
+###
+# L1 - Temperatura de suelo en siembra
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "temperatura_suelo",
+  "valor": 19.5,
+  "unidad": "°C",
+  "fecha_medicion": "2025-10-15T08:00:00",
+  "observaciones": "Temperatura de suelo a 5 cm de profundidad post-siembra. Óptima para la germinación del maíz (umbral: 10°C, óptimo: 18-24°C). Emergencia uniforme esperada en 7-9 días."
+}
+
+###
+# L2 - Temperatura de suelo en V8
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "temperatura_suelo",
+  "valor": 22.8,
+  "unidad": "°C",
+  "fecha_medicion": "2025-11-25T08:30:00",
+  "observaciones": "Temperatura de suelo a 10 cm en V8. Condiciones favorables para la actividad microbiana y la mineralización del nitrógeno. Temperatura dentro del rango óptimo para absorción radicular."
+}
+
+###
+# L3 - Temperatura de suelo en VT
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "temperatura_suelo",
+  "valor": 27.3,
+  "unidad": "°C",
+  "fecha_medicion": "2026-01-10T09:00:00",
+  "observaciones": "Temperatura de suelo elevada en VT. La cobertura del canopeo reduce la temperatura superficial pero el perfil a 10 cm ya supera los 27°C. Actividad de nitrificación acelerada."
+}
+
+### ============================================================
+### BLOQUE M - MEDICIONES: CONTENIDO DE NITRÓGENO EN SUELO (ppm)
+### ============================================================
+
+###
+# M1 - Nitrógeno pre-siembra
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "nitrogeno_suelo",
+  "valor": 12.0,
+  "unidad": "ppm",
+  "fecha_medicion": "2025-10-20T10:00:00",
+  "observaciones": "Nitrógeno nítrico (NO3-) en suelo pre-siembra: 12 ppm (0-60 cm). Nivel bajo; confirma la necesidad del plan de fertilización nitrogenada diseñado. Se programan 3 aplicaciones fraccionadas."
+}
+
+###
+# M2 - Nitrógeno post-primera fertilización
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "nitrogeno_suelo",
+  "valor": 31.0,
+  "unidad": "ppm",
+  "fecha_medicion": "2025-11-20T10:00:00",
+  "observaciones": "Nitrógeno disponible incrementado post-primera cobertura. Incremento de 19 ppm respecto a la basal. La nitrificación del UAN fue completa en 14 días. Sistema radicular absorbiendo activamente."
+}
+
+###
+# M3 - Nitrógeno en VT (consumo vegetativo completo)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "nitrogeno_suelo",
+  "valor": 17.0,
+  "unidad": "ppm",
+  "fecha_medicion": "2026-01-10T10:00:00",
+  "observaciones": "Nitrógeno descendido a 17 ppm tras el máximo crecimiento vegetativo. Gran parte del N aplicado fue translocado a la espiga. El tercer fraccionamiento (fertirrigación, en ejecución) aportará los 17 kg N/ha restantes."
+}
+
+### ============================================================
+### BLOQUE N - MEDICIONES: DENSIDAD DE PLANTAS (pl/ha)
+### ============================================================
+
+###
+# N1 - Densidad en emergencia
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "densidad_plantas",
+  "valor": 81500.0,
+  "unidad": "pl/ha",
+  "fecha_medicion": "2025-10-14T10:00:00",
+  "observaciones": "Stand de emergencia: 81.500 pl/ha. Porcentaje de implantación: 102% del objetivo. Conteo realizado en 5 transectas de 10 m cada una. Sin fallas de implantación mayores al 5% en ninguna parcela."
+}
+
+###
+# N2 - Densidad a mediados de ciclo
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "densidad_plantas",
+  "valor": 79800.0,
+  "unidad": "pl/ha",
+  "fecha_medicion": "2025-12-05T10:00:00",
+  "observaciones": "Pérdida del 2.1% del stand por ataque de cogollero y pulgón. Densidad de 79.800 pl/ha es aceptable y no compromete el rendimiento objetivo. Sin nuevas pérdidas esperadas."
+}
+
+###
+# N3 - Densidad de espigas en R4
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "densidad_plantas",
+  "valor": 78500.0,
+  "unidad": "pl/ha",
+  "fecha_medicion": "2026-02-28T10:00:00",
+  "observaciones": "Conteo de espigas con granos viables en R4: 78.500 espigas/ha. Promedio de granos por espiga (hileras × granos/hilera): 556 granos/espiga. Estimación de rendimiento revisada: 8.4 t/ha."
+}
+
+### ============================================================
+### BLOQUE O - MEDICIONES: ÍNDICE DE ÁREA FOLIAR (m2/m2)
+### ============================================================
+
+###
+# O1 - IAF en V8
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "indice_area_foliar",
+  "valor": 1.8,
+  "unidad": "m2/m2",
+  "fecha_medicion": "2025-11-25T10:00:00",
+  "observaciones": "IAF de 1.8 en V8. El cultivo aún no cierra el surco (IAF crítico para intercepción de luz ≥ 3.0). La luz llega al suelo y puede favorecer rebrote de malezas."
+}
+
+###
+# O2 - IAF en V12 (cierre de surco)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "indice_area_foliar",
+  "valor": 3.7,
+  "unidad": "m2/m2",
+  "fecha_medicion": "2025-12-15T10:00:00",
+  "observaciones": "Cierre de surco logrado con IAF de 3.7. Intercepción de radiación > 90%. A partir de este momento la competencia con malezas es casi nula. Cobertura del suelo completa."
+}
+
+###
+# O3 - IAF en VT (máximo)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "indice_area_foliar",
+  "valor": 4.9,
+  "unidad": "m2/m2",
+  "fecha_medicion": "2026-01-08T10:00:00",
+  "observaciones": "IAF máximo del ciclo: 4.9 m2/m2. La canopeo es muy densa. Las 6 hojas superiores (banderas) son responsables del 70% de la fotosíntesis activa. Sin síntomas de senescencia en hojas funcionales."
+}
+
+###
+# O4 - IAF en R3 (inicio de senescencia)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "indice_area_foliar",
+  "valor": 3.2,
+  "unidad": "m2/m2",
+  "fecha_medicion": "2026-02-10T10:00:00",
+  "observaciones": "IAF descendiendo por senescencia de hojas basales. Las 5 hojas inferiores ya completamente senescentes. Las 9 hojas superiores mantienen actividad fotosintética plena para el llenado de grano."
+}
+
+###
+# O5 - IAF en R5 (senescencia avanzada)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "indice_area_foliar",
+  "valor": 1.9,
+  "unidad": "m2/m2",
+  "fecha_medicion": "2026-03-05T10:00:00",
+  "observaciones": "IAF reducido por senescencia avanzada. Solo las 4-5 hojas superiores aún verdes. El llenado de grano en R5 depende principalmente de la translocación de reservas del tallo a los granos."
+}
+
+### ============================================================
+### BLOQUE P - MEDICIONES: HUMEDAD RELATIVA DEL AMBIENTE (%)
+### ============================================================
+
+###
+# P1 - Humedad relativa en siembra
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_relativa",
+  "valor": 62.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-10-15T08:00:00",
+  "observaciones": "Humedad relativa en siembra: 62%. Condiciones normales de primavera. Sin riesgo de enfermedades fúngicas en este estadio. Favorable para la germinación."
+}
+
+###
+# P2 - Humedad relativa en V8
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "humedad_relativa",
+  "valor": 71.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-11-20T09:00:00",
+  "observaciones": "Humedad relativa elevada en noviembre lluvioso. Monitorear aparición temprana de enfermedades foliares. Sin síntomas de mancha gris (Cercospora zeae-maydis) hasta la fecha."
+}
+
+###
+# P3 - Humedad relativa en V12 (período seco)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_relativa",
+  "valor": 55.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-12-20T14:00:00",
+  "observaciones": "Humedad relativa baja durante el período seco de diciembre. Condición desfavorable para enfermedades fúngicas pero aumenta el riesgo de estrés hídrico y la deriva de agroquímicos en pulverizaciones."
+}
+
+###
+# P4 - Humedad relativa en VT/R1 (floración)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "humedad_relativa",
+  "valor": 74.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-01-15T09:00:00",
+  "observaciones": "Humedad relativa alta en floración. Favorece la receptividad de estigmas pero incrementa levemente el riesgo de tizón foliar (Exserohilum turcicum). Se refuerza el monitoreo sanitario."
+}
+
+###
+# P5 - Humedad relativa en R3
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "humedad_relativa",
+  "valor": 67.0,
+  "unidad": "%",
+  "fecha_medicion": "2026-02-15T09:00:00",
+  "observaciones": "Humedad relativa en valores normales de verano tardío. Condiciones moderadas; sin alerta sanitaria para el período de llenado de grano. IAF en descenso reduce la humedad del canopeo."
+}
+
+### ============================================================
+### BLOQUE Q - MEDICIONES: HUMEDAD DE GRANO (%)
+### ============================================================
+
+###
+# Q1 - Humedad de grano en R5
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "humedad_grano",
+  "valor": 38.5,
+  "unidad": "%",
+  "fecha_medicion": "2026-03-10T10:00:00",
+  "observaciones": "Humedad de grano en R5 (grano farinoso avanzado). Muy por encima del punto óptimo de cosecha (22%). El grano aún está acumulando materia seca. Cosechar en 25-30 días si el clima es favorable."
+}
+
+###
+# Q2 - Humedad de grano en R6 (punto negro)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_grano",
+  "valor": 30.2,
+  "unidad": "%",
+  "fecha_medicion": "2026-03-25T10:00:00",
+  "observaciones": "Madurez fisiológica alcanzada: punto negro visible en el 95% de los granos muestreados. Humedad en descenso natural (0.45% por día). Cosecha óptima proyectada: 10-14 de abril."
+}
+
+###
+# Q3 - Humedad de grano pre-cosecha
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "humedad_grano",
+  "valor": 23.1,
+  "unidad": "%",
+  "fecha_medicion": "2026-04-05T10:00:00",
+  "observaciones": "Humedad de grano en 23.1%. Dentro del rango objetivo para iniciar cosecha (22-24%). Merma por secado estimada: 8.5% (de 23.1% a 13.5%). Se da inicio formal a la cosecha el 06/04."
+}
+
+### ============================================================
+### BLOQUE R - MEDICIONES: RADIACIÓN SOLAR (MJ/m²)
+### ============================================================
+
+###
+# R1 - Radiación en V8 (máximo vegetativo)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "radiacion_solar",
+  "valor": 22.5,
+  "unidad": "MJ/m2",
+  "fecha_medicion": "2025-11-15T12:00:00",
+  "observaciones": "Radiación solar diaria promedio de la semana: 22.5 MJ/m². Muy favorable para el crecimiento vegetativo. Las primaveras con alta radiación incrementan el índice de crecimiento del cultivo (CGR)."
+}
+
+###
+# R2 - Radiación en VT/R1 (floración - crítico)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "radiacion_solar",
+  "valor": 28.3,
+  "unidad": "MJ/m2",
+  "fecha_medicion": "2026-01-10T12:00:00",
+  "observaciones": "Radiación máxima del verano: 28.3 MJ/m² promedio semanal. Junto con la alta temperatura, genera estrés combinado durante la floración. La alta demanda evapotranspiratoria exige mayor frecuencia de riego."
+}
+
+###
+# R3 - Radiación en R3 (llenado activo)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{adminId}}",
+  "tipo_medicion": "radiacion_solar",
+  "valor": 25.1,
+  "unidad": "MJ/m2",
+  "fecha_medicion": "2026-02-15T12:00:00",
+  "observaciones": "Radiación en valores altos durante el llenado activo. El 80% del peso final del grano se define en R2-R5. Alta radiación + IAF > 3 m2/m2 = condiciones ideales para maximizar el rendimiento."
+}
+

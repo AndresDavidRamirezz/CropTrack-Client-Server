@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './TaskForm.css';
 
-const API_URL = 'http://localhost:4000/api/tasks';
-const CROPS_API_URL = 'http://localhost:4000/api/crops';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+const API_URL = `${BASE_URL}/api/tasks`;
+const CROPS_API_URL = `${BASE_URL}/api/crops`;
 
 const PRIORIDADES = [
   { value: 'baja', label: 'Baja' },
@@ -174,7 +175,7 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
   const getFullImageUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    return `http://localhost:4000${url}`;
+    return `${BASE_URL}${url}`;
   };
 
   const uploadImageFile = async (file) => {

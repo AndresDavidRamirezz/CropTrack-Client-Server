@@ -53,7 +53,7 @@ const CropForm = ({ onSubmit, initialData, onCancel, loading, workers = [], init
   const getFullImageUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    return `http://localhost:4000${url}`;
+    return `${process.env.REACT_APP_API_URL || 'http://localhost:4000'}${url}`;
   };
 
   useEffect(() => {
