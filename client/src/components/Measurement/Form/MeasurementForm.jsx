@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MeasurementForm.css';
 
-const CROPS_API_URL = 'http://localhost:4000/api/crops';
+const CROPS_API_URL = `${process.env.REACT_APP_API_URL || 'http://localhost:4000'}/api/crops`;
 
 const TIPOS_MEDICION = [
   { value: '', label: 'Seleccionar tipo...' },
@@ -82,7 +82,7 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
 
     const fetchCropWorkers = async () => {
       try {
-        const response = await fetch(`${CROPS_API_URL}/${formData.cultivo_id}/workers`);
+        const response = await fetch(`${CROPS_API_URL}/${formData.cultivo_id}/workers?rol=supervisor`);
         const data = await response.json();
         if (response.ok) {
           setCropWorkers(data);
@@ -210,7 +210,7 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
         </div>
 
         <div className="form-group">
-          <label htmlFor="usuario_id" className="form-label">Asignado a</label>
+          <label htmlFor="usuario_id" className="form-label">Supervisor</label>
           <select
             id="usuario_id"
             name="usuario_id"
@@ -219,7 +219,7 @@ const MeasurementForm = ({ onSubmit, initialData, crops, onCancel, loading }) =>
             className="form-input form-select"
             disabled={loading || !formData.cultivo_id}
           >
-            <option value="">{formData.cultivo_id ? 'Seleccionar trabajador...' : 'Seleccione un cultivo primero'}</option>
+            <option value="">{formData.cultivo_id ? 'Seleccionar supervisor...' : 'Seleccione un cultivo primero'}</option>
             {cropWorkers.map(w => (
               <option key={w.id} value={w.id}>
                 {w.nombre} {w.apellido} ({w.rol})

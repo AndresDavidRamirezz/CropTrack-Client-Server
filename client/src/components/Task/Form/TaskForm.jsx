@@ -80,7 +80,7 @@ const TaskForm = ({ onSubmit, initialData, crops, onCancel, loading }) => {
 
     const fetchCropWorkers = async () => {
       try {
-        const response = await fetch(`${CROPS_API_URL}/${formData.cultivo_id}/workers`);
+        const response = await fetch(`${CROPS_API_URL}/${formData.cultivo_id}/workers?rol=trabajador`);
         const data = await response.json();
         if (response.ok) {
           setCropWorkers(data);

@@ -13,6 +13,8 @@ export const getCropWorkers = (req, res) => {
       return res.status(500).json({ error: 'Error de conexion a la base de datos' });
     }
 
+    const rol = req.query.rol || null;
+
     CropWorkerModel.findByCrop(conn, cropId, (err, workers) => {
       if (err) {
         console.error('❌ [CROP-WORKER-CTRL] Error al obtener workers:', err);
@@ -20,7 +22,7 @@ export const getCropWorkers = (req, res) => {
       }
 
       res.json(workers);
-    });
+    }, rol);
   });
 };
 

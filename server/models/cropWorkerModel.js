@@ -2,18 +2,25 @@ import { v4 as uuidv4 } from 'uuid';
 
 class CropWorkerModel {
 
-  static findByCrop(conn, cropId, callback) {
-    console.log('🟡 [CROP-WORKER-MODEL] findByCrop - cropId:', cropId);
+  static findByCrop(conn, cropId, callback, rol = null) {
+    console.log('🟡 [CROP-WORKER-MODEL] findByCrop - cropId:', cropId, '- rol:', rol || 'todos');
+
+    const params = [cropId];
+    let roleFilter = '';
+    if (rol) {
+      roleFilter = 'AND u.rol = ?';
+      params.push(rol);
+    }
 
     const query = `
       SELECT u.id, u.nombre, u.apellido, u.rol, u.imagen_url
       FROM crop_workers cw
       INNER JOIN users u ON cw.usuario_id = u.id
-      WHERE cw.cultivo_id = ?
-      ORDER BY u.rol, u.nombre
+      WHERE cw.cultivo_id = ? ${roleFilter}
+      ORDER BY u.nombre
     `;
 
-    conn.query(query, [cropId], (err, results) => {
+    conn.query(query, params, (err, results) => {
       if (err) {
         console.error('❌ [CROP-WORKER-MODEL] findByCrop - Error:', err.code);
         return callback(err, null);
