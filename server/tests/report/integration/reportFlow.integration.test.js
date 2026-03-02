@@ -15,6 +15,7 @@
 
 // Mock del servicio de PDF para evitar dependencias de canvas (ChartJSNodeCanvas, PDFKit)
 jest.mock('../../../services/reportServices.js', () => ({
+  __esModule: true,
   default: {
     generatePDF: jest.fn((reportData, callback) => {
       // Simular generación exitosa con un buffer PDF mínimo
@@ -95,7 +96,9 @@ const closeReportPool = () => new Promise((resolve) => {
 // ==================== HELPERS DE BASE DE DATOS ====================
 
 // IDs de prueba únicos por suite para evitar conflictos
-const TEST_PREFIX = 'report_integ_' + Date.now();
+// Usamos los últimos 9 dígitos del timestamp para mantener el ID dentro de VARCHAR(36)
+// El ID más largo es: ri_XXXXXXXXX_supervisor = 3+9+1+10 = 23 chars < 36
+const TEST_PREFIX = 'ri_' + Date.now().toString().slice(-9);
 
 const TEST_IDS = {
   adminId: `${TEST_PREFIX}_admin`,
@@ -128,10 +131,10 @@ const insertTestCrop = async (cropData) => {
   const conn = await getTestConnection();
   try {
     await conn.query(
-      `INSERT INTO crops (id, nombre, tipo, variedad, area_hectareas, ubicacion, fecha_siembra, estado, usuario_creador_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO crops (id, empresa, nombre, tipo, variedad, area_hectareas, ubicacion, fecha_siembra, estado, usuario_creador_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE nombre = nombre`,
-      [cropData.id, cropData.nombre, cropData.tipo, cropData.variedad || null,
+      [cropData.id, cropData.empresa, cropData.nombre, cropData.tipo, cropData.variedad || null,
        cropData.area_hectareas || null, cropData.ubicacion || null,
        cropData.fecha_siembra || null, cropData.estado, cropData.usuario_creador_id]
     );
@@ -142,10 +145,12 @@ const insertTestCrop = async (cropData) => {
 
 const insertTestWorkerAssignment = async (cropId, userId) => {
   const conn = await getTestConnection();
+  const assignmentId = `${cropId}_${userId}`.slice(0, 36);
   try {
     await conn.query(
-      `INSERT IGNORE INTO crop_workers (cultivo_id, usuario_id) VALUES (?, ?)`,
-      [cropId, userId]
+      `INSERT INTO crop_workers (id, cultivo_id, usuario_id) VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE cultivo_id = cultivo_id`,
+      [assignmentId, cropId, userId]
     );
   } finally {
     conn.release();
@@ -156,10 +161,11 @@ const insertTestTask = async (taskData) => {
   const conn = await getTestConnection();
   try {
     await conn.query(
-      `INSERT INTO tasks (id, cultivo_id, nombre, descripcion, estado, prioridad, fecha_inicio, asignado_a)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE nombre = nombre`,
-      [taskData.id, taskData.cultivo_id, taskData.nombre, taskData.descripcion || '',
+      `INSERT INTO tasks (id, empresa, cultivo_id, creado_por, titulo, descripcion, estado, prioridad, fecha_inicio, asignado_a)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE titulo = titulo`,
+      [taskData.id, taskData.empresa, taskData.cultivo_id, taskData.creado_por,
+       taskData.titulo, taskData.descripcion || '',
        taskData.estado, taskData.prioridad, taskData.fecha_inicio || null,
        taskData.asignado_a || null]
     );
@@ -172,12 +178,12 @@ const insertTestMeasurement = async (measurementData) => {
   const conn = await getTestConnection();
   try {
     await conn.query(
-      `INSERT INTO measurements (id, cultivo_id, usuario_id, temperatura, humedad, ph_suelo, altura_plantas, fecha_medicion)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE temperatura = temperatura`,
+      `INSERT INTO measurements (id, cultivo_id, usuario_id, tipo_medicion, valor, unidad, fecha_medicion)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE valor = valor`,
       [measurementData.id, measurementData.cultivo_id, measurementData.usuario_id,
-       measurementData.temperatura, measurementData.humedad, measurementData.ph_suelo,
-       measurementData.altura_plantas, measurementData.fecha_medicion]
+       measurementData.tipo_medicion, measurementData.valor, measurementData.unidad,
+       measurementData.fecha_medicion]
     );
   } finally {
     conn.release();
@@ -239,6 +245,7 @@ const testSupervisor = {
 
 const testCrop = {
   id: TEST_IDS.cropId,
+  empresa: 'AgroTech SRL',
   nombre: `Tomates Cherry ${TEST_PREFIX}`,
   tipo: 'Hortaliza',
   variedad: 'Cherry',
@@ -278,8 +285,10 @@ describe('Integration: Flujo completo de Reportes', () => {
     await insertTestWorkerAssignment(TEST_IDS.cropId, TEST_IDS.supervisorId);
     await insertTestTask({
       id: TEST_IDS.taskId1,
+      empresa: 'AgroTech SRL',
       cultivo_id: TEST_IDS.cropId,
-      nombre: 'Riego diario',
+      creado_por: TEST_IDS.adminId,
+      titulo: 'Riego diario',
       descripcion: 'Riego matutino automatizado',
       estado: 'completada',
       prioridad: 'alta',
@@ -288,8 +297,10 @@ describe('Integration: Flujo completo de Reportes', () => {
     });
     await insertTestTask({
       id: TEST_IDS.taskId2,
+      empresa: 'AgroTech SRL',
       cultivo_id: TEST_IDS.cropId,
-      nombre: 'Control de plagas',
+      creado_por: TEST_IDS.adminId,
+      titulo: 'Control de plagas',
       descripcion: 'Revisión semanal',
       estado: 'pendiente',
       prioridad: 'media',
@@ -300,20 +311,18 @@ describe('Integration: Flujo completo de Reportes', () => {
       id: TEST_IDS.measurementId1,
       cultivo_id: TEST_IDS.cropId,
       usuario_id: TEST_IDS.workerId,
-      temperatura: 25.5,
-      humedad: 65,
-      ph_suelo: 6.8,
-      altura_plantas: 45.2,
+      tipo_medicion: 'temperatura',
+      valor: 25.5,
+      unidad: '°C',
       fecha_medicion: '2026-02-15 10:00:00'
     });
     await insertTestMeasurement({
       id: TEST_IDS.measurementId2,
       cultivo_id: TEST_IDS.cropId,
       usuario_id: TEST_IDS.supervisorId,
-      temperatura: 23.0,
-      humedad: 70,
-      ph_suelo: 7.0,
-      altura_plantas: 50.0,
+      tipo_medicion: 'humedad',
+      valor: 65,
+      unidad: '%',
       fecha_medicion: '2026-02-20 10:00:00'
     });
   }, 30000);
@@ -414,9 +423,9 @@ describe('Integration: Flujo completo de Reportes', () => {
       expect(Array.isArray(tareas)).toBe(true);
       expect(tareas.length).toBe(2);
 
-      const nombres = tareas.map(t => t.nombre);
-      expect(nombres).toContain('Riego diario');
-      expect(nombres).toContain('Control de plagas');
+      const titulos = tareas.map(t => t.titulo);
+      expect(titulos).toContain('Riego diario');
+      expect(titulos).toContain('Control de plagas');
     });
 
     test('las tareas incluyen el nombre del asignado cuando existe', async () => {
@@ -445,10 +454,9 @@ describe('Integration: Flujo completo de Reportes', () => {
         .expect(200);
 
       response.body.mediciones.forEach(m => {
-        expect(m).toHaveProperty('temperatura');
-        expect(m).toHaveProperty('humedad');
-        expect(m).toHaveProperty('ph_suelo');
-        expect(m).toHaveProperty('altura_plantas');
+        expect(m).toHaveProperty('tipo_medicion');
+        expect(m).toHaveProperty('valor');
+        expect(m).toHaveProperty('unidad');
       });
     });
 
@@ -579,6 +587,7 @@ describe('Integration: Flujo completo de Reportes', () => {
       const emptyCropId = `${TEST_PREFIX}_empty_crop`;
       await insertTestCrop({
         id: emptyCropId,
+        empresa: 'AgroTech SRL',
         nombre: 'Cosecha Vacía Test',
         tipo: 'Cereal',
         estado: 'planificado',

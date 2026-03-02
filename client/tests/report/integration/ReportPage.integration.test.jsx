@@ -169,10 +169,13 @@ describe('Integration: ReportPage + utilidades CropCard', () => {
       renderReportPage();
 
       await waitFor(() => {
-        // La fecha '2026-01-10' debe aparecer formateada en es-ES
-        const dateEl = screen.getByText(/Siembra:/);
-        expect(dateEl).toBeInTheDocument();
-        expect(dateEl.textContent).toMatch(/\d{2}\/\d{2}\/\d{4}/);
+        // Hay varias cosechas con fecha_siembra, getAllByText evita ambigüedad
+        const dateEls = screen.getAllByText(/Siembra:/);
+        expect(dateEls.length).toBeGreaterThan(0);
+        // Todas las fechas deben tener formato dd/mm/yyyy (es-ES)
+        dateEls.forEach(el => {
+          expect(el.textContent).toMatch(/\d{2}\/\d{2}\/\d{4}/);
+        });
       });
     });
   });
