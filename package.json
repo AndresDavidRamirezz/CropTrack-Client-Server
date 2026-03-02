@@ -20,7 +20,15 @@
     "test:e2e:headed": "cd client && npm run test:e2e:headed",
     "test:e2e:open": "cd client && npm run cypress:open",
     "test:all": "npm run test:unit & npm run test:integration & npm run test:e2e",
-    "test:all:no-e2e": "npm run test:unit & npm run test:integration"
+    "test:all:no-e2e": "npm run test:unit & npm run test:integration",
+    "test:report:unit:client": "cd client && npm run test:report:unit",
+    "test:report:unit:server": "cd server && npm run test:report:unit",
+    "test:report:unit": "npm run test:report:unit:client & npm run test:report:unit:server",
+    "test:report:integration:client": "cd client && npm run test:report:integration",
+    "test:report:integration:server": "cd server && npm run test:report:integration",
+    "test:report:integration": "npm run test:report:integration:client & npm run test:report:integration:server",
+    "test:report:e2e": "cd client && npm run test:report:e2e",
+    "test:report": "npm run test:report:unit & npm run test:report:integration & npm run test:report:e2e"
   },
   "keywords": [
     "agriculture",

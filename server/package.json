@@ -16,7 +16,12 @@
     "test:integration:coverage": "jest --testPathPattern=tests/integration --coverage --verbose --forceExit --runInBand",
     "test:all": "jest --coverage --verbose --detectOpenHandles",
     "db:create-test": "mysql -u root -p -e \"CREATE DATABASE IF NOT EXISTS croptrack_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\"",
-    "db:setup-test": "mysql -u root -p croptrack_test < database/schema.sql"
+    "db:setup-test": "mysql -u root -p croptrack_test < database/schema.sql",
+    "test:report:unit": "jest --testPathPattern=tests/report/unit --verbose --passWithNoTests",
+    "test:report:unit:coverage": "jest --testPathPattern=tests/report/unit --coverage --verbose --passWithNoTests",
+    "test:report:integration": "jest --testPathPattern=tests/report/integration --verbose --forceExit --runInBand",
+    "test:report:integration:coverage": "jest --testPathPattern=tests/report/integration --coverage --verbose --forceExit --runInBand",
+    "test:report": "jest --testPathPattern=tests/report --verbose --passWithNoTests"
   },
   "keywords": [],
   "author": "Andres",

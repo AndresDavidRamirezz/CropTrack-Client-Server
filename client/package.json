@@ -35,7 +35,14 @@
     "test:e2e": "cypress run --config-file tests/cypress.config.js",
     "test:e2e:headed": "cypress run --config-file tests/cypress.config.js --headed",
     "test:e2e:chrome": "cypress run --config-file tests/cypress.config.js --browser chrome",
-    "test:e2e:firefox": "cypress run --config-file tests/cypress.config.js --browser firefox"
+    "test:e2e:firefox": "cypress run --config-file tests/cypress.config.js --browser firefox",
+    "test:report:unit": "jest --testPathPattern=tests/report/unit --verbose",
+    "test:report:unit:coverage": "jest --testPathPattern=tests/report/unit --coverage --verbose",
+    "test:report:integration": "jest --testPathPattern=tests/report/integration --verbose",
+    "test:report:integration:coverage": "jest --testPathPattern=tests/report/integration --coverage --verbose",
+    "test:report:e2e": "cypress run --config-file tests/cypress.config.js --spec tests/report/e2e/**/*.cy.js",
+    "test:report:e2e:headed": "cypress run --config-file tests/cypress.config.js --spec tests/report/e2e/**/*.cy.js --headed",
+    "test:report": "jest --testPathPattern=tests/report --verbose"
   },
   "eslintConfig": {
     "extends": [

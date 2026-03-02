@@ -21,7 +21,11 @@ const ESTADO_LABELS = {
 
 const formatDate = (dateString) => {
   if (!dateString) return null;
-  const date = new Date(dateString);
+  // Parsear solo la parte de la fecha (YYYY-MM-DD) como hora local para evitar
+  // el desplazamiento de zona horaria que ocurre con new Date('YYYY-MM-DD') (UTC)
+  const datePart = dateString.split('T')[0];
+  const [year, month, day] = datePart.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   return date.toLocaleDateString('es-ES', {
     day: '2-digit',
     month: '2-digit',

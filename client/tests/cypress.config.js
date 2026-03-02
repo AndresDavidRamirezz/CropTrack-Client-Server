@@ -17,8 +17,8 @@ export default defineConfig({
     // URL base del cliente React
     baseUrl: 'http://localhost:3000',
 
-    // Patrón para encontrar archivos de test E2E
-    specPattern: 'tests/e2e/**/*.e2e.cy.{js,jsx}',
+    // Patrón para encontrar archivos de test E2E (incluye carpetas de módulos)
+    specPattern: ['tests/e2e/**/*.e2e.cy.{js,jsx}', 'tests/report/e2e/**/*.e2e.cy.{js,jsx}'],
 
     // Carpeta de soporte (comandos personalizados, setup)
     supportFile: 'tests/setup/cypress/support/e2e.js',

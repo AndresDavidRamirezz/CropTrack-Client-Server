@@ -18,6 +18,9 @@
             "node": "current"
           }
         }]
+      ],
+      "plugins": [
+        "./babel-plugin-import-meta.cjs"
       ]
     }
   }
