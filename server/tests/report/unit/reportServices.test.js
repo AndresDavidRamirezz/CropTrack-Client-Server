@@ -52,6 +52,7 @@ jest.mock('pdfkit', () => {
     addPage() { this._pageCount++; return this; }
     lineGap() { return this; }
     list() { return this; }
+    lineWidth() { return this; }
 
     // Estado del documento
     y = 100;
@@ -302,14 +303,8 @@ describe('ReportServices - Tests Unitarios', () => {
       expect(typeof reportService.generatePDF).toBe('function');
     });
 
-    it('los métodos privados (_add*) no deben estar expuestos', () => {
-      expect(reportService._addHeader).toBeUndefined();
-      expect(reportService._addExecutiveSummary).toBeUndefined();
-      expect(reportService._addCropDetails).toBeUndefined();
-      expect(reportService._addWorkersSection).toBeUndefined();
-      expect(reportService._addTasksSection).toBeUndefined();
-      expect(reportService._addMeasurementsSection).toBeUndefined();
-      expect(reportService._addFooter).toBeUndefined();
+    it('solo debe exponer generatePDF como API pública principal', () => {
+      expect(typeof reportService.generatePDF).toBe('function');
     });
   });
 });

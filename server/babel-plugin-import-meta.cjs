@@ -17,8 +17,6 @@ module.exports = function (babel) {
 
   return {
     name: 'transform-import-meta-url',
-    // Habilita el parseo de import.meta (sintaxis ESM) dentro de Babel
-    inherits: require('@babel/plugin-syntax-import-meta'),
     visitor: {
       MetaProperty(nodePath) {
         const { node, parent, parentPath } = nodePath;
