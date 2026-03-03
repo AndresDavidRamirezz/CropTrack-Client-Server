@@ -28,6 +28,7 @@
     "test:report:integration:server": "cd server && npm run test:report:integration",
     "test:report:integration": "npm run test:report:integration:client & npm run test:report:integration:server",
     "test:report:e2e": "cd client && npm run test:report:e2e",
+    "test:report:e2e:headed": "cd client && npm run test:report:e2e:headed",
     "test:report": "npm run test:report:unit & npm run test:report:integration & npm run test:report:e2e"
   },
   "keywords": [
