@@ -1,0 +1,68 @@
+{
+  "validAdmin": {
+    "usuario": "admin_e2e_test",
+    "contrasena": "Test123456!",
+    "nombre": "Admin",
+    "apellido": "Prueba",
+    "email": "admin.e2e.test@croptrack.com",
+    "nombre_empresa": "CropTrack Test",
+    "telefono": "+54 381 123-4567"
+  },
+  "validAdmin2": {
+    "usuario": "admin_e2e_test2",
+    "contrasena": "Test654321!",
+    "nombre": "Segundo",
+    "apellido": "Admin",
+    "email": "admin2.e2e.test@croptrack.com",
+    "nombre_empresa": "CropTrack Test 2",
+    "telefono": ""
+  },
+  "invalidUsers": {
+    "shortUsername": {
+      "usuario": "ab",
+      "contrasena": "Test123456!",
+      "nombre": "Test",
+      "apellido": "User",
+      "email": "test@test.com",
+      "nombre_empresa": "Test Company"
+    },
+    "shortPassword": {
+      "usuario": "testuser",
+      "contrasena": "12345",
+      "nombre": "Test",
+      "apellido": "User",
+      "email": "test@test.com",
+      "nombre_empresa": "Test Company"
+    },
+    "invalidEmail": {
+      "usuario": "testuser",
+      "contrasena": "Test123456!",
+      "nombre": "Test",
+      "apellido": "User",
+      "email": "not-an-email",
+      "nombre_empresa": "Test Company"
+    },
+    "emptyFields": {
+      "usuario": "",
+      "contrasena": "",
+      "nombre": "",
+      "apellido": "",
+      "email": "",
+      "nombre_empresa": ""
+    }
+  },
+  "loginCredentials": {
+    "valid": {
+      "usuario": "admin_e2e_test",
+      "contrasena": "Test123456!"
+    },
+    "invalidPassword": {
+      "usuario": "admin_e2e_test",
+      "contrasena": "WrongPassword123"
+    },
+    "nonExistentUser": {
+      "usuario": "usuario_que_no_existe",
+      "contrasena": "Test123456!"
+    }
+  }
+}

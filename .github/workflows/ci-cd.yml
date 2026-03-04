@@ -1,0 +1,209 @@
+name: CI/CD Pipeline
+
+# Se ejecuta en cada push a cualquier rama, y en cada PR
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+  # Permite ejecutar el workflow manualmente desde GitHub
+  workflow_dispatch:
+
+jobs:
+  # ============================================================
+  # JOB 1: CI — Corre en TODAS las ramas y PRs
+  # ============================================================
+  ci:
+    name: Tests & Build
+    runs-on: ubuntu-latest
+
+    # Levanta MySQL como servicio para los tests de integración
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: croptrack_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root --password=root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+
+      - name: Instalar dependencias del servidor
+        working-directory: server
+        run: npm ci
+
+      - name: Instalar dependencias del cliente
+        working-directory: client
+        run: npm ci
+
+      - name: Aplicar esquema de base de datos de test
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root --password=root < server/database/schema.sql
+          echo "Esquema aplicado correctamente"
+
+      - name: Correr tests del servidor
+        working-directory: server
+        env:
+          NODE_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: croptrack_test
+          JWT_SECRET: ci-test-jwt-secret-key
+          JWT_EXPIRES_IN: 7d
+          PORT: 4000
+          CLIENT_URL: http://localhost:3000
+          CLOUDINARY_CLOUD_NAME: test
+          CLOUDINARY_API_KEY: test
+          CLOUDINARY_API_SECRET: test
+        # --runInBand: corre tests en serie para evitar conflictos de pools de DB
+        # --forceExit: fuerza salida al terminar (evita colgarse por handles TCP abiertos)
+        run: npm test -- --runInBand --forceExit
+
+      - name: Correr tests del cliente
+        working-directory: client
+        run: npm run test:ci
+
+      - name: Build del frontend
+        working-directory: client
+        env:
+          # CI=false evita que warnings de React se traten como errores
+          CI: false
+        run: npm run build
+
+  # ============================================================
+  # JOB 2: E2E — Corre después de CI, levanta server + client y corre Cypress
+  # ============================================================
+  e2e:
+    name: Tests E2E (Cypress)
+    runs-on: ubuntu-latest
+    needs: ci
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: croptrack_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root --password=root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+
+      - name: Instalar dependencias del servidor
+        working-directory: server
+        run: npm ci
+
+      - name: Instalar dependencias del cliente
+        working-directory: client
+        run: npm ci
+
+      - name: Aplicar esquema de base de datos de test
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root --password=root < server/database/schema.sql
+          echo "Esquema aplicado correctamente"
+
+      - name: Iniciar servidor en background
+        working-directory: server
+        env:
+          NODE_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: croptrack_test
+          JWT_SECRET: ci-test-jwt-secret-key
+          JWT_EXPIRES_IN: 7d
+          PORT: 4000
+          CLIENT_URL: http://localhost:3000
+          CLOUDINARY_CLOUD_NAME: test
+          CLOUDINARY_API_KEY: test
+          CLOUDINARY_API_SECRET: test
+        run: nohup node index.js > /tmp/server.log 2>&1 &
+
+      - name: Iniciar cliente en background
+        working-directory: client
+        env:
+          BROWSER: none
+          REACT_APP_API_URL: http://localhost:4000
+          PORT: 3000
+        run: nohup npm start > /tmp/client.log 2>&1 &
+
+      - name: Esperar a que levanten servidor y cliente
+        run: npx wait-on tcp:4000 http://localhost:3000 --timeout 120000
+
+      - name: Correr tests E2E con Cypress
+        working-directory: client
+        run: npm run test:e2e
+
+      - name: Subir screenshots si fallan los tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: client/tests/e2e/screenshots
+          if-no-files-found: ignore
+
+  # ============================================================
+  # JOB 3: CD — Solo corre cuando se mergea a main
+  # ============================================================
+  deploy:
+    name: Deploy a Producción
+    runs-on: ubuntu-latest
+    needs: [ci, e2e]
+    # Solo corre en push a main (no en PRs) y solo si CI y E2E pasaron
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Build del frontend
+        working-directory: client
+        env:
+          CI: false
+        run: npm ci && npm run build
+
+      - name: Deploy frontend a Netlify
+        run: npx netlify-cli deploy --prod --dir=client/build --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --site=${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Deploy backend a Render
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}")
+          echo "Render webhook respondió con HTTP $STATUS"
+          [ "$STATUS" = "201" ] || { echo "ERROR: Deploy a Render falló (HTTP $STATUS)"; exit 1; }
+          echo "Deploy a Render iniciado correctamente"

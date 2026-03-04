@@ -1,0 +1,207 @@
+/* pages/LoginPage.css */
+.login-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('../../assets/ImagenLogin.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 20px;
+  position: relative;
+}
+
+/* Overlay oscuro para mejor contraste - LO MANTENEMOS */
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* FORMULARIO CON TRANSPARENCIA - VERSIÓN MODIFICADA */
+.login-form {
+  position: relative;
+  z-index: 2;
+  max-width: 480px;
+  width: 100%;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.15); /* Más transparente */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* MANTENEMOS TODOS TUS ESTILOS EXISTENTES PERO AJUSTAMOS COLORES */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: white; /* Cambiamos a blanco para mejor contraste */
+  font-size: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.login-form .form-input,
+.login-form .form-input:hover,
+.login-form .form-input:focus,
+.login-form .form-input:active,
+.login-form .form-input:focus-visible,
+.login-form .form-input:focus-within,
+.login-form .form-input:hover:not(:focus):not(:disabled),
+.login-form .form-input[type="text"],
+.login-form .form-input[type="password"] {
+  width: 100%;
+  padding: 12px !important;
+  border: 1px solid white !important;
+  border-color: white !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: normal !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  color: white !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color-scheme: normal !important;
+  transition: none !important;
+  -webkit-transition: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.login-form .form-input::placeholder {
+  color: white !important;
+  font-style: normal !important;
+}
+
+/* Anular el fondo blanco/celeste que Chrome pone en autofill */
+.login-form .form-group input:-webkit-autofill,
+.login-form .form-group input:-webkit-autofill:hover,
+.login-form .form-group input:-webkit-autofill:focus,
+.login-form .form-group input:-webkit-autofill:active {
+  -webkit-text-fill-color: white !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  border-color: white !important;
+  transition: none !important;
+}
+
+.error-message {
+  color: #ff6b6b;
+  margin-bottom: 16px;
+  padding: 10px;
+  background-color: rgba(255, 107, 107, 0.2);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-login {
+  background: linear-gradient(135deg, #87D000 0%, #76b800 100%); /* Mantenemos tu verde */
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(135, 208, 0, 0.4);
+}
+
+.btn-login:hover {
+  background: linear-gradient(135deg, #76b800 0%, #669900 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(135, 208, 0, 0.6);
+}
+
+.btn-register {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0;
+}
+
+.btn-register:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive - MANTENEMOS TUS ESTILOS */
+@media (max-width: 480px) {
+  .login-form {
+    padding: 20px;
+    margin: 0 10px;
+  }
+  
+  .login-container {
+    padding: 10px;
+  }
+  
+  .btn {
+    padding: 10px 0;
+    font-size: 14px;
+  }
+}
+
+/* Animaciones - MANTENEMOS TUS ESTILOS */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-form {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Estilos adicionales para el texto dentro del formulario */
+.login-form h2,
+.login-form .role-display {
+  text-align: center;
+  color: white;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Si necesitas ajustar el AuthModal */
+.auth-modal-container {
+  margin-bottom: 20px;
+}

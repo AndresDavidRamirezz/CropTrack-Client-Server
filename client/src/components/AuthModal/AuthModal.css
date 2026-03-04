@@ -1,0 +1,44 @@
+/* src/components/AuthModal/AuthModal.css */
+
+.auth-modal-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.role-button {
+  flex: 1;
+  text-align: center;
+  padding: 8px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+/* Botón no seleccionado */
+.role-button:not(.active) {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Botón seleccionado (activo) */
+.role-button.active {
+  background: #87D000;
+  border: 1px solid #87D000;
+}
+
+/* Responsive: botones en columna en móvil */
+@media (max-width: 480px) {
+  .auth-modal-nav {
+    flex-direction: column;
+  }
+
+  .role-button {
+    width: 100%;
+    text-align: center;
+  }
+}

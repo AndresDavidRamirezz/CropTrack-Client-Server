@@ -1,0 +1,322 @@
+# TASKS - TAREAS POR COSECHA
+# Ejecutar después de requestCrops.http y requestUser.http
+# ⚠️ Pegar los IDs obtenidos de esos archivos abajo
+
+@baseUrl = https://croptrack-client-server.onrender.com
+@empresa = Agro San Martín S.A.
+
+# ⚠️ Copiar desde respuestas de requestCrops.http → crearCrop1/2/3
+@crop1Id = 60166b3d-7ed6-4cb9-9a65-bdd543a0a498
+@crop2Id = 1f87956b-bbb4-4a35-9fde-831ffc04b38d
+@crop3Id = 79ffa030-f1cd-46a0-bb28-f93d0b92d830
+
+# ⚠️ Copiar desde respuestas de requestRegister.http y requestUser.http
+@adminId = 5cc33d3a-d546-429b-b0be-7a938e7f04d0
+@sup1Id = 5995c397-18fe-4e85-9030-256bc573a089
+@sup2Id = 0e21434b-e328-48cc-9d97-fa19e217f825
+@sup3Id = 5995c397-18fe-4e85-9030-256bc573a089
+@trab1Id = c9f07f62-d9ff-472e-8c70-2f5046fd4653
+@trab2Id = 5a52b76c-3042-47c1-9d3c-4c12a87e3512
+@trab3Id = 46410e47-c96f-4b2d-bb1e-0adb0629c042
+
+### ============================================================
+### BLOQUE A - TAREAS MAÍZ DK-7088 (5 tareas - mix de estados)
+### ============================================================
+
+###
+# Tarea 1/5 - Análisis de suelo (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Análisis de suelo previo a siembra",
+  "descripcion": "Toma de muestras en 5 puntos georreferenciados del lote para análisis físico-químico completo.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-09-15",
+  "fecha_limite": "2025-09-20",
+  "observaciones": "Resultados: pH 6.4, MO 3.2%, fósforo 12 ppm (bajo). Requiere fertilización fosfatada en siembra."
+}
+
+###
+# Tarea 2/5 - Siembra mecanizada (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup1Id}}",
+  "titulo": "Siembra mecanizada con fertilización de arranque",
+  "descripcion": "Siembra directa con sembradora de 18 surcos. Incorporación de fertilizante arrancador en línea.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-10-01",
+  "fecha_limite": "2025-10-03",
+  "observaciones": "Completada en 2 jornadas. Dosis: MAP 80 kg/ha + Urea 50 kg/ha. Densidad lograda: 82.000 plantas/ha."
+}
+
+###
+# Tarea 3/5 - Aplicación de herbicida (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Aplicación de herbicida preemergente",
+  "descripcion": "Control químico de malezas de hoja ancha y gramíneas antes de la emergencia del cultivo.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-10-05",
+  "fecha_limite": "2025-10-07",
+  "observaciones": "Atrazina 1.5 L/ha + Metolachlor 1.2 L/ha. Control evaluado en 95% a los 21 días de aplicación."
+}
+
+###
+# Tarea 4/5 - Control de cogollero (EN PROCESO - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Control de plagas - Cogollero (Spodoptera frugiperda)",
+  "descripcion": "Monitoreo intensivo y aplicación de insecticida ante presencia de gusano cogollero en estadio V4.",
+  "prioridad": "urgente",
+  "estado": "en_proceso",
+  "fecha_inicio": "2025-12-01",
+  "fecha_limite": "2025-12-15",
+  "observaciones": "Umbral superado en sector A3 (35% de plantas afectadas). Aplicación con Clorpirifos 1L/ha en progreso."
+}
+
+###
+# Tarea 5/5 - Fertirrigación nitrogenada (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop1Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Fertirrigación nitrogenada fraccionada",
+  "descripcion": "Aplicación de nitrógeno en cobertura en dos dosis para maximizar la eficiencia de uso del nutriente.",
+  "prioridad": "media",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-01-10",
+  "fecha_limite": "2026-01-25",
+  "observaciones": "Dosis total: 80 kg N/ha. Primera dosis en V8, segunda en VT. Usar UAN 32% con aditivo antivolatilización."
+}
+
+### ============================================================
+### BLOQUE B - TAREAS SOJA RR (4 tareas - mix de estados)
+### ============================================================
+
+###
+# Tarea 1/4 - Inoculación de semillas (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop2Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab2Id}}",
+  "titulo": "Inoculación de semillas con Bradyrhizobium japonicum",
+  "descripcion": "Tratamiento biológico obligatorio de semillas previo a la siembra para fijación biológica de nitrógeno.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-11-10",
+  "fecha_limite": "2025-11-12",
+  "observaciones": "Inoculante líquido a 5 dosis/100 kg semilla. Semillas sembradas el mismo día para máxima viabilidad."
+}
+
+###
+# Tarea 2/4 - Siembra directa (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop2Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup2Id}}",
+  "titulo": "Siembra directa sobre rastrojo de trigo",
+  "descripcion": "Siembra directa sin disturbar el suelo. Sembradora de doble disco con monitor de siembra.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-11-15",
+  "fecha_limite": "2025-11-17",
+  "observaciones": "Completada en 3 jornadas. Densidad lograda: 32 plantas/m². Distancia entre hileras: 52 cm."
+}
+
+###
+# Tarea 3/4 - Control de enfermedades fúngicas (EN PROCESO)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop2Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab3Id}}",
+  "titulo": "Control preventivo de enfermedades fúngicas (R3)",
+  "descripcion": "Aplicación de fungicida triazol + estrobilurina en estadio R3 para prevención de roya asiática.",
+  "prioridad": "alta",
+  "estado": "en_proceso",
+  "fecha_inicio": "2025-12-10",
+  "fecha_limite": "2025-12-25",
+  "observaciones": "Tebuconazole 0.75 L/ha + Azoxistrobina 0.5 L/ha. Segunda aplicación programada a los 18 días."
+}
+
+###
+# Tarea 4/4 - Cosecha y entrega a acopio (PENDIENTE)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop2Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup2Id}}",
+  "titulo": "Cosecha mecanizada y entrega a acopio",
+  "descripcion": "Coordinación de cosechadora, transporte y acondicionamiento del grano. Humedad objetivo: < 13.5%.",
+  "prioridad": "alta",
+  "estado": "pendiente",
+  "fecha_inicio": "2026-04-01",
+  "fecha_limite": "2026-05-20",
+  "observaciones": "Contratar cosechadora con 30 días de antelación. Verificar humedad de grano semanalmente desde R7."
+}
+
+### ============================================================
+### BLOQUE C - TAREAS TRIGO KLEIN TITANIO (5 tareas - todas completadas)
+### ============================================================
+
+###
+# Tarea 1/5 - Siembra con fertilizante base (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop3Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab3Id}}",
+  "titulo": "Siembra con fertilizante arrancador de base",
+  "descripcion": "Siembra convencional con incorporación de fertilizante fosfatado en la línea de siembra.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-06-10",
+  "fecha_limite": "2025-06-12",
+  "observaciones": "Completada en 2 jornadas. MAP 80 kg/ha incorporado. Densidad lograda: 250 semillas/m²."
+}
+
+###
+# Tarea 2/5 - Control de malezas (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop3Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab1Id}}",
+  "titulo": "Control de malezas gramíneas y hoja ancha",
+  "descripcion": "Aplicación de herbicidas selectivos para trigo en estadio de macollaje (Z21-Z25).",
+  "prioridad": "media",
+  "estado": "completada",
+  "fecha_inicio": "2025-07-01",
+  "fecha_limite": "2025-07-05",
+  "observaciones": "Clodinafop 0.6 L/ha + Metsulfurón 6 g/ha. Control evaluado en 95% a los 21 días de aplicación."
+}
+
+###
+# Tarea 3/5 - Fungicida en espigazón (COMPLETADA - urgente)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop3Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup3Id}}",
+  "titulo": "Aplicación fungicida preventivo en espigazón",
+  "descripcion": "Protección del estadio crítico de espigazón contra enfermedades foliares y de espiga (Z55-Z65).",
+  "prioridad": "urgente",
+  "estado": "completada",
+  "fecha_inicio": "2025-08-20",
+  "fecha_limite": "2025-08-22",
+  "observaciones": "Trifloxistrobina + Protioconazol aplicados en una sola jornada. Sin presencia de fusariosis de espiga."
+}
+
+###
+# Tarea 4/5 - Monitoreo sanitario (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop3Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{sup3Id}}",
+  "titulo": "Monitoreo sanitario - Detección de roya amarilla",
+  "descripcion": "Recorrida sistemática evaluando presencia de Puccinia striiformis en hojas bandera (Z77).",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-09-01",
+  "fecha_limite": "2025-09-10",
+  "observaciones": "Sin presencia de roya amarilla ni estriada. Cultivo sano en Z77. Sin necesidad de intervención adicional."
+}
+
+###
+# Tarea 5/5 - Cosecha y entrega a acopio (COMPLETADA)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "empresa": "{{empresa}}",
+  "cultivo_id": "{{crop3Id}}",
+  "creado_por": "{{adminId}}",
+  "asignado_a": "{{trab3Id}}",
+  "titulo": "Cosecha y entrega a acopio",
+  "descripcion": "Cosecha mecanizada, acondicionamiento y transporte del grano al acopio local de la cooperativa.",
+  "prioridad": "alta",
+  "estado": "completada",
+  "fecha_inicio": "2025-10-15",
+  "fecha_limite": "2025-10-20",
+  "observaciones": "Humedad final: 12.8%. Rendimiento: 4.5 t/ha. Total: 128.25 tn entregadas en acopio COOP Mendoza el 20/10/2025."
+}
+
+### ============================================================
+### BLOQUE D - CONSULTAS
+### ============================================================
+
+###
+# GET - Tareas creadas por el admin
+GET {{baseUrl}}/api/tasks/user/{{adminId}}
+
+###
+# GET - Tareas del Maíz
+GET {{baseUrl}}/api/tasks/crop/{{crop1Id}}
+
+###
+# GET - Tareas de la Soja
+GET {{baseUrl}}/api/tasks/crop/{{crop2Id}}
+
+###
+# GET - Tareas del Trigo
+GET {{baseUrl}}/api/tasks/crop/{{crop3Id}}
+
+###
+# GET - Tareas asignadas a Lucas Fernández
+GET {{baseUrl}}/api/tasks/assigned/{{trab1Id}}

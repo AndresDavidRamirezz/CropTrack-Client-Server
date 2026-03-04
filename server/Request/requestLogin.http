@@ -1,0 +1,84 @@
+### ============================================================
+### LOGIN - VERIFICAR ACCESO DE TODOS LOS USUARIOS
+### Ejecutar después de requestRegister.http y requestUser.http
+### Cada usuario accede con su rol y ve datos distintos en la app
+### ============================================================
+
+@baseUrl = https://croptrack-client-server.onrender.com
+
+###
+# Login - Administrador (ve todo: cosechas, workers, reportes)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "admin_carlos",
+  "contrasena": "Admin2025!",
+  "rol": "administrador"
+}
+
+###
+# Login - Supervisor 1 (Roberto Sánchez - asignado a Maíz DK-7088)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "sup_roberto",
+  "contrasena": "Super2025!",
+  "rol": "supervisor"
+}
+
+###
+# Login - Supervisor 2 (Ana González - asignada a Soja RR)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "sup_ana",
+  "contrasena": "Super2025!",
+  "rol": "supervisor"
+}
+
+###
+# Login - Supervisor 3 (Diego Ramírez - asignado a Trigo Klein Titanio)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "sup_diego",
+  "contrasena": "Super2025!",
+  "rol": "supervisor"
+}
+
+###
+# Login - Trabajador 1 (Lucas Fernández - asignado a Maíz y Trigo)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "trab_lucas",
+  "contrasena": "Trab2025!",
+  "rol": "trabajador"
+}
+
+###
+# Login - Trabajador 2 (Valentina Torres - asignada a Maíz y Soja)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "trab_valentina",
+  "contrasena": "Trab2025!",
+  "rol": "trabajador"
+}
+
+###
+# Login - Trabajador 3 (Matías Morales - asignado a Soja y Trigo)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "trab_matias",
+  "contrasena": "Trab2025!",
+  "rol": "trabajador"
+}

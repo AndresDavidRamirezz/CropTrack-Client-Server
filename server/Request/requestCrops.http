@@ -1,0 +1,155 @@
+# CROPS - COSECHAS Y ASIGNACIÓN DE TRABAJADORES
+# Ejecutar después de requestRegister.http y requestUser.http
+# ⚠️ Pegar los IDs obtenidos de esos archivos abajo
+
+@baseUrl = https://croptrack-client-server.onrender.com
+@empresa = Agro San Martín S.A.
+
+# ⚠️ Copiar desde respuesta de requestRegister.http → crearAdmin
+@adminId = 5cc33d3a-d546-429b-b0be-7a938e7f04d0
+
+# ⚠️ Copiar desde respuestas de requestUser.http → crearSup1/2/3 y crearTrab1/2/3
+@sup1Id = 5995c397-18fe-4e85-9030-256bc573a089
+@sup2Id = 0e21434b-e328-48cc-9d97-fa19e217f825
+@sup3Id = 5995c397-18fe-4e85-9030-256bc573a089
+@trab1Id = c9f07f62-d9ff-472e-8c70-2f5046fd4653
+@trab2Id = 5a52b76c-3042-47c1-9d3c-4c12a87e3512
+@trab3Id = 46410e47-c96f-4b2d-bb1e-0adb0629c042
+
+### ============================================================
+### BLOQUE A - CREAR COSECHAS (3)
+### ============================================================
+
+###
+# Cosecha 1 - Maíz Híbrido DK-7088 (en crecimiento, Lote Norte)
+# Respuesta: { "id": "..." }
+# ⚠️ Copiar el id para requestMeasurements.http y requestTasks.http
+# @name crearCrop1
+POST {{baseUrl}}/api/crops
+Content-Type: application/json
+
+{
+  "usuario_creador_id": "{{adminId}}",
+  "empresa": "{{empresa}}",
+  "nombre": "Maíz Híbrido DK-7088",
+  "tipo": "Cereal",
+  "variedad": "Híbrido DK-7088 RR2",
+  "area_hectareas": 45.5,
+  "ubicacion": "Lote Norte - Sector A",
+  "fecha_siembra": "2025-10-01",
+  "fecha_cosecha_estimada": "2026-04-15",
+  "estado": "en_crecimiento",
+  "notas": "Siembra directa. Suelo franco-arcilloso con labranza mínima. Densidad objetivo: 80.000 plantas/ha."
+}
+
+###
+# Cosecha 2 - Soja de Primera RR (en crecimiento, Lote Sur)
+# Respuesta: { "id": "..." }
+# ⚠️ Copiar el id para requestMeasurements.http y requestTasks.http
+# @name crearCrop2
+POST {{baseUrl}}/api/crops
+Content-Type: application/json
+
+{
+  "usuario_creador_id": "{{adminId}}",
+  "empresa": "{{empresa}}",
+  "nombre": "Soja de Primera RR",
+  "tipo": "Oleaginosa",
+  "variedad": "DM 5.1 i RR",
+  "area_hectareas": 62.0,
+  "ubicacion": "Lote Sur - Sector B",
+  "fecha_siembra": "2025-11-15",
+  "fecha_cosecha_estimada": "2026-05-20",
+  "estado": "en_crecimiento",
+  "notas": "Siembra directa sobre rastrojo de trigo. Inoculación obligatoria con Bradyrhizobium. Densidad: 32 plantas/m²."
+}
+
+###
+# Cosecha 3 - Trigo Pan Klein Titanio (cosechado, Lote Este)
+# Respuesta: { "id": "..." }
+# ⚠️ Copiar el id para requestMeasurements.http y requestTasks.http
+# @name crearCrop3
+POST {{baseUrl}}/api/crops
+Content-Type: application/json
+
+{
+  "usuario_creador_id": "{{adminId}}",
+  "empresa": "{{empresa}}",
+  "nombre": "Trigo Pan Klein Titanio",
+  "tipo": "Cereal",
+  "variedad": "Klein Titanio",
+  "area_hectareas": 28.5,
+  "ubicacion": "Lote Este - Sector C",
+  "fecha_siembra": "2025-06-10",
+  "fecha_cosecha_estimada": "2025-11-30",
+  "estado": "cosechado",
+  "notas": "Cosecha finalizada. Rendimiento final: 4.5 t/ha. Entregado a acopio COOP Mendoza el 20 de octubre de 2025."
+}
+
+### ============================================================
+### BLOQUE B - ASIGNAR TRABAJADORES A COSECHAS (crop_workers)
+### Ejecutar después del Bloque A (usa IDs capturados con @name)
+### ============================================================
+
+###
+# Asignar a Maíz: Roberto (sup) + Lucas (trab) + Valentina (trab)
+PUT {{baseUrl}}/api/crops/{{crearCrop1.response.body.id}}/workers
+Content-Type: application/json
+
+{
+  "workerIds": [
+    "{{sup1Id}}",
+    "{{trab1Id}}",
+    "{{trab2Id}}"
+  ]
+}
+
+###
+# Asignar a Soja: Ana (sup) + Valentina (trab) + Matías (trab)
+PUT {{baseUrl}}/api/crops/{{crearCrop2.response.body.id}}/workers
+Content-Type: application/json
+
+{
+  "workerIds": [
+    "{{sup2Id}}",
+    "{{trab2Id}}",
+    "{{trab3Id}}"
+  ]
+}
+
+###
+# Asignar a Trigo: Diego (sup) + Matías (trab) + Lucas (trab)
+PUT {{baseUrl}}/api/crops/{{crearCrop3.response.body.id}}/workers
+Content-Type: application/json
+
+{
+  "workerIds": [
+    "{{sup3Id}}",
+    "{{trab3Id}}",
+    "{{trab1Id}}"
+  ]
+}
+
+### ============================================================
+### BLOQUE C - CONSULTAS
+### ============================================================
+
+###
+# GET - Todas las cosechas del admin
+GET {{baseUrl}}/api/crops/user/{{adminId}}
+
+###
+# GET - Cosecha 1 (Maíz) por ID
+GET {{baseUrl}}/api/crops/{{crearCrop1.response.body.id}}
+
+###
+# GET - Workers asignados a Maíz
+GET {{baseUrl}}/api/crops/{{crearCrop1.response.body.id}}/workers
+
+###
+# GET - Workers asignados a Soja
+GET {{baseUrl}}/api/crops/{{crearCrop2.response.body.id}}/workers
+
+###
+# GET - Workers asignados a Trigo
+GET {{baseUrl}}/api/crops/{{crearCrop3.response.body.id}}/workers

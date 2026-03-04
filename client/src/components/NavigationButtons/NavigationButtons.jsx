@@ -1,0 +1,75 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './NavigationButtons.css';
+
+const NavigationButtons = () => {
+  const navigate = useNavigate();
+
+  const navigationItems = [
+    {
+      id: 'cosechas',
+      label: 'Cosechas',
+      path: '/crops',
+      icon: '🌱',
+      color: 'green'
+    },
+    {
+      id: 'mediciones',
+      label: 'Mediciones',
+      path: '/measurements',
+      icon: '📊',
+      color: 'blue'
+    },
+    {
+      id: 'tareas',
+      label: 'Tareas',
+      path: '/tasks',
+      icon: '✅',
+      color: 'orange'
+    },
+    {
+      id: 'trabajadores',
+      label: 'Trabajadores',
+      path: '/users',
+      icon: '👥',
+      color: 'purple'
+    },
+    {
+      id: 'perfil',
+      label: 'Perfil',
+      path: '/profile',
+      icon: '👤',
+      color: 'red'
+    },
+    {
+      id: 'reportes',
+      label: 'Reportes',
+      path: '/report',
+      icon: '📄',
+      color: 'teal'
+    }
+  ];
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
+  return (
+    <div className="navigation-buttons-container">
+      <div className="navigation-grid">
+        {navigationItems.map((item) => (
+          <div 
+            key={item.id}
+            className={`nav-button ${item.id}-button`}
+            onClick={() => handleNavigation(item.path)}
+          >
+            <div className="button-icon">{item.icon}</div>
+            <div className="button-label">{item.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default NavigationButtons;

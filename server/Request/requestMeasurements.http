@@ -1,0 +1,309 @@
+# MEASUREMENTS - MEDICIONES POR COSECHA
+# Ejecutar después de requestCrops.http y requestUser.http
+# ⚠️ Pegar los IDs obtenidos de esos archivos abajo
+
+@baseUrl = https://croptrack-client-server.onrender.com
+
+# ⚠️ Copiar desde respuestas de requestCrops.http → crearCrop1/2/3
+@crop1Id = 60166b3d-7ed6-4cb9-9a65-bdd543a0a498
+@crop2Id = 1f87956b-bbb4-4a35-9fde-831ffc04b38d
+@crop3Id = 79ffa030-f1cd-46a0-bb28-f93d0b92d830
+
+# ⚠️ Copiar desde respuestas de requestRegister.http y requestUser.http
+@adminId = 5cc33d3a-d546-429b-b0be-7a938e7f04d0
+@sup1Id = 5995c397-18fe-4e85-9030-256bc573a089
+@sup2Id = 0e21434b-e328-48cc-9d97-fa19e217f825
+@sup3Id = 5995c397-18fe-4e85-9030-256bc573a089
+@trab1Id = c9f07f62-d9ff-472e-8c70-2f5046fd4653
+@trab2Id = 5a52b76c-3042-47c1-9d3c-4c12a87e3512
+@trab3Id = 46410e47-c96f-4b2d-bb1e-0adb0629c042
+
+### ============================================================
+### BLOQUE A - MEDICIONES MAÍZ DK-7088 (Lote Norte - Sector A)
+### 6 mediciones cronológicas: Oct 2025 → Ene 2026
+### ============================================================
+
+###
+# Medición 1/6 - Temperatura al inicio de germinación
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 22.5,
+  "unidad": "°C",
+  "fecha_medicion": "2025-10-05T08:30:00",
+  "observaciones": "Temperatura al inicio de la germinación. Condiciones muy favorables para emergencia uniforme."
+}
+
+###
+# Medición 2/6 - Humedad tras lluvias de octubre
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 68.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-10-15T09:00:00",
+  "observaciones": "Humedad óptima tras lluvia de 35mm registrada los días 12 y 13 de octubre."
+}
+
+###
+# Medición 3/6 - pH de suelo (relevamiento supervisado)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "ph_suelo",
+  "valor": 6.4,
+  "unidad": "pH",
+  "fecha_medicion": "2025-10-25T10:00:00",
+  "observaciones": "pH levemente ácido. Se recomienda encalado de 500 kg/ha de calcita en la próxima campaña."
+}
+
+###
+# Medición 4/6 - Temperatura elevada en período crítico
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 26.8,
+  "unidad": "°C",
+  "fecha_medicion": "2025-11-20T14:00:00",
+  "observaciones": "Temperatura elevada en período V6-V8. Se incrementó frecuencia de monitoreo de estrés hídrico."
+}
+
+###
+# Medición 5/6 - Descenso de humedad por período seco
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 52.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-12-10T08:00:00",
+  "observaciones": "Descenso de humedad por período seco de 18 días. Se activó riego por goteo en sectores A2 y A3."
+}
+
+###
+# Medición 6/6 - Rendimiento estimado pre-cosecha
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop1Id}}",
+  "usuario_id": "{{sup1Id}}",
+  "tipo_medicion": "rendimiento_estimado",
+  "valor": 8.2,
+  "unidad": "t/ha",
+  "fecha_medicion": "2026-01-15T11:00:00",
+  "observaciones": "Proyección basada en índice de área foliar y densidad de espigas por m². Total estimado: 373 tn."
+}
+
+### ============================================================
+### BLOQUE B - MEDICIONES SOJA RR (Lote Sur - Sector B)
+### 5 mediciones cronológicas: Nov 2025 → Ene 2026
+### ============================================================
+
+###
+# Medición 1/5 - Temperatura ideal para floración
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop2Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 28.3,
+  "unidad": "°C",
+  "fecha_medicion": "2025-11-20T08:00:00",
+  "observaciones": "Temperatura ideal para inicio de floración (estadio R1). Condiciones climáticas muy favorables."
+}
+
+###
+# Medición 2/5 - Excelente humedad en llenado de vainas
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop2Id}}",
+  "usuario_id": "{{trab2Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 71.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-11-28T09:30:00",
+  "observaciones": "Excelente retención de humedad post-lluvia de 48mm. Llenado de vainas sin restricciones hídricas."
+}
+
+###
+# Medición 3/5 - pH adecuado para soja
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop2Id}}",
+  "usuario_id": "{{sup2Id}}",
+  "tipo_medicion": "ph_suelo",
+  "valor": 6.2,
+  "unidad": "pH",
+  "fecha_medicion": "2025-12-05T10:00:00",
+  "observaciones": "pH adecuado para disponibilidad de nutrientes en soja. Sin correcciones necesarias en esta campaña."
+}
+
+###
+# Medición 4/5 - Pico de calor crítico en R5
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop2Id}}",
+  "usuario_id": "{{trab3Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 32.1,
+  "unidad": "°C",
+  "fecha_medicion": "2025-12-20T14:30:00",
+  "observaciones": "Pico de calor crítico en estadio R5. Riesgo de abscisión de vainas. Se aplicó riego de auxilio de 25mm."
+}
+
+###
+# Medición 5/5 - Rendimiento estimado (afectado por estrés térmico)
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop2Id}}",
+  "usuario_id": "{{sup2Id}}",
+  "tipo_medicion": "rendimiento_estimado",
+  "valor": 3.8,
+  "unidad": "t/ha",
+  "fecha_medicion": "2026-01-20T10:00:00",
+  "observaciones": "Estimación conservadora por estrés térmico en diciembre. Total proyectado: 235.6 tn."
+}
+
+### ============================================================
+### BLOQUE C - MEDICIONES TRIGO KLEIN TITANIO (Lote Este - Sector C)
+### 6 mediciones cronológicas: Jun → Oct 2025
+### ============================================================
+
+###
+# Medición 1/6 - Temperatura baja favorable para macollaje
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop3Id}}",
+  "usuario_id": "{{trab3Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 11.5,
+  "unidad": "°C",
+  "fecha_medicion": "2025-06-15T07:00:00",
+  "observaciones": "Temperatura baja y favorable para macollaje. Sin riesgo de helada según pronóstico de los próximos 10 días."
+}
+
+###
+# Medición 2/6 - Excelente humedad post-siembra
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop3Id}}",
+  "usuario_id": "{{trab3Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 78.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-06-25T09:00:00",
+  "observaciones": "Suelo con excelente retención hídrica post-siembra. Emergencia uniforme en todo el lote."
+}
+
+###
+# Medición 3/6 - pH neutro, sin correcciones
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop3Id}}",
+  "usuario_id": "{{sup3Id}}",
+  "tipo_medicion": "ph_suelo",
+  "valor": 7.1,
+  "unidad": "pH",
+  "fecha_medicion": "2025-07-10T10:00:00",
+  "observaciones": "pH neutro, ideal para trigo. Sin correcciones necesarias. Disponibilidad de micronutrientes óptima."
+}
+
+###
+# Medición 4/6 - Temperatura en espigazón
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop3Id}}",
+  "usuario_id": "{{trab1Id}}",
+  "tipo_medicion": "temperatura_ambiente",
+  "valor": 16.2,
+  "unidad": "°C",
+  "fecha_medicion": "2025-08-15T08:30:00",
+  "observaciones": "Temperatura ascendente indica inicio de espigazón. Se realizó aplicación fungicida preventiva en esta fecha."
+}
+
+###
+# Medición 5/6 - Humedad en descenso previo a cosecha
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop3Id}}",
+  "usuario_id": "{{trab3Id}}",
+  "tipo_medicion": "humedad_suelo",
+  "valor": 65.0,
+  "unidad": "%",
+  "fecha_medicion": "2025-09-05T08:00:00",
+  "observaciones": "Humedad en descenso natural. Condiciones ideales aproximándose al momento óptimo de cosecha mecánica."
+}
+
+###
+# Medición 6/6 - Rendimiento final confirmado post-cosecha
+POST {{baseUrl}}/api/measurements
+Content-Type: application/json
+
+{
+  "cultivo_id": "{{crop3Id}}",
+  "usuario_id": "{{sup3Id}}",
+  "tipo_medicion": "rendimiento_estimado",
+  "valor": 4.5,
+  "unidad": "t/ha",
+  "fecha_medicion": "2025-10-20T12:00:00",
+  "observaciones": "Rendimiento final post-cosecha confirmado. Por encima del promedio zonal (3.8 t/ha). Humedad de cosecha: 12.8%."
+}
+
+### ============================================================
+### BLOQUE D - CONSULTAS
+### ============================================================
+
+###
+# GET - Todas las mediciones del Maíz
+GET {{baseUrl}}/api/measurements/crop/{{crop1Id}}
+
+###
+# GET - Todas las mediciones de la Soja
+GET {{baseUrl}}/api/measurements/crop/{{crop2Id}}
+
+###
+# GET - Todas las mediciones del Trigo
+GET {{baseUrl}}/api/measurements/crop/{{crop3Id}}
+
+###
+# GET - Todas las mediciones del admin (via userId)
+GET {{baseUrl}}/api/measurements/user/{{adminId}}

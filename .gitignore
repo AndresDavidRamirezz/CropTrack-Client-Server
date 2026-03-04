@@ -3,6 +3,10 @@ node_modules/
 client/node_modules/
 server/node_modules/
 
+# Documentacion Claude
+CLAUDE.md
+docs/
+
 # Environment variables
 .env
 .env.local
@@ -11,6 +15,7 @@ server/node_modules/
 .env.production.local
 server/.env
 server/.env.local
+server/.env.test
 client/.env.local
 
 # Build outputs
