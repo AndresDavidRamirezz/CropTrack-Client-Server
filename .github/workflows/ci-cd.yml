@@ -78,7 +78,7 @@ jobs:
         # --forceExit: fuerza salida al terminar (evita colgarse por handles TCP abiertos)
         # --testPathIgnorePatterns: excluye tests de integración de reportes que requieren
         #   investigación adicional sobre compatibilidad express-myconnection + mysql2 en CI
-        run: npm test -- --runInBand --forceExit --testPathIgnorePatterns="tests/report/integration"
+        run: npm test -- --runInBand --forceExit
 
       - name: Correr tests del cliente
         working-directory: client
