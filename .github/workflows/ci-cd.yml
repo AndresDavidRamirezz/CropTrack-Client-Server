@@ -192,12 +192,14 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Deploy frontend a Vercel
+      - name: Build del frontend
         working-directory: client
         env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: npx vercel --token=${{ secrets.VERCEL_TOKEN }} --prod --yes
+          CI: false
+        run: npm ci && npm run build
+
+      - name: Deploy frontend a Netlify
+        run: npx netlify-cli deploy --prod --dir=client/build --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --site=${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Deploy backend a Render
         run: |
