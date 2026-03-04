@@ -187,6 +187,8 @@ describe('Flujo E2E de Reportes', () => {
 
     it('debería desaparecer el loading después de cargar', () => {
       cy.intercept('GET', '**/api/crops/user/**').as('cropsLoad');
+      // Re-visitar la página DESPUÉS de configurar el intercept para capturar la request
+      cy.visit('/report');
       cy.wait('@cropsLoad', { timeout: 10000 });
       cy.get('.report-page-loading').should('not.exist');
     });
