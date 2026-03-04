@@ -74,7 +74,7 @@ jobs:
           CLOUDINARY_CLOUD_NAME: test
           CLOUDINARY_API_KEY: test
           CLOUDINARY_API_SECRET: test
-        run: npm test
+        run: npm test -- --runInBand --forceExit
 
       - name: Correr tests del cliente
         working-directory: client
