@@ -13,6 +13,7 @@ import NavBar from './components/NavBar/NavBar';
 import Footer from './components/Footer/Footer.jsx';
 
 import MainPage from './pages/MainPage';
+import LandingPage from './pages/Landing/LandingPage';
 
 import CropPage from './pages/Crop/CropPage.jsx';
 import MeasurementPage from './pages/Measurement/MeasurementPage.jsx';
@@ -28,7 +29,7 @@ root.render(
 			<NavBar />
 			<main>
 			<Routes>
-				<Route path="/" element={<h1>Bienvenido a la LandingPage de CropTrack</h1>} />
+				<Route path="/" element={<LandingPage />} />
 				<Route path="/login" element={ <LoginPage/>} />
 				<Route path="/register/register-admin" element={ <RegisterPage/>} />
 				<Route path="/main" element={ <ProtectedRoute> <MainPage /> </ProtectedRoute>} />
