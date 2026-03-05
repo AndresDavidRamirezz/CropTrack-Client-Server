@@ -203,5 +203,5 @@ jobs:
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}")
           echo "Render webhook respondió con HTTP $STATUS"
-          [ "$STATUS" = "201" ] || { echo "ERROR: Deploy a Render falló (HTTP $STATUS)"; exit 1; }
+          [[ "$STATUS" =~ ^2 ]] || { echo "ERROR: Deploy a Render falló (HTTP $STATUS)"; exit 1; }
           echo "Deploy a Render iniciado correctamente"
