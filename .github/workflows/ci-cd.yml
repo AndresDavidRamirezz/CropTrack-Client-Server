@@ -192,14 +192,12 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Build del frontend
+      - name: Instalar dependencias del cliente
         working-directory: client
-        env:
-          CI: false
-        run: npm ci && npm run build
+        run: npm ci
 
       - name: Deploy frontend a Netlify
-        run: npx netlify-cli deploy --prod --dir=client/build --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --site=${{ secrets.NETLIFY_SITE_ID }}
+        run: npx netlify-cli deploy --prod --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --site=${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Deploy backend a Render
         run: |
