@@ -19,25 +19,28 @@ class TaskModel {
     });
   }
 
-  static findByUser(conn, userId, callback) {
-    console.log('🟡 [TASK-MODEL] findByUser - Ejecutando...');
-    console.log('👤 [TASK-MODEL] findByUser - userId:', userId);
+  static findByCropAssociation(conn, userId, callback) {
+    console.log('🟡 [TASK-MODEL] findByCropAssociation - Ejecutando...');
+    console.log('👤 [TASK-MODEL] findByCropAssociation - userId:', userId);
 
     const query = `
-      SELECT t.*, c.nombre as cultivo_nombre
+      SELECT DISTINCT t.*, c.nombre as cultivo_nombre,
+             u.nombre as asignado_nombre, u.apellido as asignado_apellido
       FROM tasks t
       LEFT JOIN crops c ON t.cultivo_id = c.id
-      WHERE t.creado_por = ?
-      ORDER BY t.created_at DESC
+      LEFT JOIN users u ON t.asignado_a = u.id
+      WHERE c.usuario_creador_id = ?
+         OR c.id IN (SELECT cultivo_id FROM crop_workers WHERE usuario_id = ?)
+      ORDER BY c.nombre ASC, t.created_at DESC
     `;
-    console.log('🔍 [TASK-MODEL] findByUser - Query:', query.trim());
+    console.log('🔍 [TASK-MODEL] findByCropAssociation - Query:', query.trim());
 
-    conn.query(query, [userId], (err, results) => {
+    conn.query(query, [userId, userId], (err, results) => {
       if (err) {
-        console.error('❌ [TASK-MODEL] findByUser - Error:', err.code);
-        console.error('❌ [TASK-MODEL] findByUser - SQL Message:', err.sqlMessage);
+        console.error('❌ [TASK-MODEL] findByCropAssociation - Error:', err.code);
+        console.error('❌ [TASK-MODEL] findByCropAssociation - SQL Message:', err.sqlMessage);
       } else {
-        console.log('✅ [TASK-MODEL] findByUser - Tareas encontradas:', results.length);
+        console.log('✅ [TASK-MODEL] findByCropAssociation - Tareas encontradas:', results.length);
       }
       callback(err, results);
     });

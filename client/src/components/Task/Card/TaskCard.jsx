@@ -49,28 +49,35 @@ const TaskCard = ({ task, crops, onSelect }) => {
   const getCropName = () => {
     if (!task.cultivo_id) return null;
     const crop = crops?.find(c => c.id === task.cultivo_id);
-    return crop ? crop.nombre : 'Cultivo no encontrado';
+    return crop ? crop.nombre : task.cultivo_nombre || null;
   };
 
   const estadoColor = ESTADO_COLORS[task.estado] || '#6c757d';
   const estadoLabel = ESTADO_LABELS[task.estado] || task.estado;
   const cropName = getCropName();
+  const asignadoNombre = task.asignado_nombre
+    ? `${task.asignado_nombre} ${task.asignado_apellido || ''}`.trim()
+    : null;
 
   return (
     <div className="task-card" onClick={() => onSelect(task)}>
-      <div className="task-card-info">
-        <h3 className="task-card-name">{task.titulo}</h3>
-        {cropName && (
-          <span className="task-card-crop">{cropName}</span>
-        )}
-        {task.fecha_limite && (
-          <span className="task-card-date">Limite: {formatDate(task.fecha_limite)}</span>
-        )}
+      <div className="task-col">
+        <span className="task-col-label">Tarea</span>
+        <span className="task-card-name">{task.titulo}</span>
       </div>
-      <span
-        className="task-card-estado"
-        style={{ backgroundColor: estadoColor }}
-      >
+      <div className="task-col">
+        <span className="task-col-label">Cosecha</span>
+        <span className="task-col-value">{cropName || '—'}</span>
+      </div>
+      <div className="task-col">
+        <span className="task-col-label">Fecha límite</span>
+        <span className="task-col-value">{formatDate(task.fecha_limite) || '—'}</span>
+      </div>
+      <div className="task-col">
+        <span className="task-col-label">Asignado a</span>
+        <span className="task-col-value">{asignadoNombre || '—'}</span>
+      </div>
+      <span className="task-card-estado" style={{ backgroundColor: estadoColor }}>
         {estadoLabel}
       </span>
     </div>

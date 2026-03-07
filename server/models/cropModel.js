@@ -19,23 +19,25 @@ class CropModel {
     });
   }
 
-  static findByUser(conn, userId, callback) {
-    console.log('🟡 [CROP-MODEL] findByUser - Ejecutando...');
-    console.log('👤 [CROP-MODEL] findByUser - userId:', userId);
+  static findByUserAssociated(conn, userId, callback) {
+    console.log('🟡 [CROP-MODEL] findByUserAssociated - Ejecutando...');
+    console.log('👤 [CROP-MODEL] findByUserAssociated - userId:', userId);
 
     const query = `
-      SELECT * FROM crops
-      WHERE usuario_creador_id = ?
-      ORDER BY created_at DESC
+      SELECT DISTINCT c.*
+      FROM crops c
+      LEFT JOIN crop_workers cw ON c.id = cw.cultivo_id
+      WHERE c.usuario_creador_id = ? OR cw.usuario_id = ?
+      ORDER BY c.created_at DESC
     `;
-    console.log('🔍 [CROP-MODEL] findByUser - Query:', query.trim());
+    console.log('🔍 [CROP-MODEL] findByUserAssociated - Query:', query.trim());
 
-    conn.query(query, [userId], (err, results) => {
+    conn.query(query, [userId, userId], (err, results) => {
       if (err) {
-        console.error('❌ [CROP-MODEL] findByUser - Error:', err.code);
-        console.error('❌ [CROP-MODEL] findByUser - SQL Message:', err.sqlMessage);
+        console.error('❌ [CROP-MODEL] findByUserAssociated - Error:', err.code);
+        console.error('❌ [CROP-MODEL] findByUserAssociated - SQL Message:', err.sqlMessage);
       } else {
-        console.log('✅ [CROP-MODEL] findByUser - Cosechas encontradas:', results.length);
+        console.log('✅ [CROP-MODEL] findByUserAssociated - Cosechas encontradas:', results.length);
       }
       callback(err, results);
     });
