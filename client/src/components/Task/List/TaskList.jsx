@@ -2,6 +2,17 @@ import React from 'react';
 import TaskCard from '../Card/TaskCard';
 import './TaskList.css';
 
+const groupByCrop = (tasks) => {
+  return tasks.reduce((acc, task) => {
+    const key = task.cultivo_id || 'sin-cultivo';
+    if (!acc[key]) {
+      acc[key] = { nombre: task.cultivo_nombre || 'Sin cultivo', items: [] };
+    }
+    acc[key].items.push(task);
+    return acc;
+  }, {});
+};
+
 const TaskList = ({ tasks, crops, onSelect, loading }) => {
   if (loading) {
     return (
@@ -22,6 +33,8 @@ const TaskList = ({ tasks, crops, onSelect, loading }) => {
     );
   }
 
+  const grouped = groupByCrop(tasks);
+
   return (
     <div className="task-list">
       <div className="task-list-header">
@@ -29,16 +42,20 @@ const TaskList = ({ tasks, crops, onSelect, loading }) => {
         <span className="task-count">{tasks.length} tarea{tasks.length !== 1 ? 's' : ''}</span>
       </div>
 
-      <div className="task-grid">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            crops={crops}
-            onSelect={onSelect}
-          />
-        ))}
-      </div>
+      {Object.values(grouped).map((group) => (
+        <div key={group.nombre} className="task-group">
+          <div className="task-grid">
+            {group.items.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                crops={crops}
+                onSelect={onSelect}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

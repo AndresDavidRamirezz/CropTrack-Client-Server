@@ -2,6 +2,17 @@ import React from 'react';
 import MeasurementCard from '../Card/MeasurementCard';
 import './MeasurementList.css';
 
+const groupByCrop = (measurements) => {
+  return measurements.reduce((acc, measurement) => {
+    const key = measurement.cultivo_id || 'sin-cultivo';
+    if (!acc[key]) {
+      acc[key] = { nombre: measurement.cultivo_nombre || 'Sin cultivo', items: [] };
+    }
+    acc[key].items.push(measurement);
+    return acc;
+  }, {});
+};
+
 const MeasurementList = ({ measurements, crops, onSelect, loading }) => {
   if (loading) {
     return (
@@ -22,6 +33,8 @@ const MeasurementList = ({ measurements, crops, onSelect, loading }) => {
     );
   }
 
+  const grouped = groupByCrop(measurements);
+
   return (
     <div className="measurement-list">
       <div className="measurement-list-header">
@@ -29,16 +42,20 @@ const MeasurementList = ({ measurements, crops, onSelect, loading }) => {
         <span className="measurement-count">{measurements.length} medicion{measurements.length !== 1 ? 'es' : ''}</span>
       </div>
 
-      <div className="measurement-grid">
-        {measurements.map((measurement) => (
-          <MeasurementCard
-            key={measurement.id}
-            measurement={measurement}
-            crops={crops}
-            onSelect={onSelect}
-          />
-        ))}
-      </div>
+      {Object.values(grouped).map((group) => (
+        <div key={group.nombre} className="measurement-group">
+          <div className="measurement-grid">
+            {group.items.map((measurement) => (
+              <MeasurementCard
+                key={measurement.id}
+                measurement={measurement}
+                crops={crops}
+                onSelect={onSelect}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

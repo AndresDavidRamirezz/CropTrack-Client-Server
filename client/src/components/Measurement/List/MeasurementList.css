@@ -97,6 +97,22 @@
   font-size: 1rem;
 }
 
+/* Grupos por cosecha */
+.measurement-group {
+  margin-bottom: 32px;
+}
+
+.measurement-group-title {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00B4D8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(0, 180, 216, 0.2);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .measurement-grid {
