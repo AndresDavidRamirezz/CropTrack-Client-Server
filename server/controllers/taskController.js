@@ -54,7 +54,7 @@ const getTasksByUser = (req, res) => {
       return res.status(500).json({ error: 'Error de conexion con la base de datos' });
     }
 
-    TaskModel.findByUser(conn, userId, (err, tasks) => {
+    TaskModel.findByCropAssociation(conn, userId, (err, tasks) => {
       if (err) {
         console.error('❌ [TASK-CONTROLLER] Error al obtener tareas:', err);
         return res.status(500).json({ error: err.sqlMessage || 'Error al obtener las tareas' });

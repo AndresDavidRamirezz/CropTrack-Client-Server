@@ -19,25 +19,28 @@ class MeasurementModel {
     });
   }
 
-  static findByUser(conn, userId, callback) {
-    console.log('🟡 [MEASUREMENT-MODEL] findByUser - Ejecutando...');
-    console.log('👤 [MEASUREMENT-MODEL] findByUser - userId:', userId);
+  static findByCropAssociation(conn, userId, callback) {
+    console.log('🟡 [MEASUREMENT-MODEL] findByCropAssociation - Ejecutando...');
+    console.log('👤 [MEASUREMENT-MODEL] findByCropAssociation - userId:', userId);
 
     const query = `
-      SELECT m.*, c.nombre as cultivo_nombre
+      SELECT DISTINCT m.*, c.nombre as cultivo_nombre,
+             u.nombre as asignado_nombre, u.apellido as asignado_apellido
       FROM measurements m
       LEFT JOIN crops c ON m.cultivo_id = c.id
+      LEFT JOIN users u ON m.usuario_id = u.id
       WHERE c.usuario_creador_id = ?
-      ORDER BY m.fecha_medicion DESC
+         OR c.id IN (SELECT cultivo_id FROM crop_workers WHERE usuario_id = ?)
+      ORDER BY c.nombre ASC, m.fecha_medicion DESC
     `;
-    console.log('🔍 [MEASUREMENT-MODEL] findByUser - Query:', query.trim());
+    console.log('🔍 [MEASUREMENT-MODEL] findByCropAssociation - Query:', query.trim());
 
-    conn.query(query, [userId], (err, results) => {
+    conn.query(query, [userId, userId], (err, results) => {
       if (err) {
-        console.error('❌ [MEASUREMENT-MODEL] findByUser - Error:', err.code);
-        console.error('❌ [MEASUREMENT-MODEL] findByUser - SQL Message:', err.sqlMessage);
+        console.error('❌ [MEASUREMENT-MODEL] findByCropAssociation - Error:', err.code);
+        console.error('❌ [MEASUREMENT-MODEL] findByCropAssociation - SQL Message:', err.sqlMessage);
       } else {
-        console.log('✅ [MEASUREMENT-MODEL] findByUser - Mediciones encontradas:', results.length);
+        console.log('✅ [MEASUREMENT-MODEL] findByCropAssociation - Mediciones encontradas:', results.length);
       }
       callback(err, results);
     });

@@ -48,7 +48,7 @@ const getMeasurementsByUser = (req, res) => {
       return res.status(500).json({ error: 'Error de conexion con la base de datos' });
     }
 
-    MeasurementModel.findByUser(conn, userId, (err, measurements) => {
+    MeasurementModel.findByCropAssociation(conn, userId, (err, measurements) => {
       if (err) {
         console.error('❌ [MEASUREMENT-CONTROLLER] Error al obtener mediciones:', err);
         return res.status(500).json({ error: err.sqlMessage || 'Error al obtener las mediciones' });

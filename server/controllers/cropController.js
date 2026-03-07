@@ -53,7 +53,7 @@ const getCropsByUser = (req, res) => {
       return res.status(500).json({ error: 'Error de conexión con la base de datos' });
     }
 
-    CropModel.findByUser(conn, userId, (err, crops) => {
+    CropModel.findByUserAssociated(conn, userId, (err, crops) => {
       if (err) {
         console.error('❌ [CROP-CONTROLLER] Error al obtener cosechas:', err);
         return res.status(500).json({ error: err.sqlMessage || 'Error al obtener las cosechas' });

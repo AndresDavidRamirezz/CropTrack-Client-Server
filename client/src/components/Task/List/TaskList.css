@@ -97,6 +97,22 @@
   font-size: 1rem;
 }
 
+/* Grupos por cosecha */
+.task-group {
+  margin-bottom: 32px;
+}
+
+.task-group-title {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #F0820D;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(240, 130, 13, 0.2);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .task-grid {

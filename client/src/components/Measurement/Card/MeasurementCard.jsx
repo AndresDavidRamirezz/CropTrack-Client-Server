@@ -63,29 +63,35 @@ const formatDate = (dateString) => {
 const MeasurementCard = ({ measurement, crops, onSelect }) => {
   const getCropName = () => {
     const crop = crops?.find(c => c.id === measurement.cultivo_id);
-    return crop ? crop.nombre : 'Cultivo no encontrado';
+    return crop ? crop.nombre : measurement.cultivo_nombre || 'Cultivo no encontrado';
   };
 
   const tipoColor = TIPO_COLORS[measurement.tipo_medicion] || '#6c757d';
   const tipoLabel = TIPO_LABELS[measurement.tipo_medicion] || measurement.tipo_medicion;
   const unidadLabel = UNIDAD_LABELS[measurement.unidad] || measurement.unidad;
+  const asignadoNombre = measurement.asignado_nombre
+    ? `${measurement.asignado_nombre} ${measurement.asignado_apellido || ''}`.trim()
+    : null;
 
   return (
     <div className="measurement-card" onClick={() => onSelect(measurement)}>
-      <div className="measurement-card-value">
+      <div className="measurement-col measurement-col-valor">
         <span className="measurement-card-number">{measurement.valor}</span>
         <span className="measurement-card-unit">{unidadLabel}</span>
       </div>
-      <div className="measurement-card-info">
-        <h3 className="measurement-card-name">{getCropName()}</h3>
-        {measurement.fecha_medicion && (
-          <span className="measurement-card-date">{formatDate(measurement.fecha_medicion)}</span>
-        )}
+      <div className="measurement-col">
+        <span className="measurement-col-label">Cosecha</span>
+        <span className="measurement-col-value">{getCropName()}</span>
       </div>
-      <span
-        className="measurement-card-tipo"
-        style={{ backgroundColor: tipoColor }}
-      >
+      <div className="measurement-col">
+        <span className="measurement-col-label">Fecha</span>
+        <span className="measurement-col-value">{formatDate(measurement.fecha_medicion) || '—'}</span>
+      </div>
+      <div className="measurement-col">
+        <span className="measurement-col-label">Asignado a</span>
+        <span className="measurement-col-value">{asignadoNombre || '—'}</span>
+      </div>
+      <span className="measurement-card-tipo" style={{ backgroundColor: tipoColor }}>
         {tipoLabel}
       </span>
     </div>
