@@ -2,6 +2,18 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 
+import reactLogo    from '../../assets/tecnologias/react.svg';
+import nodeLogo     from '../../assets/tecnologias/node-js.svg';
+import expressLogo  from '../../assets/tecnologias/express.svg';
+import mysqlLogo    from '../../assets/tecnologias/mysql.svg';
+import jestLogo     from '../../assets/tecnologias/jest.svg';
+import cypressLogo  from '../../assets/tecnologias/cypress.svg';
+
+import vercelLogo     from '../../assets/deploy/vercel.svg';
+import renderLogo     from '../../assets/deploy/render.png';
+import railwayLogo    from '../../assets/deploy/railway.svg';
+import cloudinaryLogo from '../../assets/deploy/cloudinary.svg';
+
 const LandingPage = () => {
   const navigate = useNavigate();
 
@@ -43,6 +55,76 @@ const LandingPage = () => {
     { value: '3', label: 'Roles de Usuario' },
     { value: '5', label: 'Módulos Integrados' },
     { value: '24/7', label: 'Disponibilidad' }
+  ];
+
+  const testimonials = [
+    {
+      name: 'Carlos Mendoza',
+      role: 'Productor agropecuario',
+      company: 'Estancia El Progreso, Córdoba',
+      initials: 'CM',
+      avatarColor: '#4CAF50',
+      rating: 5,
+      text: 'CropTrack transformó completamente la forma en que gestionamos nuestras cosechas. Antes todo era en papel y se perdía información. Ahora tengo todo centralizado y puedo ver el estado de cada cultivo en segundos. Les recomiendo esta herramienta a todos.'
+    },
+    {
+      name: 'Ana Gómez',
+      role: 'Supervisora de campo',
+      company: 'AgroSur S.A., Buenos Aires',
+      initials: 'AG',
+      avatarColor: '#2196F3',
+      rating: 5,
+      text: 'La asignación de tareas y el seguimiento del equipo nunca fue tan fácil. Mis supervisores y trabajadores saben exactamente qué hacer cada día. Los reportes PDF son muy profesionales y nos ahorran horas de trabajo administrativo.'
+    },
+    {
+      name: 'Roberto Fierro',
+      role: 'Administrador',
+      company: 'Cooperativa Agrícola del Norte',
+      initials: 'RF',
+      avatarColor: '#FF9800',
+      rating: 5,
+      text: 'Excelente herramienta para administrar múltiples parcelas. Las mediciones de temperatura, humedad y pH bien organizadas nos ayudaron a mejorar el rendimiento notablemente. El módulo de reportes es el que más usamos día a día.'
+    }
+  ];
+
+  const techStack = [
+    { name: 'React',   desc: 'Interfaz de usuario',    color: '#61DAFB', logo: reactLogo   },
+    { name: 'Node.js', desc: 'Entorno de ejecución',   color: '#539E43', logo: nodeLogo    },
+    { name: 'Express', desc: 'Framework API REST',     color: '#888888', logo: expressLogo },
+    { name: 'MySQL',   desc: 'Base de datos',          color: '#00758F', logo: mysqlLogo   },
+    { name: 'Jest',    desc: 'Tests unitarios',        color: '#C21325', logo: jestLogo    },
+    { name: 'Cypress', desc: 'Tests end-to-end',       color: '#04C38E', logo: cypressLogo },
+  ];
+
+  const deployStack = [
+    {
+      name: 'Vercel',
+      layer: 'Frontend',
+      detail: 'Deploy automático en cada merge a main',
+      gradient: '#ffffff',
+      logo: vercelLogo,
+    },
+    {
+      name: 'Render',
+      layer: 'Backend / API',
+      detail: 'Servidor Node.js + Express en producción',
+      gradient: '#ffffff',
+      logo: renderLogo,
+    },
+    {
+      name: 'Railway',
+      layer: 'Base de datos',
+      detail: 'MySQL gestionado en la nube',
+      gradient: '#ffffff',
+      logo: railwayLogo,
+    },
+    {
+      name: 'Cloudinary',
+      layer: 'Imágenes',
+      detail: 'Almacenamiento y optimización de imágenes',
+      gradient: '#ffffff',
+      logo: cloudinaryLogo,
+    },
   ];
 
   return (
@@ -141,6 +223,75 @@ const LandingPage = () => {
               <span className="landing-feature-icon">{feature.icon}</span>
               <h3 className="landing-feature-title">{feature.title}</h3>
               <p className="landing-feature-description">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="landing-testimonials">
+        <div className="landing-section-header">
+          <h2 className="landing-section-title">Lo que dicen nuestros usuarios</h2>
+          <p className="landing-section-subtitle">
+            Productores y equipos de todo el país ya digitalizaron su gestión agrícola con CropTrack.
+          </p>
+        </div>
+        <div className="landing-testimonials-grid">
+          {testimonials.map((t, index) => (
+            <div key={index} className="landing-testimonial-card">
+              <div className="landing-testimonial-stars">
+                {'★'.repeat(t.rating)}
+              </div>
+              <p className="landing-testimonial-text">"{t.text}"</p>
+              <div className="landing-testimonial-author">
+                <div
+                  className="landing-testimonial-avatar"
+                  style={{ backgroundColor: t.avatarColor }}
+                >
+                  {t.initials}
+                </div>
+                <div className="landing-testimonial-info">
+                  <span className="landing-testimonial-name">{t.name}</span>
+                  <span className="landing-testimonial-role">{t.role}</span>
+                  <span className="landing-testimonial-company">{t.company}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TECH STACK */}
+      <section className="landing-tech">
+        <div className="landing-section-header">
+          <h2 className="landing-section-title">Construido con tecnología moderna</h2>
+          <p className="landing-section-subtitle">
+            Un stack robusto, probado y escalable, con cobertura de tests en cada capa.
+          </p>
+        </div>
+
+        <div className="landing-tech-grid">
+          {techStack.map((tech, index) => (
+            <div key={index} className="landing-tech-item">
+              <img src={tech.logo} alt={tech.name} className="landing-tech-logo-img" />
+              <span className="landing-tech-name" style={{ color: tech.color }}>{tech.name}</span>
+              <span className="landing-tech-desc">{tech.desc}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="landing-deploy-header">
+          <h3 className="landing-deploy-title">Infraestructura de deploy</h3>
+        </div>
+        <div className="landing-deploy-grid">
+          {deployStack.map((service, index) => (
+            <div key={index} className="landing-deploy-card" style={{ background: service.gradient }}>
+              <img src={service.logo} alt={service.name} className="landing-deploy-logo-img" />
+              <div className="landing-deploy-info">
+                <span className="landing-deploy-layer">{service.layer}</span>
+                <span className="landing-deploy-name">{service.name}</span>
+                <span className="landing-deploy-detail">{service.detail}</span>
+              </div>
             </div>
           ))}
         </div>

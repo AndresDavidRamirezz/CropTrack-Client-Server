@@ -1,0 +1,420 @@
+/* pages/MainPage.css */
+
+.main-page {
+  min-height: calc(100vh - 140px);
+  padding: 20px 30px;
+}
+
+/* ===== 1. Header de bienvenida ===== */
+.main-dashboard-header {
+  margin-bottom: 20px;
+  padding: 18px 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.main-dashboard-title {
+  margin: 0 0 4px 0;
+  font-size: 1.6rem;
+  color: #2d3748;
+  font-weight: 700;
+}
+
+.main-dashboard-name {
+  color: #4CAF50;
+}
+
+.main-dashboard-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+/* ===== 2. Sección de resumen ===== */
+.main-stats-section {
+  margin-top: 25px;
+}
+
+.main-stats-section-title {
+  margin: 0 0 15px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== Stats Grid ===== */
+.main-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+/* ===== Stat cards ===== */
+.main-stat-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+  border-top: 4px solid transparent;
+}
+
+.main-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.main-stat-cosechas     { border-top-color: #4CAF50; }
+.main-stat-tareas       { border-top-color: #FF9800; }
+.main-stat-mediciones   { border-top-color: #2196F3; }
+.main-stat-trabajadores { border-top-color: #9C27B0; }
+
+/* ── Card header ── */
+.main-stat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.main-stat-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.main-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.main-stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+
+.main-stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #2d3748;
+}
+
+.main-stat-cosechas   .main-stat-number { color: #2E7D32; }
+.main-stat-tareas     .main-stat-number { color: #EF6C00; }
+.main-stat-mediciones .main-stat-number { color: #1565C0; }
+.main-stat-trabajadores .main-stat-number { color: #6A1B9A; }
+
+/* ── Alert badge (urgentes) ── */
+.main-stat-alert {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fbbf24;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-left: auto;
+}
+
+/* ── Progress bar ── */
+.main-stat-progress {
+  height: 6px;
+  border-radius: 3px;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.main-stat-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  min-width: 4px;
+}
+
+.main-progress-cosechas { background: linear-gradient(90deg, #4CAF50, #2E7D32); }
+.main-progress-tareas   { background: linear-gradient(90deg, #FF9800, #EF6C00); }
+
+.main-stat-progress-text {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-top: -4px;
+}
+
+/* ── Divider ── */
+.main-stat-divider {
+  height: 1px;
+  background-color: #f1f5f9;
+  margin: 2px 0;
+}
+
+/* ── Details section ── */
+.main-stat-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.main-stat-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #cbd5e1;
+  margin-bottom: 2px;
+}
+
+/* ── Dot rows (cosechas) ── */
+.main-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-stat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.main-dot-active { background-color: #4CAF50; }
+.main-dot-done   { background-color: #20c997; }
+.main-dot-cancel { background-color: #dc3545; }
+
+.main-stat-row-label {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ── Upcoming harvest block ── */
+.main-stat-upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  padding: 8px 10px;
+  background-color: #f0fdf4;
+  border-radius: 8px;
+  border-left: 3px solid #4CAF50;
+}
+
+.main-stat-upcoming-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #4CAF50;
+}
+
+.main-stat-upcoming-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #2d3748;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main-stat-upcoming-date {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ── Pills grid (tareas) ── */
+.main-stat-pills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.main-stat-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.main-pill-pendiente  { background-color: #6c757d; }
+.main-pill-proceso    { background-color: #0d6efd; }
+.main-pill-completada { background-color: #198754; }
+.main-pill-cancelada  { background-color: #dc3545; }
+
+/* ── Measurement tipo rows ── */
+.main-stat-tipo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+}
+
+.main-stat-tipo-name {
+  font-size: 0.8rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.main-stat-tipo-count {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1565C0;
+}
+
+/* ── Last date ── */
+.main-stat-last-date {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.main-stat-last-label {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.main-stat-last-value {
+  font-size: 0.75rem;
+  color: #475569;
+  font-weight: 700;
+}
+
+/* ── Empty state ── */
+.main-stat-empty {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  font-style: italic;
+}
+
+/* ── Worker role rows ── */
+.main-stat-role-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-stat-role-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  width: 72px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.main-role-admin      { background-color: #ef4444; }
+.main-role-supervisor { background-color: #AB47BC; }
+.main-role-trabajador { background-color: #0d6efd; }
+
+.main-stat-role-bar-wrap {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.main-stat-role-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  min-width: 4px;
+}
+
+.main-role-bar-admin      { background-color: #ef4444; }
+.main-role-bar-supervisor { background-color: #AB47BC; }
+.main-role-bar-trabajador { background-color: #0d6efd; }
+
+.main-stat-role-count {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #6A1B9A;
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ===== Skeleton loading ===== */
+.main-stat-skeleton {
+  min-height: 220px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: mainSkeletonShimmer 1.5s infinite;
+  border-top-color: #e2e8f0;
+}
+
+@keyframes mainSkeletonShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== Responsive ===== */
+
+/* ── Desktop grande: 4 columnas con márgenes del 10% ── */
+@media (min-width: 1101px) {
+  .main-page {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+
+/* ── Desktop medio (769px–1100px): 2 columnas para que las cards no se aplasten ── */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .main-page {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .main-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Tablet (481px–768px): 2 columnas ── */
+@media (max-width: 768px) {
+  .main-page {
+    padding: 15px;
+  }
+
+  .main-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Móvil (≤480px): 1 columna ── */
+@media (max-width: 480px) {
+  .main-page {
+    padding: 12px;
+  }
+
+  .main-dashboard-title {
+    font-size: 1.3rem;
+  }
+
+  .main-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

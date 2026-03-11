@@ -372,6 +372,234 @@
   font-size: 16px;
 }
 
+/* ==================== TESTIMONIALS ==================== */
+.landing-testimonials {
+  padding: 80px 60px;
+  background: #f9fafb;
+}
+
+.landing-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.landing-testimonial-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 28px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.25s ease;
+}
+
+.landing-testimonial-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+}
+
+.landing-testimonial-stars {
+  color: #f59e0b;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.landing-testimonial-text {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.75;
+  flex: 1;
+  margin: 0;
+}
+
+.landing-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.landing-testimonial-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.landing-testimonial-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.landing-testimonial-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.landing-testimonial-role {
+  font-size: 12px;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.landing-testimonial-company {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ==================== TECH STACK ==================== */
+.landing-tech {
+  padding: 80px 60px;
+  background: white;
+}
+
+.landing-tech-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  max-width: 1100px;
+  margin: 0 auto 60px;
+}
+
+.landing-tech-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 16px;
+  text-align: center;
+  transition: transform 0.25s ease;
+  cursor: default;
+  border-radius: 16px;
+}
+
+.landing-tech-item:hover {
+  transform: translateY(-8px);
+  background: #f9fafb;
+}
+
+.landing-tech-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+}
+
+.landing-tech-logo-img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+}
+
+.landing-tech-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.landing-tech-desc {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* Deploy subsection */
+.landing-deploy-header {
+  text-align: center;
+  max-width: 1100px;
+  margin: 0 auto 28px;
+}
+
+.landing-deploy-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  position: relative;
+  display: inline-block;
+}
+
+.landing-deploy-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: #16a34a;
+  border-radius: 2px;
+}
+
+.landing-deploy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.landing-deploy-card {
+  border-radius: 20px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+}
+
+.landing-deploy-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.landing-deploy-logo-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.landing-deploy-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.landing-deploy-layer {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #9ca3af;
+}
+
+.landing-deploy-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.landing-deploy-detail {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 900px) {
   .landing-hero {
@@ -412,6 +640,27 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .landing-testimonials {
+    padding: 60px 30px;
+  }
+
+  .landing-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-tech {
+    padding: 60px 30px;
+  }
+
+  .landing-tech-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .landing-deploy-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .landing-cta {
     padding: 60px 30px;
   }
@@ -428,5 +677,14 @@
 
   .landing-stat-item {
     flex: 0 0 100%;
+  }
+
+  .landing-tech-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .landing-deploy-grid {
+    grid-template-columns: 1fr;
   }
 }
